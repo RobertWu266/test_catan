@@ -15,5 +15,10 @@
 #define i32 int32_t
 
 obj *get_obj_from_mouse(i32 x,i32 y);
+void shuffle_i32(i32 *array, i32 n);
+void show_obj(obj* tgt);
+#define body_printw(tgt) printw("BODY:resource:%s  num:%d,locs:(%d,%d,%d)",resources_name[bprop(tgt)->resource],bprop(tgt)->num,tgt->locs[0],tgt->locs[1],tgt->locs[2])
+#define vertice_printw(tgt) printw("VERTICE:owner:%d,building=%d,harbor:%dlocs:(%d,%d,%d)",vprop(tgt)->own,vprop(tgt)->build,vprop(tgt)->harb,tgt->locs[0],tgt->locs[1],tgt->locs[2])
+#define side_printw(tgt) printw("SIDE:owner:%d,locs:(%d,%d,%d)",sprop(tgt)->own,tgt->locs[0],tgt->locs[1],tgt->locs[2])
 void show_all_objects();
 #endif //ROCKET_TUI_H

@@ -1,15 +1,18 @@
 #include "catan_ui.h"
+extern i32 resources_id[];
 
 int main()
 {
     srand(time(NULL));
+    shuffle_i32(resources_id,19);
+    box_set();
 	check_ui_size();
     initscr();
     cbreak();
     noecho();
     keypad(stdscr, TRUE);
     start_color();
-    box_set();
+
 
     set_background_color_init();
 

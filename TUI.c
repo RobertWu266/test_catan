@@ -18,9 +18,8 @@ static i32 off_y=25;
 
 
 const char *resources_name[] = {"HILL", "MOUNTAIN", "FIELD", "PASTURE", "FOREST", "DESERT"};
-i32 resources_cards[] = {HILL, HILL, HILL, MOUNTAIN, MOUNTAIN, MOUNTAIN, FIELD, FIELD, FIELD, FIELD, PASTURE, PASTURE,
-                         PASTURE, PASTURE, FOREST, FOREST, FOREST, FOREST, DESERT};
-i32 dice_nums[18]={11,3,6,5,4,9,10,8,4,11,12,9,10,8,3,6,2,5};
+
+
 #define FORI(X, Y) for(int32_t i=X;i<Y;i++)
 
 void shuffle_i32(i32 *array, i32 n)
@@ -64,7 +63,8 @@ void show_obj(obj* tgt)
     switch (tgt->attr)
     {
         case body:
-            mvprintw(y, x,"X");
+            //mvprintw(y, x,"X");
+            mvprintw(y, x,"X%d",bprop(tgt)->num);
             break;
         case neg_vert:
         case pos_vert:

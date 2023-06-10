@@ -1,5 +1,7 @@
 #include "catan_ui.h"
 
+extern const char* resources_name[];
+extern i32 dice_nums[];
 void in_game_ui(MEVENT event)
 {
 	bank_property bank;
@@ -81,6 +83,55 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 mvprintw(y,x," ");
                 attroff(COLOR_PAIR(8));
                 mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
+                obj* clicked= get_obj_from_mouse(event.x,event.y);
+                if(clicked)
+                {
+                    for(i32 i=0;i<7;i++)mvprintw(i,172,"                                                    ");
+                    switch(clicked->attr)
+                    {
+                        case body:
+                            mvprintw(0,172,"");
+                            body_printw(clicked);
+                            for(i32 i=0;i<6;i++)
+                            {
+                                mvprintw(1+i,172,"");
+                                vertice_printw(bprop(clicked)->nei_vert[i]);
+                            }
+                            break;
+                        case pos_vert:
+                        case neg_vert:
+                            mvprintw(0,172,"");
+                            vertice_printw(clicked);
+                            for(i32 i=0;i<3;i++)
+                            {
+                                mvprintw(1+i,172,"");
+                                if(vprop(clicked)->nei_body[i])body_printw(vprop(clicked)->nei_body[i]);
+                            }
+                            for(i32 i=0;i<3;i++)
+                            {
+                                mvprintw(4+i,172,"");
+                                if(vprop(clicked)->nei_vert[i])vertice_printw(vprop(clicked)->nei_vert[i]);
+                            }
+                            break;
+                        case main_side:
+                        case minor_side:
+                        case v_side:
+                            mvprintw(0,172,"");
+                            side_printw(clicked);
+                            for(i32 i=0;i<4;i++)
+                            {
+                                mvprintw(1+i,172,"");
+                                if(sprop(clicked)->nei_side[i])side_printw(sprop(clicked)->nei_side[i]);
+                            }
+                            for(i32 i=0;i<2;i++)
+                            {
+                                mvprintw(5+i,172,"");
+                                vertice_printw(sprop(clicked)->nei_vert[i]);
+                            }
+                            break;
+                    }
+                }
+
                 refresh();
             }
 			if (event.bstate & BUTTON3_PRESSED)

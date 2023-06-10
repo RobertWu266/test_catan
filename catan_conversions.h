@@ -26,6 +26,7 @@ typedef enum _property{BODY_PROPERTY,VERTICE_PROPERTY,SIDE_PROPERTY}property;
 typedef enum _owner{None,player1,player2,player3,player4}owner;
 //player 1 is red follow as blue green yellow.
 typedef enum _building{empty,village,city}building;
+typedef enum _harbor{Nil, ALL_HARBOR,WHEAT_HARBOR,SHEEP_HARBOR,WOOD_HARBOR,BRICK_HARBOR,STONE_HARBOR}harbor;
 /*
  * body: Represents the center of the hexagon
  * v_side: The side of the hexagon that is vertical
@@ -66,6 +67,8 @@ typedef struct _vertice_property
     building build;
     obj **nei_vert;
     obj **nei_body;
+    harbor harb;
+
 }vertice_property;
 /*
  *要加什麼自己加
@@ -100,3 +103,4 @@ obj **side_neighbor_side(obj *tgt);
 obj **body_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_body(obj* tgt);
 obj** vertice_neighbor_vertice(obj* tgt);
+harbor locs_harbor(i32 *locs);
