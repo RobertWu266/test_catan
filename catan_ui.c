@@ -4,6 +4,9 @@ extern const char* resources_name[];
 extern i32 dice_nums[];
 void in_game_ui(MEVENT event)
 {
+	set_background_color_init();
+	roll_and_print_dice(43,104);
+	roll_and_print_dice(43,116);
 	bank_property bank;
 	player_property player_1;
 	player_init(&player_1);
@@ -255,11 +258,38 @@ void print_in_game_ui()
 		mvprintw(30, 147 + i, " ");
 		mvprintw(34, 147 + i, " ");
 		mvprintw(38, 147 + i, " ");
-		mvprintw(39, 147 + i, " ");	
+		mvprintw(39, 147 + i, " ");
 	}
+	mvprintw(6, 32, "/");
+	mvprintw(6, 38, "\\");
+	mvprintw(6, 56, "/");
+	mvprintw(6, 62, "\\");
+	mvprintw(11, 76, "------");
+	mvprintw(14, 80, "/");
+	mvprintw(11, 14, "-----");
+	mvprintw(14, 14, "\\");
+	mvprintw(27, 76, "-----");
+	mvprintw(24, 80, "\\");
+	mvprintw(27, 14, "-----");
+	mvprintw(24, 14, "/");
+	mvprintw(39, 64, "-----");
+	mvprintw(39, 26, "-----");
+	mvprintw(36, 68, "\\");
+	mvprintw(36, 26, "/");
+	mvprintw(44, 50, "/");
+	mvprintw(44, 44, "\\");
+
 	attroff(COLOR_PAIR(8));
-	roll_and_print_dice(43,104);
-	roll_and_print_dice(43,116);
+	//print boat
+	print_boat(5, 3, 56);
+	print_boat(4, 3, 32);
+	print_boat(6, 11, 81);
+	print_boat(3, 25, 81);
+	print_boat(8, 37, 69);
+	print_boat(6, 45, 44);
+	print_boat(1, 37, 19);
+	print_boat(6, 25, 7);
+	print_boat(6, 11, 7);
 	mvprintw(50,168,"");
 }
 
@@ -669,6 +699,27 @@ void print_n(int y, int x)
 	attroff(COLOR_PAIR(1));
 }
 
+void print_boat(int color, int y, int x)
+{
+	attron(COLOR_PAIR(color));
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 7; ++j)
+		{
+			mvprintw(y + i, x + j, " ");
+		}
+	}
+	if(color == 6)
+	{
+		mvprintw(y + 1, x + 1, "3 : 1");
+	}
+	else
+	{
+		mvprintw(y + 1, x + 1, "2 : 1");
+	}
+	attroff(COLOR_PAIR(color));
+}
+
 void button_play_and_quit(int y, int x)
 {
 	init_pair(2,COLOR_WHITE,COLOR_WHITE);
@@ -946,6 +997,17 @@ int start_screen(MEVENT event)
 
 void print_bank(bank_property *bank)
 {
+	//clean
+	attron(COLOR_PAIR(7));
+	for (int i = 0; i < 9; ++i)
+	{
+		for (int j = 0; j < 46; ++j)
+		{
+			mvprintw(1 + i, 108 + j, " ");
+		}
+	}
+	attroff(COLOR_PAIR(7));
+	//storage
 	for (int i = 0; i < 6; ++i)
 	{
 		int tmp = 0;
@@ -1018,8 +1080,8 @@ void player_init(player_property *player)
     player -> victory_card = FALSE;
     player -> totoal_victory_points = 0;
     player -> max_roads = 0;
-    player -> village_remain = 4;
-    player -> city_remain = 5;
+    player -> village_remain = 5;
+    player -> city_remain = 4;
     player -> road_remain = 15;
 }
 
@@ -1047,6 +1109,16 @@ void _print_player(player_property *player ,int y, int x , int color)
 	attron(COLOR_PAIR(color + 20));
 	mvprintw(c_y + 5, c_x +1, "%d",player -> totoal_victory_points);
 	attroff(COLOR_PAIR(color + 20));
+	//clean
+	attron(COLOR_PAIR(7));
+	for (int i = 0; i < 7; ++i)
+	{
+		for (int j = 0; j < 30; ++j)
+		{
+			mvprintw(c_y + i, c_x + 5 + j, " ");
+		}
+	}
+	attroff(COLOR_PAIR(7));
 	//print total cards
 	c_x += 7;
 	c_y += 1;
@@ -1126,6 +1198,16 @@ void print_YOU(player_property *player)
 		}
 	}
 	attroff(COLOR_PAIR(2));
+	//clean
+	attron(COLOR_PAIR(7));
+	for (int i = 0; i < 13; ++i)
+	{
+		for (int j = 0; j < 39; ++j)
+		{
+			mvprintw(27 + i, 107 + j, " ");
+		}
+	}
+	attroff(COLOR_PAIR(7));
 	//print cards
 	attron(COLOR_PAIR(3));
 	for (int i = 0; i < 3; ++i)
@@ -1211,8 +1293,16 @@ void print_YOU(player_property *player)
 	mvprintw(38, 139, "x%d", player -> victory_card);
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
-	mvprintw(36, 149, "Road Remain: %d", player -> road_remain);
+	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
 
+}
+
+void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank)
+{
+	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
+	print_YOU(player_1);
+	print_bank(bank);
+	show_all_objects();
 }
 
 void set_background_color_init()
@@ -1229,11 +1319,12 @@ void set_background_color_init()
     init_pair(22,COLOR_CYAN,COLOR_BLACK);
     init_pair(23,COLOR_GREEN,COLOR_BLACK);
     init_pair(24,COLOR_YELLOW,COLOR_BLACK);
+    init_color(COLOR_WHITE,850,850,850);
     init_color(COLOR_MAGENTA,800,0,800);
-    init_color(COLOR_BLUE,0,1000,0);
+    init_color(COLOR_BLUE,0,750,0);
     init_color(COLOR_RED,800,0,0);
-    init_color(COLOR_GREEN,0,500,0);
-	init_color(COLOR_YELLOW,900,900,0);
+    init_color(COLOR_GREEN,0,400,0);
+	init_color(COLOR_YELLOW,800,800,0);
     init_color(COLOR_BLACK,200,200,200);
     init_color(COLOR_CYAN,0,200,750);
 }

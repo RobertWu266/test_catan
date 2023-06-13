@@ -41,6 +41,7 @@ typedef struct _obj
     attribute attr;
     int32_t *locs;
     void *prop;
+    bool highlight;
 }obj;
 
 typedef struct _body_property

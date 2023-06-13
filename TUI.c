@@ -8,7 +8,7 @@
 extern char *attr_names[];
 extern obj *innerbox[13][13][3];
 static i32 off_x=47;
-static i32 off_y=25;
+static i32 off_y=23;
 #define hex_side_width 7//unused
 #define hex_side_height 8//unused
 #define game2custom(x,y) ((x-off_x)- (y-off_y))/ 4, (-(x-off_x) - 3 * (y-off_y))/ 4
@@ -51,6 +51,196 @@ obj *get_obj_from_mouse(i32 x, i32 y)
     return the_obj;
 }
 
+void print_polygon(obj *tgt, int y, int x)
+{
+    body_property *property = bprop(tgt);
+    if(property -> has_robber)
+    {
+        attron(COLOR_PAIR(7));
+        mvprintw(y, x - 3, "Robbers");
+        attroff(COLOR_PAIR(7));
+    }
+    if(property -> resource == 0)
+    {
+        attron(COLOR_PAIR(1));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 2,"Hills");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(1));
+    }
+    else if(property -> resource == 1)
+    {
+        attron(COLOR_PAIR(8));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 4,"Mountains");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(8));
+    }
+    else if(property -> resource == 2)
+    {
+        attron(COLOR_PAIR(4));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 2,"Field");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(4));
+    }
+    else if(property -> resource == 3)
+    {
+        attron(COLOR_PAIR(5));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 3,"Pasture");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(5));
+    }
+    else if(property -> resource == 4)
+    {
+        attron(COLOR_PAIR(3));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 3,"Forests");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(3));
+    }
+    else if(property -> resource == 5)
+    {
+        attron(COLOR_PAIR(7));
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                for (int l = 7 - j; l >= 0 ; --l)
+                {
+                    mvprintw(y + j, x + l, " ");
+                    mvprintw(y - j, x + l, " ");
+                    mvprintw(y + j, x - l, " ");
+                    mvprintw(y - j, x - l, " ");
+                }
+            }
+        }
+        mvprintw(y - 1, x - 3,"Deserts");
+        if(property -> num > 9)
+        {
+            int tmp = (property -> num) % 10;
+            mvprintw(y + 1, x + 1,"%d",tmp);
+            tmp = (property -> num - tmp) / 10;
+            mvprintw(y + 1, x - 1,"%d",tmp);
+        }
+        else
+        {
+            mvprintw(y + 1, x,"%d",property -> num);
+        }
+        attroff(COLOR_PAIR(7));
+    }
+}
 
 void show_obj(obj* tgt)
 {
@@ -63,47 +253,76 @@ void show_obj(obj* tgt)
     switch (tgt->attr)
     {
         case body:
-            //mvprintw(y, x,"X");
-            mvprintw(y, x,"X%d",bprop(tgt)->num);
+            print_polygon(tgt, y, x);
+            //mvprintw(y, x,"X%d",bprop(tgt)->num);
             break;
         case neg_vert:
         case pos_vert:
-            attron(COLOR_PAIR(8));
-            mvprintw(y, x,"X");
-            attroff(COLOR_PAIR(8));
+            if(tgt -> highlight)
+            {
+                attron(COLOR_PAIR(6));
+                mvprintw(y, x,"X");
+                attroff(COLOR_PAIR(6));
+            }
+            else
+            {
+                attron(COLOR_PAIR(8));
+                mvprintw(y, x,"X");
+                attroff(COLOR_PAIR(8));
+            }
             if(vprop(tgt) -> own != 0)
             {
+                char tmp;
+                if(vprop(tgt) -> build == 1)
+                {
+                    tmp = 'V';
+                }
+                else
+                {
+                    tmp = 'C';
+                }
                 switch(vprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(21));
-                        mvprintw(y, x,"X");
+                        mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(21));
                         break;
                     case 2:
                         attron(COLOR_PAIR(22));
-                        mvprintw(y, x,"X");
+                        mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(22));
                         break;
                     case 3:
                         attron(COLOR_PAIR(23));
-                        mvprintw(y, x,"X");
+                        mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(23));
                         break;
                     case 4:
                         attron(COLOR_PAIR(24));
-                        mvprintw(y, x,"X");
+                        mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(24));
                         break;
                 }
             }
             break;
         case v_side:
-            attron(COLOR_PAIR(8));
-            mvprintw(y, x,"\\");
-            mvprintw(y-1, x-1,"\\");
-            mvprintw(y+1, x+1,"\\");
-            attroff(COLOR_PAIR(8));
+            if(tgt -> highlight)
+            {
+                attron(COLOR_PAIR(6));
+                mvprintw(y, x,"\\");
+                mvprintw(y-1, x-1,"\\");
+                mvprintw(y+1, x+1,"\\");
+                attroff(COLOR_PAIR(6));
+            }
+            else
+            {
+                attron(COLOR_PAIR(8));
+                mvprintw(y, x,"\\");
+                mvprintw(y-1, x-1,"\\");
+                mvprintw(y+1, x+1,"\\");
+                attroff(COLOR_PAIR(8));
+            }
             if(vprop(tgt) -> own != 0)
             {
                 switch(vprop(tgt) -> own)
@@ -140,9 +359,18 @@ void show_obj(obj* tgt)
             }
             break;
         case main_side:
-            attron(COLOR_PAIR(8));
-            mvprintw(y, x-3,"--------");
-            attroff(COLOR_PAIR(8));
+            if(tgt -> highlight)
+            {
+                attron(COLOR_PAIR(6));
+                mvprintw(y, x-3,"--------");
+                attroff(COLOR_PAIR(6));
+            }
+            else
+            {
+                attron(COLOR_PAIR(8));
+                mvprintw(y, x-3,"--------");
+                attroff(COLOR_PAIR(8));
+            }
             if(vprop(tgt) -> own != 0)
             {
                 switch(vprop(tgt) -> own)
@@ -171,11 +399,22 @@ void show_obj(obj* tgt)
             }
             break;
         case minor_side:
-            attron(COLOR_PAIR(8));
-            mvprintw(y, x,"/");
-            mvprintw(y-1, x+1,"/");
-            mvprintw(y+1, x-1,"/");
-            attroff(COLOR_PAIR(8));
+            if(tgt -> highlight)
+            {
+                attron(COLOR_PAIR(6));
+                mvprintw(y, x,"/");
+                mvprintw(y-1, x+1,"/");
+                mvprintw(y+1, x-1,"/");
+                attroff(COLOR_PAIR(6));
+            }
+            else
+            {
+                attron(COLOR_PAIR(8));
+                mvprintw(y, x,"/");
+                mvprintw(y-1, x+1,"/");
+                mvprintw(y+1, x-1,"/");
+                attroff(COLOR_PAIR(8));
+            }
             if(vprop(tgt) -> own != 0)
             {
                 switch(vprop(tgt) -> own)
@@ -211,6 +450,7 @@ void show_obj(obj* tgt)
                 }
             }
             //To be complete
+            //wood: complete, i think
             break;
     }
     set_background_color_init();
