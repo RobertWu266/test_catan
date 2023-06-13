@@ -1294,7 +1294,6 @@ void print_YOU(player_property *player)
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
-
 }
 
 void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank)
