@@ -1,6 +1,5 @@
 #include "catan_ui.h"
 extern i32 resources_id[];
-
 int main()
 {
     srand(time(NULL));

@@ -2,6 +2,8 @@
 
 extern const char* resources_name[];
 extern i32 dice_nums[];
+extern obj* body_list[];
+extern obj* vertice_list[];
 void in_game_ui(MEVENT event)
 {
 	bank_property bank;
@@ -80,7 +82,7 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 int x = event.x;
                 int y = event.y;
                 attron(COLOR_PAIR(8));
-                mvprintw(y,x," ");
+                //mvprintw(y,x," ");
                 attroff(COLOR_PAIR(8));
                 mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
                 obj* clicked= get_obj_from_mouse(event.x,event.y);
@@ -100,6 +102,7 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                             break;
                         case pos_vert:
                         case neg_vert:
+
                             mvprintw(0,172,"");
                             vertice_printw(clicked);
                             for(i32 i=0;i<3;i++)

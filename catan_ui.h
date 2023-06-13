@@ -44,7 +44,11 @@ typedef struct
     uint8_t village_remain;
     uint8_t city_remain;
     uint8_t road_remain;
-
+    uint8_t wood_exchange_rate;
+    uint8_t stone_exchange_rate;
+    uint8_t brick_exchange_rate;
+    uint8_t sheep_exchange_rate;
+    uint8_t wheat_exchange_rate;
 }player_property;
 
 
