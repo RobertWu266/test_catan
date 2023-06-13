@@ -12,7 +12,12 @@ i32 resources_id[] = {HILL, HILL, HILL, MOUNTAIN, MOUNTAIN, MOUNTAIN, FIELD, FIE
 //const char* resource_name[]={"HILL", "HILL", "HILL", "MOUNTAIN", "MOUNTAIN", "MOUNTAIN", "FIELD", "FIELD", "FIELD", "FIELD", "PASTURE", "PASTURE","PASTURE", "PASTURE", "FOREST", "FOREST", "FOREST", "FOREST", "DESERT"};
 i32 resources_id_csr = 0;
 obj* body_list[19]={0};
+obj* vertice_list[54]={0};
+obj* side_list[72]={0};
+i32 vertice_list_csr=0;
 i32 dice_nums[18]={11,3,6,5,4,9,10,8,4,11,12,9,10,8,3,6,2,5};
+
+i32 side_list_csr=0;
 i32 abs(i32 x)
 {
     if (x < 0)return -1 * x;
@@ -155,6 +160,8 @@ void set_neighbor(obj *tgt)
             vprop(tgt)->nei_body = vertice_neighbor_body(tgt);//for getting neighboring resource (opening)
             vprop(tgt)->nei_vert = vertice_neighbor_vertice(tgt);//for checking no neighboring building
             vprop(tgt)->harb= locs_harbor(tgt->locs);
+            vertice_list[vertice_list_csr]=tgt;
+            vertice_list_csr++;
             break;
         case v_side:
         case main_side:
@@ -163,6 +170,8 @@ void set_neighbor(obj *tgt)
             sprop(tgt)->flag = SIDE_PROPERTY;//Its useless
             sprop(tgt)->nei_vert = side_neighbor_vertice(tgt);
             sprop(tgt)->nei_side = side_neighbor_side(tgt);//for longest road;
+            side_list[side_list_csr]=tgt;
+            side_list_csr++;
             break;
     }
 }
@@ -519,6 +528,32 @@ void box_set()
             bprop(body_list[i])->num=dice_nums[csr];
             csr++;
         }
+    }
+}
+void highlight_availible_village_beginning()
+{
+    for(i32 i=0;i<54;i++)
+    {
+        for(i32 j=0;j<3;j++)
+        {
+            obj *tgt=vprop(vertice_list[i])->nei_vert[j];
+            if(NULL==tgt)continue;
+            if(vprop(tgt)->own!=None)continue;
+        }
+        vertice_list[i]->highlighted=1;
+    }
+}void highlight_availible_village()
+{
+    for(i32 i=0;i<54;i++)
+    {
+
+        for(i32 j=0;j<3;j++)
+        {
+            obj *tgt=vprop(vertice_list[i])->nei_vert[j];
+            if(NULL==tgt)continue;
+            if(vprop(tgt)->own!=None)continue;
+        }
+        vertice_list[i]->highlighted=1;
     }
 }
 

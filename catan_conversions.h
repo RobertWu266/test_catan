@@ -41,7 +41,7 @@ typedef struct _obj
     attribute attr;
     int32_t *locs;
     void *prop;
-    bool highlight;
+    bool highlighted;
 }obj;
 
 typedef struct _body_property
@@ -51,6 +51,7 @@ typedef struct _body_property
     uint8_t num;
     obj **nei_vert;
     bool has_robber;
+
 }body_property;
 
 typedef struct _side_property
@@ -105,3 +106,5 @@ obj **body_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_body(obj* tgt);
 obj** vertice_neighbor_vertice(obj* tgt);
 harbor locs_harbor(i32 *locs);
+void highlight_availible_village();
+void highlight_availible_village_beginning();
