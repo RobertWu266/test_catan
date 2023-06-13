@@ -35,10 +35,10 @@ typedef struct
     uint8_t wheat;
     uint8_t special_cards;
     uint8_t knights;
-    bool year_of_plenty;
-    bool road_building;
-    bool monopoly;
-    bool victory_card;
+    uint8_t year_of_plenty;
+    uint8_t road_building;
+    uint8_t monopoly;
+    uint8_t victory_card;
     uint8_t totoal_victory_points;
     uint8_t max_roads;
     uint8_t village_remain;
