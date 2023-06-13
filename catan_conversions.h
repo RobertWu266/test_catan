@@ -36,6 +36,42 @@ typedef enum _harbor{Nil, ALL_HARBOR,WHEAT_HARBOR,SHEEP_HARBOR,WOOD_HARBOR,BRICK
  * neg_vert: The vertices where the sum of the cube coordinates x+y+z equals -1
  */
 
+typedef struct
+{
+    uint8_t wood;
+    uint8_t stone;
+    uint8_t brick;
+    uint8_t sheep;
+    uint8_t wheat;
+    uint8_t special_cards;
+}bank_property;
+
+typedef struct
+{
+    uint8_t total_resource_cards;
+    uint8_t wood;
+    uint8_t stone;
+    uint8_t brick;
+    uint8_t sheep;
+    uint8_t wheat;
+    uint8_t special_cards;
+    uint8_t knights;
+    uint8_t year_of_plenty;
+    uint8_t road_building;
+    uint8_t monopoly;
+    uint8_t victory_card;
+    uint8_t total_victory_points;
+    uint8_t max_roads;
+    uint8_t village_remain;
+    uint8_t city_remain;
+    uint8_t road_remain;
+    uint8_t wood_exchange_rate;
+    uint8_t stone_exchange_rate;
+    uint8_t brick_exchange_rate;
+    uint8_t sheep_exchange_rate;
+    uint8_t wheat_exchange_rate;
+}player_property;
+
 typedef struct _obj
 {
     attribute attr;
@@ -99,6 +135,10 @@ obj** side_neighbor_body(obj* tgt);
  * if tgt->attr is not a side, NULL is returned
  * if there's only 1 adjacent body, the returned value might be
  * {NULL,(body)} or {(body),NULL}*/
+
+void bank_init(bank_property *bank);
+void player_init(player_property *player);
+
 obj** side_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_side(obj* tgt);
 obj **side_neighbor_side(obj *tgt);

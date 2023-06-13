@@ -4,6 +4,9 @@ extern const char* resources_name[];
 extern i32 dice_nums[];
 extern obj* body_list[];
 extern obj* vertice_list[];
+extern bank_property bank;
+extern player_property players[];
+
 void in_game_ui(MEVENT event)
 {
 	set_background_color_init();
@@ -71,13 +74,75 @@ void in_game_ui(MEVENT event)
 	}
 }
 
+void fprintf_player(player_property player1) {
+    FILE *fptr;
+    fptr = fopen("catan_log.txt", "a");
 
+    if(fptr == NULL)
+    {
+        fptr = fopen("catan_log.txt", "w");
+    }
+
+    fprintf(fptr, "\n\n\nTotal Resource Cards: %d\n", player1.total_resource_cards);
+    fprintf(fptr, "Wood: %d\n", player1.wood);
+    fprintf(fptr, "Stone: %d\n", player1.stone);
+    fprintf(fptr, "Brick: %d\n", player1.brick);
+    fprintf(fptr, "Sheep: %d\n", player1.sheep);
+    fprintf(fptr, "Wheat: %d\n", player1.wheat);
+    fprintf(fptr, "Special Cards: %d\n", player1.special_cards);
+    fprintf(fptr, "Knights: %d\n", player1.knights);
+    fprintf(fptr, "Year of Plenty: %d\n", player1.year_of_plenty);
+    fprintf(fptr, "Road Building: %d\n", player1.road_building);
+    fprintf(fptr, "Monopoly: %d\n", player1.monopoly);
+    fprintf(fptr, "Victory Card: %d\n", player1.victory_card);
+    fprintf(fptr, "Total Victory Points: %d\n", player1.total_victory_points);
+    fprintf(fptr, "Max Roads: %d\n", player1.max_roads);
+    fprintf(fptr, "Village Remain: %d\n", player1.village_remain);
+    fprintf(fptr, "City Remain: %d\n", player1.city_remain);
+    fprintf(fptr, "Road Remain: %d\n", player1.road_remain);
+    fprintf(fptr, "Wood Exchange Rate: %d\n", player1.wood_exchange_rate);
+    fprintf(fptr, "Stone Exchange Rate: %d\n", player1.stone_exchange_rate);
+    fprintf(fptr, "Brick Exchange Rate: %d\n", player1.brick_exchange_rate);
+    fprintf(fptr, "Sheep Exchange Rate: %d\n", player1.sheep_exchange_rate);
+    fprintf(fptr, "Wheat Exchange Rate: %d\n", player1.wheat_exchange_rate);
+
+    fclose(fptr);
+}
+void fprintf_bank(bank_property bank1) {
+    FILE *file = fopen("catan_log.txt", "a");
+    if (file == NULL) {
+        file = fopen("catan_log.txt", "w");
+    }
+
+    fprintf(file, "\n\n\nBank Properties:\n");
+    fprintf(file, "Wood: %u\n", bank1.wood);
+    fprintf(file, "Stone: %u\n", bank1.stone);
+    fprintf(file, "Brick: %u\n", bank1.brick);
+    fprintf(file, "Sheep: %u\n", bank1.sheep);
+    fprintf(file, "Wheat: %u\n", bank1.wheat);
+    fprintf(file, "Special Cards: %u\n", bank1.special_cards);
+
+    fclose(file);
+}
+void clear_log()
+{
+    FILE *file = fopen("catan_log.txt", "w");
+    fclose(file);
+}
 void draw_with_mouse_and_return_value(MEVENT event)// for debug
 {
 	set_background_color_init();
     int ch;
     while ((ch = getch()) != 'q')
     {
+        if(ch=='1')fprintf_player(players[0]);
+        if(ch=='2')fprintf_player(players[1]);
+        if(ch=='3')fprintf_player(players[2]);
+        if(ch=='4')fprintf_player(players[3]);
+
+        if(ch=='b')fprintf_bank(bank);
+
+        if(ch=='p')clear_log();
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
         {
             if (event.bstate & BUTTON1_PRESSED)
@@ -1057,36 +1122,6 @@ void print_bank(bank_property *bank)
 }
 
 
-void bank_init(bank_property *bank)
-{
-	bank -> wood = 19;
-	bank -> stone = 19;
-	bank -> brick = 19;
-	bank -> sheep = 19;
-	bank -> wheat = 19;
-	bank -> special_cards = 25;
-}
-
-void player_init(player_property *player)
-{
-	player -> total_resource_cards = 0;
-    player -> wood = 0;
-    player -> stone = 0;
-    player -> brick = 0;
-    player -> sheep = 0;;
-    player -> wheat = 0;;
-    player -> special_cards = 0;
-    player -> knights = 0;
-    player -> year_of_plenty = FALSE;
-    player -> road_building = FALSE;
-    player -> monopoly = FALSE;
-    player -> victory_card = FALSE;
-    player -> totoal_victory_points = 0;
-    player -> max_roads = 0;
-    player -> village_remain = 5;
-    player -> city_remain = 4;
-    player -> road_remain = 15;
-}
 
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4)
 {
@@ -1110,7 +1145,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 	}
 	attroff(COLOR_PAIR(color));
 	attron(COLOR_PAIR(color + 20));
-	mvprintw(c_y + 5, c_x +1, "%d",player -> totoal_victory_points);
+	mvprintw(c_y + 5, c_x +1, "%d",player -> total_victory_points);
 	attroff(COLOR_PAIR(color + 20));
 	//clean
 	attron(COLOR_PAIR(7));

@@ -27,6 +27,7 @@ int main()
     }
 
     in_game_ui(&event);//actuall middle point:(25,47)
+
     draw_with_mouse_and_return_value();//for debug
 
 

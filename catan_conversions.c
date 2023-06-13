@@ -14,10 +14,13 @@ i32 resources_id_csr = 0;
 obj* body_list[19]={0};
 obj* vertice_list[54]={0};
 obj* side_list[72]={0};
+i32 side_list_csr=0;
 i32 vertice_list_csr=0;
 i32 dice_nums[18]={11,3,6,5,4,9,10,8,4,11,12,9,10,8,3,6,2,5};
 
-i32 side_list_csr=0;
+player_property players[4]={0};
+bank_property bank={0};
+
 i32 abs(i32 x)
 {
     if (x < 0)return -1 * x;
@@ -490,8 +493,46 @@ void fill_body_list()
         dir++;
     }
 }
+void bank_init(bank_property *bank)
+{
+    bank -> wood = 19;
+    bank -> stone = 19;
+    bank -> brick = 19;
+    bank -> sheep = 19;
+    bank -> wheat = 19;
+    bank -> special_cards = 25;
+}
+
+void player_init(player_property *player)
+{
+    player -> total_resource_cards = 0;
+    player -> wood = 0;
+    player -> stone = 0;
+    player -> brick = 0;
+    player -> sheep = 0;;
+    player -> wheat = 0;;
+    player -> special_cards = 0;
+    player -> knights = 0;
+    player -> year_of_plenty = 0;
+    player -> road_building = 0;
+    player -> monopoly = 0;
+    player -> victory_card = 0;
+    player -> total_victory_points = 0;
+    player -> max_roads = 0;
+    player -> village_remain = 4;
+    player -> city_remain = 5;
+    player -> road_remain = 15;
+    player->wood_exchange_rate=4;
+    player->brick_exchange_rate=4;
+    player->sheep_exchange_rate=4;
+    player->stone_exchange_rate=4;
+    player->wheat_exchange_rate=4;
+}
 void box_set()
 {
+    for(i32 i=0;i<4;i++)player_init(players+i);
+    bank_init(&bank);
+
     for (i32 i = 0; i < 13; i++)
     {
         for (i32 j = 0; j < 13; j++)

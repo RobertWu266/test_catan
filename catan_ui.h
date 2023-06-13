@@ -14,42 +14,7 @@
 #include "catan_conversions.h"
 #include "TUI.h"
 
-typedef struct
-{
-    uint8_t wood;
-    uint8_t stone;
-    uint8_t brick;
-    uint8_t sheep;
-    uint8_t wheat;
-    uint8_t special_cards;
 
-}bank_property;
-
-typedef struct
-{
-    uint8_t total_resource_cards;
-    uint8_t wood;
-    uint8_t stone;
-    uint8_t brick;
-    uint8_t sheep;
-    uint8_t wheat;
-    uint8_t special_cards;
-    uint8_t knights;
-    uint8_t year_of_plenty;
-    uint8_t road_building;
-    uint8_t monopoly;
-    uint8_t victory_card;
-    uint8_t totoal_victory_points;
-    uint8_t max_roads;
-    uint8_t village_remain;
-    uint8_t city_remain;
-    uint8_t road_remain;
-    uint8_t wood_exchange_rate;
-    uint8_t stone_exchange_rate;
-    uint8_t brick_exchange_rate;
-    uint8_t sheep_exchange_rate;
-    uint8_t wheat_exchange_rate;
-}player_property;
 
 
 bool agree_or_disagree(int y, int x, char *deal , MEVENT event);
@@ -76,6 +41,9 @@ void print_bank(bank_property *bank);
 void _print_player(player_property *player ,int y, int x , int color);
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
 void print_YOU(player_property *player_1);
+void fprintf_bank(bank_property bank1);
+void fprintf_player(player_property player1);
+void clear_log();
 //player_1 is red at top left cornor, player_2 blue is at top right cornor
 //player_3 is green at down left cornor, player_4 yellow is at down right cornor
 
