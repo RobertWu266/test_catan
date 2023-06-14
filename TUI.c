@@ -50,8 +50,6 @@ obj *get_obj_from_mouse(i32 x, i32 y)
     free(tmplocs);
     return the_obj;
 }
-
-
 void show_obj(obj* tgt)
 {
     set_background_color_init();

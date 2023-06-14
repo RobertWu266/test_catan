@@ -500,7 +500,11 @@ void bank_init(bank_property *bank)
     bank -> brick = 19;
     bank -> sheep = 19;
     bank -> wheat = 19;
-    bank -> special_cards = 25;
+    bank -> knights=14;
+    bank->monopoly=2;
+    bank->year_of_plenty=2;
+    bank->road_building=2;
+    bank->victory_card=6;
 }
 
 void player_init(player_property *player)
@@ -527,7 +531,35 @@ void player_init(player_property *player)
     player->sheep_exchange_rate=4;
     player->stone_exchange_rate=4;
     player->wheat_exchange_rate=4;
+
 }
+void build_road(owner owner1, obj* tobuild)
+{
+    players[owner1-1].road_remain--;
+    if(tobuild->attr!=v_side&&tobuild->attr!=main_side&&tobuild->attr!=minor_side)assert(0);
+    sprop(tobuild)->own=owner1;
+}
+void build_village(owner owner1, obj* tobuild)
+{
+    player_property the_player=players[owner1-1];
+    the_player.road_remain--;
+    if(tobuild->attr!=pos_vert&&tobuild->attr!=neg_vert)assert(0);
+    vprop(tobuild)->own=owner1;
+    if(vprop(tobuild)->harb==ALL_HARBOR)
+    {
+        if(the_player.wheat_exchange_rate>3)the_player.wheat_exchange_rate=3;
+        if(the_player.wood_exchange_rate>3)the_player.wood_exchange_rate=3;
+        if(the_player.stone_exchange_rate>3)the_player.stone_exchange_rate=3;
+        if(the_player.brick_exchange_rate>3)the_player.brick_exchange_rate=3;
+        if(the_player.sheep_exchange_rate>3)the_player.sheep_exchange_rate=3;
+    }
+    if(vprop(tobuild)->harb==SHEEP_HARBOR)the_player.sheep_exchange_rate=2;
+    if(vprop(tobuild)->harb==STONE_HARBOR)the_player.stone_exchange_rate=2;
+    if(vprop(tobuild)->harb==WHEAT_HARBOR)the_player.wheat_exchange_rate=2;
+    if(vprop(tobuild)->harb==BRICK_HARBOR)the_player.brick_exchange_rate=2;
+    if(vprop(tobuild)->harb==WOOD_HARBOR)the_player.wood_exchange_rate=2;
+}
+
 void box_set()
 {
     for(i32 i=0;i<4;i++)player_init(players+i);

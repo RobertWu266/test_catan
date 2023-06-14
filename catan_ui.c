@@ -117,7 +117,12 @@ void fprintf_bank(bank_property bank1) {
     fprintf(file, "Brick: %u\n", bank1.brick);
     fprintf(file, "Sheep: %u\n", bank1.sheep);
     fprintf(file, "Wheat: %u\n", bank1.wheat);
-    fprintf(file, "Special Cards: %u\n", bank1.special_cards);
+    fprintf(file, "Knight: %u\n", bank1.knights);
+    fprintf(file, "Year of plenty: %u\n", bank1.year_of_plenty);
+    fprintf(file, "Road building: %u\n", bank1.road_building);
+    fprintf(file, "Monopoly: %u\n", bank1.monopoly);
+    fprintf(file, "Victory cards: %u\n", bank1.victory_card);
+
 
     fclose(file);
 }
@@ -1045,7 +1050,7 @@ void print_bank(bank_property *bank)
 		else
 		{
 			tmp = 6;
-			mvprintw(7, 117 + (i * 5), "x%d",bank -> special_cards);
+			mvprintw(7, 117 + (i * 5), "x%d",bank ->knights+bank->year_of_plenty+bank->road_building+bank->monopoly+bank->victory_card);
 		}
 		attron(COLOR_PAIR(tmp));
 		for (int j = 0; j < 3; ++j)
