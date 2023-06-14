@@ -50,7 +50,6 @@ obj *get_obj_from_mouse(i32 x, i32 y)
     free(tmplocs);
     return the_obj;
 }
-
 void print_polygon(obj *tgt, int y, int x)
 {
     body_property *property = bprop(tgt);
@@ -258,7 +257,7 @@ void show_obj(obj* tgt)
             break;
         case neg_vert:
         case pos_vert:
-            if(tgt -> highlight)
+            if(tgt -> highlighted)
             {
                 attron(COLOR_PAIR(6));
                 mvprintw(y, x,"X");
@@ -307,7 +306,7 @@ void show_obj(obj* tgt)
             }
             break;
         case v_side:
-            if(tgt -> highlight)
+            if(tgt -> highlighted)
             {
                 attron(COLOR_PAIR(6));
                 mvprintw(y, x,"\\");
@@ -359,7 +358,7 @@ void show_obj(obj* tgt)
             }
             break;
         case main_side:
-            if(tgt -> highlight)
+            if(tgt -> highlighted)
             {
                 attron(COLOR_PAIR(6));
                 mvprintw(y, x-3,"--------");
@@ -399,7 +398,7 @@ void show_obj(obj* tgt)
             }
             break;
         case minor_side:
-            if(tgt -> highlight)
+            if(tgt -> highlighted)
             {
                 attron(COLOR_PAIR(6));
                 mvprintw(y, x,"/");

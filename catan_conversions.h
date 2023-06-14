@@ -44,7 +44,11 @@ typedef struct
     uint8_t brick;
     uint8_t sheep;
     uint8_t wheat;
-    uint8_t special_cards;
+    uint8_t knights;
+    uint8_t year_of_plenty;
+    uint8_t road_building;
+    uint8_t monopoly;
+    uint8_t victory_card;
 }bank_property;
 
 typedef struct
