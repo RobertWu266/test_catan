@@ -541,6 +541,13 @@ void trade_init( int trade[] )
 		trade[i] = 0;
 	}
 }
+void specialcard_init( int specialcard[] )
+{
+	for( int i = 0; i < 5; i++ )
+	{
+		specialcard[i] = 0;
+	}
+}
 
 void build_road(owner owner1, obj* tobuild)
 {
@@ -578,6 +585,7 @@ void box_set()
     for(i32 i=0;i<4;i++)player_init(players+i);
     bank_init(&bank);
     int trade[10] = {0};
+    int specialcard[5] = {0};
     for (i32 i = 0; i < 13; i++)
     {
         for (i32 j = 0; j < 13; j++)
@@ -696,6 +704,12 @@ int trade( player_property *player, bank_property *bank, int trade[] )
 }
 
 
+void robber( obj *robber )
+{
+	
+}
+
+
 int specialcard_get( player_property *player, bank_property *bank )
 {
 	if( player -> stone < 1 || player -> sheep < 1 || player -> wheat < 1 )
@@ -775,6 +789,82 @@ int specialcard_get( player_property *player, bank_property *bank )
 			break;
 	}
 	return 0;
+}
+
+
+void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild )
+{
+	if( specialcard[0] == 1 ) //knights
+	{
+		player1 -> knights--;
+		
+	}
+	else if( specialcard[1] == 1 ) //year_of_plenty
+	{
+		player1 -> year_of_plenty--;
+		//use trade[0] - trade[4] to represent resource ; remember to trade_init after this
+		player1 -> wood += trade[0];
+		bank -> wood -= trade[0];
+		player1 -> stone += trade[1];
+		bank -> stone -= trade[1];
+		player1 -> brick += trade[2];
+		bank -> brick -= trade[2];
+		player1 -> sheep += trade[3];
+		bank -> sheep -= trade[3];
+		player1 -> wheat += trade[4];
+		bank -> wheat -= trade[4];
+	}
+	else if( specialcard[2] == 1 ) //road_building
+	{
+		player1 -> road_building--;
+		build_road(owner, tobuild);
+		build_road(owner, tobuild);
+	}
+	else if( specialcard[3] == 1 ) //monopoly
+	{
+		player1 -> monopoly--;
+		//use trade[0] - trade[4] to represent resource ; remember to trade_init after this
+		if( trade[0] == 1 )
+		{
+			player1 -> wood = player2 -> wood + player3 -> wood + player4 -> wood;
+			player2 -> wood = 0;
+			player3 -> wood = 0;
+			player4 -> wood = 0;
+		}
+		else if( trade[1] == 1 )
+		{
+			player1 -> stone = player2 -> stone + player3 -> stone + player4 -> stone;
+			player2 -> stone = 0;
+			player3 -> stone = 0;
+			player4 -> stone = 0;
+		}
+		else if( trade[2] == 1 )
+		{
+			player1 -> brick = player2 -> brick + player3 -> brick + player4 -> brick;
+			player2 -> brick = 0;
+			player3 -> brick = 0;
+			player4 -> brick = 0;
+		}
+		else if( trade[3] == 1 )
+		{
+			player1 -> sheep = player2 -> sheep + player3 -> sheep + player4 -> sheep;
+			player2 -> sheep = 0;
+			player3 -> sheep = 0;
+			player4 -> sheep = 0;
+		}
+		else if( trade[4] == 1 )
+		{
+			player1 -> wheat = player2 -> wheat + player3 -> wheat + player4 -> wheat;
+			player2 -> wheat = 0;
+			player3 -> wheat = 0;
+			player4 -> wheat = 0;
+		}
+	}
+	else if( specialcard[4] == 1 ) //victory_card
+	{
+		player1 -> victory_card--;
+		player1 -> total_victory_points++;
+	}
 }
 
 /*int main()
