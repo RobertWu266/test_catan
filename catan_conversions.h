@@ -36,7 +36,7 @@ typedef enum _harbor{Nil, ALL_HARBOR,WHEAT_HARBOR,SHEEP_HARBOR,WOOD_HARBOR,BRICK
  * pos_vert: The vertices where the sum of the cube coordinates x+y+z equals 1
  * neg_vert: The vertices where the sum of the cube coordinates x+y+z equals -1
  */
-
+struct _obj;
 typedef struct
 {
     uint8_t wood;
@@ -75,6 +75,9 @@ typedef struct
     uint8_t brick_exchange_rate;
     uint8_t sheep_exchange_rate;
     uint8_t wheat_exchange_rate;
+    struct _obj* my_road[15];
+    i32 my_road_csr;
+
 }player_property;
 
 typedef struct _obj
