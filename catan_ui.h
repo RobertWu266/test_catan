@@ -26,6 +26,7 @@ void in_game_ui();
 void check_ui_size();
 void start_ui();
 void print_pass();
+void print_boat(int color, int y, int x);
 void draw_with_mouse_and_return_value();
 void print_in_game_ui();
 void button_play_and_quit();
@@ -33,7 +34,9 @@ void print_c(int y, int x);
 void print_a(int y, int x);
 void print_t(int y, int x);
 void print_n(int y, int x);
-
+void refresh_all_status();
+void bank_init(bank_property *bank);
+void player_init(player_property *player);
 void print_bank(bank_property *bank);
 void _print_player(player_property *player ,int y, int x , int color);
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
@@ -42,7 +45,7 @@ void fprintf_bank(bank_property bank1);
 void fprintf_player(player_property player1);
 void clear_log();
 //player_1 is red at top left cornor, player_2 blue is at top right cornor
-//player_3 is green at down left cornor, player_4 yellow is at down right cornor 
+//player_3 is green at down left cornor, player_4 yellow is at down right cornor
 
 /* background colors:
     init_pair(1,COLOR_WHITE,COLOR_RED);
@@ -50,7 +53,7 @@ void clear_log();
     init_pair(3,COLOR_WHITE,COLOR_GREEN);
     init_pair(4,COLOR_WHITE,COLOR_YELLOW);
     init_pair(5,COLOR_WHITE,COLOR_BLUE);//this will present as light green
-    init_pair(6,COLOR_WHITE,COLOR_MAGENTA);//this is purple
+    init_pair(6,COLOR_WHITE,COLOR_MAGENTA);//this is purple and highlight color
     init_pair(7,COLOR_WHITE,COLOR_BLACK);
     init_pair(8,COLOR_BLACK,COLOR_WHITE);
     //those are for roads and vertice
@@ -60,6 +63,7 @@ void clear_log();
     init_pair(24,COLOR_YELLOW,COLOR_WHITE);
 */
 
-
+//in User UI, there will be five development cards that follows by:
+//knight, year-of-plenty, building-road, monopoly, victory-card
 
 #endif
