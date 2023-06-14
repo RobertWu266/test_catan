@@ -544,13 +544,17 @@ void trade_init( int trade[] )
 
 void build_road(owner owner1, obj* tobuild)
 {
-    players[owner1-1].road_remain--;
+    player_property the_player=players[owner1-player1];
+    the_player.road_remain--;
     if(tobuild->attr!=v_side&&tobuild->attr!=main_side&&tobuild->attr!=minor_side)assert(0);
     sprop(tobuild)->own=owner1;
+    the_player.my_road[the_player.my_road_csr]=tobuild;
+    the_player.my_road_csr++;
+
 }
 void build_village(owner owner1, obj* tobuild)
 {
-    player_property the_player=players[owner1-1];
+    player_property the_player=players[owner1-player1];
     the_player.road_remain--;
     if(tobuild->attr!=pos_vert&&tobuild->attr!=neg_vert)assert(0);
     vprop(tobuild)->own=owner1;
@@ -626,14 +630,14 @@ void highlight_availible_village_beginning()
     }
 }void highlight_availible_village()
 {
+
     for(i32 i=0;i<54;i++)
     {
 
         for(i32 j=0;j<3;j++)
         {
             obj *tgt=vprop(vertice_list[i])->nei_vert[j];
-            if(NULL==tgt)continue;
-            if(vprop(tgt)->own!=None)continue;
+            if(NULL==tgt||vprop(tgt)->own!=None)continue;
         }
         vertice_list[i]->highlighted=1;
     }
@@ -691,10 +695,6 @@ int trade( player_property *player, bank_property *bank, int trade[] )
 	return 0;
 }
 
-void robber()
-{
-	
-}
 
 int specialcard_get( player_property *player, bank_property *bank )
 {
@@ -777,30 +777,6 @@ int specialcard_get( player_property *player, bank_property *bank )
 	return 0;
 }
 
-void specialcard_use( player_property *player )
-{
-	if //knights
-	{
-		
-	}
-	else if //year_of_plenty
-	{
-		
-	}
-	else if //road_building
-	{
-		
-	}
-	else if //monopoly
-	{
-		
-	}
-	else if //victory_card
-	{
-		player -> victory_card--;
-		player -> total_victory_points++;
-	}
-}
 /*int main()
 {
     box_set();

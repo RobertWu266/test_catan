@@ -7,8 +7,8 @@
 
 extern char *attr_names[];
 extern obj *innerbox[13][13][3];
-static i32 off_x=47;
-static i32 off_y=23;
+i32 off_x=47;
+i32 off_y=23;
 #define hex_side_width 7//unused
 #define hex_side_height 8//unused
 #define game2custom(x,y) ((x-off_x)- (y-off_y))/ 4, (-(x-off_x) - 3 * (y-off_y))/ 4
