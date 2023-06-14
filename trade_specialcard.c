@@ -10,31 +10,39 @@ void robber()
 	
 }
 
-void specialcard( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank ) //player1 為當回合玩家
+void specialcard_get( player_property *player, bank_property *bank )
 {
-	if( player1 -> stone < 1 || player1 -> sheep < 1 || player1 -> wheat < 1 )
+	if( player -> stone < 1 || player -> sheep < 1 || player -> wheat < 1 )
 		return;
-	player1 -> stone--;
-	player1 -> sheep--;
-	player1 -> wheat--;
+	player -> stone--;
+	player -> sheep--;
+	player -> wheat--;
 	int card = rand() % 5 + 1;
+	while( )
+	{
+		card = rand() % 5 + 1;
+	}
 	switch( card )
 	{
-		case 1: //騎士
-			player1 -> knights++;
-			//robber
+		case 1: 
+			player -> knights++;
+			bank -> knights--;
 			break;
-		case 2: //豐收之年
-			
+		case 2: 
+			player -> year_of_plenty++;
+			bank -> year_of_plenty--;
 			break;
-		case 3: //道路建造
-			
+		case 3: 
+			player -> road_building++;
+			bank -> road_building--;
 			break;
-		case 4: //壟斷市場
-			
+		case 4: 
+			player -> monopoly++;
+			bank -> monopoly--;
 			break;
-		case 5: //分數卡
-			player1 -> totoal_victory_points++;
+		case 5: 
+			player -> victory_card++;
+			bank -> victory_card--;
 			break;
 		default:
 			break:

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <time.h>
 #define i32 int32_t
 #define TOL 100
 
@@ -148,3 +149,9 @@ obj** vertice_neighbor_vertice(obj* tgt);
 harbor locs_harbor(i32 *locs);
 void highlight_availible_village();
 void highlight_availible_village_beginning();
+
+void trade_init( int trade[] );
+int trade( player_property *player, bank_property *bank, int trade[] );
+void robber( player_property *player );
+int specialcard_get( player_property *player, bank_property *bank );
+void specialcard_use( player_property *player );

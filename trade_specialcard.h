@@ -45,5 +45,5 @@ typedef struct
 
 void trade( player_property *player, bank_property *bank );
 void robber( player_property *player, );
-void specialcard( player_property *player1, player_property *player1, player_property *player1, player_property *player1, bank_property *bank );
+void specialcard_get( player_property *player, bank_property *bank );
 

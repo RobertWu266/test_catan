@@ -528,11 +528,19 @@ void player_init(player_property *player)
     player->stone_exchange_rate=4;
     player->wheat_exchange_rate=4;
 }
+void trade_init( int trade[] )
+{
+	for( int i = 0; i < 10; i++ )
+	{
+		trade[i] = 0;
+	}
+}
+
 void box_set()
 {
     for(i32 i=0;i<4;i++)player_init(players+i);
     bank_init(&bank);
-
+    int trade[10] = {0};
     for (i32 i = 0; i < 13; i++)
     {
         for (i32 j = 0; j < 13; j++)
@@ -610,6 +618,155 @@ void box_dtor()
             }
         }
     }
+}
+
+int trade( player_property *player, bank_property *bank, int trade[] )
+{
+	if( player -> wood < player -> wood_exchange_rate * trade[0] || 
+	    player -> stone < player -> stone_exchange_rate * trade[1] ||
+	    player -> brick < player -> brick_exchange_rate * trade[2] ||
+	    player -> sheep < player -> sheep_exchange_rate * trade[3] ||
+	    player -> wheat < player -> wheat_exchange_rate * trade[4] ||
+	    bank -> wood < trade[5] ||
+	    bank -> stone < trade[6] ||
+	    bank -> brick < trade[7] ||
+	    bank -> sheep < trade[8] ||
+	    bank -> wheat < trade[9] )
+	    	return -1;
+	//player pay
+	player -> wood -= player -> wood_exchange_rate * trade[0];
+	bank -> wood += player -> wood_exchange_rate * trade[0];
+	player -> stone -= player -> stone_exchange_rate * trade[1];
+	bank -> stone += player -> stone_exchange_rate * trade[1];
+	player -> brick -= player -> brick_exchange_rate * trade[2];
+	bank -> brick += player -> brick_exchange_rate * trade[2];
+	player -> sheep -= player -> sheep_exchange_rate * trade[3];
+	bank -> sheep += player -> sheep_exchange_rate * trade[3];
+	player -> wheat -= player -> wheat_exchange_rate * trade[4];
+	bank -> wheat += player -> wheat_exchange_rate * trade[4];
+	//player get
+	player -> wood += trade[5];
+	bank -> wood -= trade[5];
+	player -> stone += trade[6];
+	bank -> stone -= trade[6];
+	player -> brick += trade[7];
+	bank -> brick -= trade[7];
+	player -> sheep += trade[8];
+	bank -> sheep -= trade[8];
+	player -> wheat += trade[9];
+	bank -> wheat -= trade[9];
+	return 0;
+}
+
+void robber()
+{
+	
+}
+
+int specialcard_get( player_property *player, bank_property *bank )
+{
+	if( player -> stone < 1 || player -> sheep < 1 || player -> wheat < 1 )
+		return -1;
+	player -> stone--;
+	player -> sheep--;
+	player -> wheat--;
+	int card = rand() % 5 + 1;
+	int c = 0;
+	while( c == 0 )
+	{
+		c = 1;
+		switch( card )
+		{
+			case 1: 
+				if( bank -> knights == 0 )
+				{
+					c = 0;
+					card = rand() % 5 + 1;
+				}
+				break;
+			case 2: 
+				if( bank -> year_of_plenty == 0 )
+				{
+					c = 0;
+					card = rand() % 5 + 1;
+				}
+				break;
+			case 3: 
+				if( bank -> road_building == 0 )
+				{
+					c = 0;
+					card = rand() % 5 + 1;
+				}
+				break;
+			case 4: 
+				if( bank -> monopoly == 0 )
+				{
+					c = 0;
+					card = rand() % 5 + 1;
+				}
+				break;
+			case 5: 
+				if( bank -> victory_card == 0 )
+				{
+					c = 0;
+					card = rand() % 5 + 1;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	switch( card )
+	{
+		case 1: 
+			player -> knights++;
+			bank -> knights--;
+			break;
+		case 2: 
+			player -> year_of_plenty++;
+			bank -> year_of_plenty--;
+			break;
+		case 3: 
+			player -> road_building++;
+			bank -> road_building--;
+			break;
+		case 4: 
+			player -> monopoly++;
+			bank -> monopoly--;
+			break;
+		case 5: 
+			player -> victory_card++;
+			bank -> victory_card--;
+			break;
+		default:
+			break;
+	}
+	return 0;
+}
+
+void specialcard_use( player_property *player )
+{
+	if //knights
+	{
+		
+	}
+	else if //year_of_plenty
+	{
+		
+	}
+	else if //road_building
+	{
+		
+	}
+	else if //monopoly
+	{
+		
+	}
+	else if //victory_card
+	{
+		player -> victory_card--;
+		player -> total_victory_points++;
+	}
 }
 /*int main()
 {
