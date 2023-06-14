@@ -156,6 +156,7 @@ void highlight_availible_village_beginning();
 
 void trade_init( int trade[] );
 int trade( player_property *player, bank_property *bank, int trade[] );
-void robber( player_property *player );
+void robber( obj *robber )
+void specialcard_init( int specialcard[] );
 int specialcard_get( player_property *player, bank_property *bank );
-void specialcard_use( player_property *player );
+void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
