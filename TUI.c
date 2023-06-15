@@ -322,9 +322,9 @@ void show_obj(obj* tgt)
                 mvprintw(y+1, x+1,"\\");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(21));
@@ -370,9 +370,9 @@ void show_obj(obj* tgt)
                 mvprintw(y, x-3,"--------");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(21));
@@ -414,9 +414,9 @@ void show_obj(obj* tgt)
                 mvprintw(y+1, x-1,"/");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(1));

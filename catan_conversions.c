@@ -653,7 +653,7 @@ void highlight_availible_village_beginning()
             }
         }
         vertice_list[i]->highlighted=1;
-        failure:
+        failure:;
     }
 }
 void highlight_availible_village(owner owner1)
@@ -664,7 +664,7 @@ void highlight_availible_village(owner owner1)
 
         for(i32 j=0;j<2;j++)
         {
-            obj *tgt=sprop(the_player->my_road[j])->nei_vert;//get vert around my road
+            obj *tgt=sprop(the_player->my_road[i])->nei_vert[j];//get vert around my road
             if(tgt->highlighted)continue;
             for(i32 k=0;k<3;k++)
             {
@@ -675,7 +675,7 @@ void highlight_availible_village(owner owner1)
                 }
             }
             tgt->highlighted=1;
-            failure:
+            failure:;
         }
     }
 }
