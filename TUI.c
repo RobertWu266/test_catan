@@ -286,21 +286,25 @@ void show_obj(obj* tgt)
                         attron(COLOR_PAIR(21));
                         mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(21));
+                        mvprintw(50, 168, " ");
                         break;
                     case 2:
                         attron(COLOR_PAIR(22));
                         mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(22));
+                        mvprintw(50, 168, " ");
                         break;
                     case 3:
                         attron(COLOR_PAIR(23));
                         mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(23));
+                        mvprintw(50, 168, " ");
                         break;
                     case 4:
                         attron(COLOR_PAIR(24));
                         mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(24));
+                        mvprintw(50, 168, " ");
                         break;
                 }
             }
@@ -322,9 +326,9 @@ void show_obj(obj* tgt)
                 mvprintw(y+1, x+1,"\\");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(21));
@@ -332,6 +336,7 @@ void show_obj(obj* tgt)
                         mvprintw(y-1, x-1,"\\");
                         mvprintw(y+1, x+1,"\\");
                         attroff(COLOR_PAIR(21));
+                        mvprintw(50, 168, " ");
                         break;
                     case 2:
                         attron(COLOR_PAIR(22));
@@ -339,6 +344,7 @@ void show_obj(obj* tgt)
                         mvprintw(y-1, x-1,"\\");
                         mvprintw(y+1, x+1,"\\");
                         attroff(COLOR_PAIR(22));
+                        mvprintw(50, 168, " ");
                         break;
                     case 3:
                         attron(COLOR_PAIR(23));
@@ -346,6 +352,7 @@ void show_obj(obj* tgt)
                         mvprintw(y-1, x-1,"\\");
                         mvprintw(y+1, x+1,"\\");
                         attroff(COLOR_PAIR(23));
+                        mvprintw(50, 168, " ");
                         break;
                     case 4:
                         attron(COLOR_PAIR(24));
@@ -353,6 +360,7 @@ void show_obj(obj* tgt)
                         mvprintw(y-1, x-1,"\\");
                         mvprintw(y+1, x+1,"\\");
                         attroff(COLOR_PAIR(24));
+                        mvprintw(50, 168, " ");
                         break;
                 }
             }
@@ -361,38 +369,42 @@ void show_obj(obj* tgt)
             if(tgt -> highlighted)
             {
                 attron(COLOR_PAIR(6));
-                mvprintw(y, x-3,"--------");
+                mvprintw(y, x-3,"-------");
                 attroff(COLOR_PAIR(6));
             }
             else
             {
                 attron(COLOR_PAIR(8));
-                mvprintw(y, x-3,"--------");
+                mvprintw(y, x-3,"-------");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
                         attron(COLOR_PAIR(21));
                         mvprintw(y, x-3,"-------");
-                        attroff(COLOR_PAIR(1));
+                        attroff(COLOR_PAIR(21));
+                        mvprintw(50, 168, " ");
                         break;
                     case 2:
                         attron(COLOR_PAIR(22));
                         mvprintw(y, x-3,"-------");
                         attroff(COLOR_PAIR(22));
+                        mvprintw(50, 168, " ");
                         break;
                     case 3:
                         attron(COLOR_PAIR(23));
                         mvprintw(y, x-3,"-------");
                         attroff(COLOR_PAIR(23));
+                        mvprintw(50, 168, " ");
                         break;
                     case 4:
                         attron(COLOR_PAIR(24));
                         mvprintw(y, x-3,"-------");
                         attroff(COLOR_PAIR(24));
+                        mvprintw(50, 168, " ");
                         break;
                 }
             }
@@ -414,42 +426,47 @@ void show_obj(obj* tgt)
                 mvprintw(y+1, x-1,"/");
                 attroff(COLOR_PAIR(8));
             }
-            if(vprop(tgt) -> own != 0)
+            if(sprop(tgt) -> own != 0)
             {
-                switch(vprop(tgt) -> own)
+                switch(sprop(tgt) -> own)
                 {
                     case 1:
-                        attron(COLOR_PAIR(1));
+                        attron(COLOR_PAIR(21));
                         mvprintw(y, x,"/");
                         mvprintw(y-1, x+1,"/");
                         mvprintw(y+1, x-1,"/");
-                        attroff(COLOR_PAIR(1));
+                        attroff(COLOR_PAIR(21));
+                        mvprintw(50, 168, " ");
                         break;
                     case 2:
-                        attron(COLOR_PAIR(2));
+                        attron(COLOR_PAIR(22));
                         mvprintw(y, x,"/");
                         mvprintw(y-1, x+1,"/");
                         mvprintw(y+1, x-1,"/");
-                        attroff(COLOR_PAIR(2));
+                        attroff(COLOR_PAIR(22));
+                        mvprintw(50, 168, " ");
                         break;
                     case 3:
-                        attron(COLOR_PAIR(3));
+                        attron(COLOR_PAIR(23));
                         mvprintw(y, x,"/");
                         mvprintw(y-1, x+1,"/");
                         mvprintw(y+1, x-1,"/");
-                        attroff(COLOR_PAIR(3));
+                        attroff(COLOR_PAIR(23));
+                        mvprintw(50, 168, " ");
                         break;
                     case 4:
-                        attron(COLOR_PAIR(4));
+                        attron(COLOR_PAIR(24));
                         mvprintw(y, x,"/");
                         mvprintw(y-1, x+1,"/");
                         mvprintw(y+1, x-1,"/");
-                        attroff(COLOR_PAIR(4));
+                        attroff(COLOR_PAIR(24));
+                        mvprintw(50, 168, " ");
                         break;
                 }
             }
             //To be complete
             //wood: complete, i think
+            mvprintw(50, 168, " ");
             break;
     }
     set_background_color_init();
