@@ -286,6 +286,12 @@ void show_obj(obj* tgt)
                         attron(COLOR_PAIR(21));
                         mvprintw(y, x,"%c",tmp);
                         attroff(COLOR_PAIR(21));
+                        if(tgt->highlighted)
+                        {
+                            attron(COLOR_PAIR(6));
+                            mvprintw(y, x,"%c",tmp);
+                            attroff(COLOR_PAIR(6));
+                        }
                         mvprintw(50, 168, " ");
                         break;
                     case 2:

@@ -175,3 +175,5 @@ void specialcard_init( int specialcard[] );
 int specialcard_get( player_property *player, bank_property *bank );
 void player_card_get_init( player_property *player );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
+uint8_t get_longest_road(owner owner1);
+uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr);

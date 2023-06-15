@@ -72,6 +72,71 @@ i32 *custom2cube(i32 x, i32 y)
     pret[2] -= offset;
     return pret;
 }
+/*function LongestRoad(player):
+    longest_road = 0
+
+    for each side in all sides:
+        if side's owner is not the player:
+            continue
+        visited_sides = empty set
+        current_road = DFS(side, visited_sides)
+        if current_road > longest_road:
+            longest_road = current_road
+
+    return longest_road*/
+
+
+/*function DFS(side, visited_sides):
+    visited_sides.add(side)
+    max_depth = 0
+    for each neighbor_side in side's nei_side:
+        if neighbor_side is NULL or neighbor_side in visited_sides or neighbor_side's owner is not side's owner:
+            continue
+        current_depth = DFS(neighbor_side, visited_sides)
+        if current_depth > max_depth:
+            max_depth = current_depth
+    visited_sides.remove(side)
+
+    return 1 + max_depth*/
+uint8_t get_longest_road(owner owner1)
+{
+    uint8_t longest_road=0;
+    player_property *the_player=&(players[owner1-player1]);
+    if(the_player->my_road_csr==1)return 1;
+    for(uint8_t i=0;i<the_player->my_road_csr;i++)
+    {
+        obj *visited_road[15]={0};
+        uint8_t visited_road_csr=0;
+        uint8_t current_road=DFS(owner1 ,the_player->my_road[i],visited_road,&visited_road_csr);
+        if(current_road>longest_road)longest_road=current_road;
+    }
+    return longest_road;
+}
+bool in_list(obj *the_road, obj *visited_road[15],const uint8_t *p_visited_road_csr)
+{
+    for(uint8_t i=0;i<*p_visited_road_csr;i++)
+    {
+        if(visited_road[i]==the_road)return true;
+    }
+    return false;
+}
+uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr)
+{
+    visited_road[*p_visited_road_csr]=the_road;
+    (*p_visited_road_csr)++;
+    uint8_t max_depth=0;
+    for(uint8_t i=0;i<4;i++)
+    {
+        obj *nei_road=sprop(the_road)->nei_side[i];
+        if(nei_road==NULL || sprop(nei_road)->own!=owner1||in_list(nei_road,visited_road,p_visited_road_csr)) continue;
+        uint8_t current_depth=DFS(owner1,nei_road,visited_road,p_visited_road_csr);
+        if(current_depth>max_depth) max_depth=current_depth;
+    }
+    visited_road[*p_visited_road_csr]=NULL;
+    (*p_visited_road_csr)--;
+    return 1 + max_depth;
+}
+
 
 /*i32 *obj_custom(obj *tgt)
 {
@@ -504,7 +569,7 @@ void bank_init(bank_property *bank)
     bank->monopoly=2;
     bank->year_of_plenty=2;
     bank->road_building=2;
-    bank->victory_card=6;
+    bank->victory_card=5;
     bank -> special_cards = bank -> knights + bank -> monopoly + bank -> year_of_plenty + bank -> road_building + bank -> victory_card;
 }
 
@@ -578,6 +643,7 @@ void build_road(owner owner1, obj* tobuild)
     sprop(tobuild)->own=owner1;
     the_player->my_road[the_player->my_road_csr]=tobuild;
     the_player->my_road_csr++;
+    the_player->max_roads= get_longest_road(owner1);
     clear_all_highlight();
 }
 void build_village(owner owner1, obj* tobuild)
@@ -746,9 +812,10 @@ void highlight_available_upgrade(owner owner1)
 {
     for(i32 i=0;i<54;i++)
     {
-        if(vprop(vertice_list[i])->build==village&&vprop(vertice_list[i])->own==owner1)
+        obj *tgt=vertice_list[i];
+        if(vprop(tgt)->build==village && vprop(tgt)->own==owner1)
         {
-            vertice_list[i]->highlighted=1;
+            tgt->highlighted=1;
         }
     }
 }
