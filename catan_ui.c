@@ -1813,10 +1813,10 @@ void set_background_color_init()
     init_pair(6,COLOR_WHITE,COLOR_MAGENTA);//this is purple
     init_pair(7,COLOR_WHITE,COLOR_BLACK);
     init_pair(8,COLOR_BLACK,COLOR_WHITE);
-    init_pair(21,COLOR_RED,COLOR_BLACK);
-    init_pair(22,COLOR_CYAN,COLOR_BLACK);
-    init_pair(23,COLOR_GREEN,COLOR_BLACK);
-    init_pair(24,COLOR_YELLOW,COLOR_BLACK);
+    init_pair(21,COLOR_RED,COLOR_WHITE);
+    init_pair(22,COLOR_CYAN,COLOR_WHITE);
+    init_pair(23,COLOR_GREEN,COLOR_WHITE);
+    init_pair(24,COLOR_YELLOW,COLOR_WHITE);
     init_pair(31,COLOR_RED,COLOR_BLACK);
     init_color(COLOR_WHITE,850,850,850);
     init_color(COLOR_MAGENTA,800,0,800);
