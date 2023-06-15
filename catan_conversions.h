@@ -159,6 +159,7 @@ void build_village(owner owner1, obj* tobuild);
 void build_road(owner owner1, obj* tobuild);
 void highlight_availible_village(owner);
 void highlight_availible_village_beginning();
+void clear_all_highlight();
 
 void trade_init( int trade[] );
 int trade( player_property *player, bank_property *bank, int trade[] );

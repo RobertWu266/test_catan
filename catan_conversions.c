@@ -640,7 +640,7 @@ void highlight_availible_village_beginning()
             }
         }
         vertice_list[i]->highlighted=1;
-        failure:
+        failure:;
     }
 }
 void highlight_availible_village(owner owner1)
@@ -651,7 +651,7 @@ void highlight_availible_village(owner owner1)
 
         for(i32 j=0;j<2;j++)
         {
-            obj *tgt=sprop(the_player->my_road[j])->nei_vert;//get vert around my road
+            obj *tgt=sprop(the_player->my_road[i])->nei_vert[j];//get vert around my road
             if(tgt->highlighted)continue;
             for(i32 k=0;k<3;k++)
             {
@@ -662,11 +662,17 @@ void highlight_availible_village(owner owner1)
                 }
             }
             tgt->highlighted=1;
-            failure:
+            failure:;
+
         }
     }
 }
-
+void clear_all_highlight()
+{
+    for(i32 i=0;i<19;i++)body_list[i]->highlighted=0;
+    for(i32 i=0;i<54;i++)vertice_list[i]->highlighted=0;
+    for(i32 i=0;i<72;i++)side_list[i]->highlighted=0;
+}
 void box_dtor()
 {
     for (i32 i = 0; i < 13; i++)
@@ -719,12 +725,10 @@ int trade( player_property *player, bank_property *bank, int trade[] )
 	return 0;
 }
 
+void robber( obj *robber )
+{
 
-// void robber( obj *robber )
-// {
-	
-// }
-
+}
 
 int specialcard_get( player_property *player, bank_property *bank )
 {

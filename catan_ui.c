@@ -148,6 +148,22 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
 
         if(ch=='b')fprintf_bank(bank);
 
+        if(ch == 'j')
+        {
+            highlight_availible_village_beginning();
+            show_all_objects();
+        }
+        if(ch=='k')
+        {
+            highlight_availible_village(player1);
+            show_all_objects();
+        }
+        if(ch=='l')
+        {
+            clear_all_highlight();
+            show_all_objects();
+        }
+
         if(ch=='p')clear_log();
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
         {
