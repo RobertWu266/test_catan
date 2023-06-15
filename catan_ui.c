@@ -14,14 +14,20 @@ void in_game_ui(MEVENT event)
 	roll_and_print_dice(43,116);
 	bank_property bank;
 	player_property player_1;
+	player_property player_2;
+	player_property player_3;
+	player_property player_4;
 	player_init(&player_1);
+	player_init(&player_2);
+	player_init(&player_3);
+	player_init(&player_4);
 	bank_init(&bank);
 	bool your_turn = TRUE;
 	bool trade = TRUE;
 	bool build_a_road = TRUE;//for test
 	print_in_game_ui();
 	print_bank(&bank);
-	print_players_status(&player_1, &player_1, &player_1, &player_1);
+	print_players_status(&player_1, &player_2, &player_3, &player_4);
 	print_YOU(&player_1);
 	if(your_turn)
 	{
@@ -42,31 +48,27 @@ void in_game_ui(MEVENT event)
 	                	mvprintw(50,168,"");
 	                	break;
 	                }
-	                //in real playing following code will not proceed. it is just for test
-					if(trade)
-				    {
-				    	agree_or_disagree(43, 140, "trade with blablabla?", event);
-				    }
-				    if(build_a_road)
-				    {
-				    	agree_or_disagree(43, 140, "build a road?", event);
-				    }
 	            }
 	        }
 		}
+		print_pass();
 		while(ch = getch())
 	    {
-	        print_pass();
 	        if (ch == KEY_MOUSE && getmouse(&event) == OK)
 	        {
 	            if (event.bstate & BUTTON1_PRESSED)
 	            {
+		        	print_pass();
 	                int x = event.x;
 	                int y = event.y;
 	                if(((x >= 133 && y >= 41) && (x <= 167 && y <= 49)))
 	                {
 	                	clear_right_cornor();
 		                break;
+	                }
+	                if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
+	                {
+	                	print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event);
 	                }
 	            }
 			}
@@ -154,7 +156,7 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 int x = event.x;
                 int y = event.y;
                 attron(COLOR_PAIR(8));
-                //mvprintw(y,x," ");
+                mvprintw(y,x," ");
                 attroff(COLOR_PAIR(8));
                 mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
                 obj* clicked= get_obj_from_mouse(event.x,event.y);
@@ -343,6 +345,17 @@ void print_in_game_ui()
 					mvprintw(11 + i + tmp, 132 + j, " ");
 					mvprintw(11 + i + tmp, 132 - j, " ");
 				}
+			}
+		}
+	}
+	for (int i = 0; i < 9; ++i)
+	{
+		mvprintw(2, 157 + i, " ");
+		if(i == 4)
+		{
+			for (int j = 0; j < 7; ++j)
+			{
+				mvprintw(2 + j, 157 + i, " ");
 			}
 		}
 	}
@@ -1057,15 +1070,42 @@ void check_ui_size()
 
 int start_screen(MEVENT event)
 {
+	clear();
 	set_background_color_init();
 	print_c(5,19);
     print_a(16,37);
     print_t(5,67);
     print_a(16,90);
     print_n(16,123);
+	attron(COLOR_PAIR(8));
+	for (int i = 0; i < 9; ++i)
+	{
+		if(i == 0 || i == 8)
+		{
+			for (int j = 0; j < 10; ++j)
+			{
+				mvprintw(41 + j, 160 + i, " ");
+			}
+		}
+		else
+		{
+			mvprintw(41, 160 + i, " ");
+			mvprintw(50, 160 + i, " ");
+		}
+	}
+	mvprintw(44, 162, " ");
+	mvprintw(43, 163, " ");
+	mvprintw(43, 164, " ");
+	mvprintw(43, 165, " ");
+	mvprintw(44, 166, " ");
+	mvprintw(44, 162, " ");
+	mvprintw(45, 165, " ");
+	mvprintw(46, 164, " ");
+	mvprintw(48, 164, " ");
+	attroff(COLOR_PAIR(8));
     button_play_and_quit(24,61);
    	mvprintw(50,168,"");
-    int ch;
+	int ch;
     while (ch = getch())
     {
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
@@ -1087,6 +1127,45 @@ int start_screen(MEVENT event)
                 {
                 	clear();
                 	return -1;
+                }
+                if((x >= 161 && y >= 42) && (x <= 167 && y <= 49))
+                {
+                	clear();
+                	help();
+                	set_background_color_init();
+					print_c(5,19);
+				    print_a(16,37);
+				    print_t(5,67);
+				    print_a(16,90);
+				    print_n(16,123);
+					attron(COLOR_PAIR(8));
+					for (int i = 0; i < 9; ++i)
+					{
+						if(i == 0 || i == 8)
+						{
+							for (int j = 0; j < 10; ++j)
+							{
+								mvprintw(41 + j, 160 + i, " ");
+							}
+						}
+						else
+						{
+							mvprintw(41, 160 + i, " ");
+							mvprintw(50, 160 + i, " ");
+						}
+					}
+					mvprintw(44, 162, " ");
+					mvprintw(43, 163, " ");
+					mvprintw(43, 164, " ");
+					mvprintw(43, 165, " ");
+					mvprintw(44, 166, " ");
+					mvprintw(44, 162, " ");
+					mvprintw(45, 165, " ");
+					mvprintw(46, 164, " ");
+					mvprintw(48, 164, " ");
+					attroff(COLOR_PAIR(8));
+				    button_play_and_quit(24,61);
+				   	mvprintw(50,168,"");
                 }
             }
         }
@@ -1137,7 +1216,7 @@ void print_bank(bank_property *bank)
 		else
 		{
 			tmp = 6;
-			mvprintw(7, 117 + (i * 5), "x%d",bank ->knights+bank->year_of_plenty+bank->road_building+bank->monopoly+bank->victory_card);
+			mvprintw(7, 117 + (i * 5), "x%d",bank -> special_cards);
 		}
 		attron(COLOR_PAIR(tmp));
 		for (int j = 0; j < 3; ++j)
@@ -1150,8 +1229,6 @@ void print_bank(bank_property *bank)
 		attroff(COLOR_PAIR(tmp));
 	}
 }
-
-
 
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4)
 {
@@ -1364,12 +1441,343 @@ void print_YOU(player_property *player)
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
 }
 
+void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event)
+{
+	//clean map
+	attron(COLOR_PAIR(7));
+	for (int i = 0; i < 95; ++i)
+	{
+		for (int j = 0; j < 49; ++j)
+		{
+			mvprintw(1 + j, 1 + i, " ");
+		}
+	}
+	attroff(COLOR_PAIR(7));
+	attron(COLOR_PAIR(8));
+	for (int i = 0; i < 95; ++i)
+	{
+		mvprintw(26, 1 + i, " ");
+	}
+	clear_right_cornor();
+	attroff(COLOR_PAIR(8));
+	attron(COLOR_PAIR(7));
+	mvprintw(12, 1, "Bank's Storage: ");
+	mvprintw(28, 1, "Player's Resource: ");
+	mvprintw(32, 1, "Player's Wood Exchange Rate: %d : 1", player -> wood_exchange_rate);
+	mvprintw(36, 1, "Player's Brick Exchange Rate: %d : 1", player -> brick_exchange_rate);
+	mvprintw(40, 1, "Player's Sheep Exchange Rate: %d : 1", player -> sheep_exchange_rate);
+	mvprintw(44, 1, "Player's Wheat Exchange Rate: %d : 1", player -> wheat_exchange_rate);
+	mvprintw(48, 1, "Player's Stone Exchange Rate: %d : 1", player -> stone_exchange_rate);
+	attroff(COLOR_PAIR(7));
+	print_a_card(31, 44, 3);
+	mvprintw(35, 44, "x%d",player -> wood);
+	print_a_card(37, 44, 1);
+	mvprintw(41, 44, "x%d", player -> brick);
+	print_a_card(43, 44, 5);
+	mvprintw(47, 44, "x%d", player -> sheep);
+	print_a_card(31, 60, 4);
+	mvprintw(35, 60, "x%d",player -> wheat);
+	print_a_card(37, 60, 8);
+	mvprintw(41, 60, "x%d", player -> stone);
+	print_a_card(5, 44, 3);
+	mvprintw(9, 44, "x%d", bank -> wood);
+	print_a_card(11, 44, 1);
+	mvprintw(15, 44, "x%d", bank -> brick);
+	print_a_card(17, 44, 5);
+	mvprintw(21, 44, "x%d", bank -> sheep);
+	print_a_card(5, 60, 4);
+	mvprintw(9, 60, "x%d", bank -> wheat);
+	print_a_card(11, 60, 8);
+	mvprintw(15, 60, "x%d", bank -> stone);
+	print_a_card(17, 60, 6);
+	mvprintw(21, 60, "x%d",bank ->knights+bank->year_of_plenty+bank->road_building+bank->monopoly+bank->victory_card);
+	attron(COLOR_PAIR(3));
+	for (int i = 0; i < 9; ++i)
+	{
+		for (int j = 0; j < 5; ++j)
+		{
+			mvprintw(45 + j, 87 + i, " ");
+		}
+	}
+	attroff(COLOR_PAIR(3));
+	attron(COLOR_PAIR(8));
+	mvprintw(45 + 2, 87 + 2, " ");
+	mvprintw(45 + 3, 87 + 3, " ");
+	mvprintw(45 + 3, 87 + 4, " ");
+	mvprintw(45 + 2, 87 + 5, " ");
+	mvprintw(45 + 1, 87 + 6, " ");
+	attroff(COLOR_PAIR(8));
+	int ch;
+	int tmp_trade_point = 0;
+	int player_wood_reduction = 0;
+	int player_brick_reduction = 0;
+	int player_sheep_reduction = 0;
+	int player_wheat_reduction = 0;
+	int player_stone_reduction = 0;
+	int bank_wood_reduction = 0;
+	int bank_brick_reduction = 0;
+	int bank_sheep_reduction = 0;
+	int bank_wheat_reduction = 0;
+	int bank_stone_reduction = 0;
+	int bank_special_card_reduction = 0;
+    mvprintw(50, 168," ");
+	attron(COLOR_PAIR(31));
+	while (ch = getch())
+	{
+        if (ch == KEY_MOUSE && getmouse(&event) == OK)
+        {
+            if (event.bstate & BUTTON1_PRESSED)
+            {
+                int x = event.x;
+                int y = event.y;
+                if(((x >= 44 && y >= 31) && (x <= 46 && y <= 33)))
+                {
+                	player_wood_reduction ++;
+                	mvprintw(35, 47, "-%d",player_wood_reduction);
+                	tmp_trade_point += player_wood_reduction / player -> wood_exchange_rate;
+                }
+                else if(((x >= 44 && y >= 37) && (x <= 46 && y <= 39)))
+                {
+                	player_brick_reduction ++;
+                	mvprintw(41, 47, "-%d",player_brick_reduction);
+                	tmp_trade_point += player_brick_reduction / player -> brick_exchange_rate;
+                }
+                else if(((x >= 44 && y >= 43) && (x <= 46 && y <= 45)))
+                {
+                	player_sheep_reduction ++;
+                	mvprintw(47, 47, "-%d", player_sheep_reduction);
+                	tmp_trade_point += (player_sheep_reduction - bank_special_card_reduction) / player -> sheep_exchange_rate;
+                }
+                else if(((x >= 60 && y >= 31) && (x <= 62 && y <= 33)))
+                {
+                	player_wheat_reduction ++;
+                	mvprintw(35, 63, "-%d", player_wheat_reduction);
+                	tmp_trade_point += (player_wheat_reduction - bank_special_card_reduction) / player -> wheat_exchange_rate;
+                }
+                else if(((x >= 60 && y >= 37) && (x <= 62 && y <= 39)))
+                {
+                	player_stone_reduction ++;
+                	mvprintw(41, 63, "-%d", player_stone_reduction);
+                	tmp_trade_point += (player_stone_reduction - bank_special_card_reduction) / player -> stone_exchange_rate;
+                }
+                else if(((x >= 87 && y >= 45) && (x <= 95 && y <= 49)))
+                {
+                	break;
+                }
+                else if(((x >= 44 && y >= 5) && (x <= 46 && y <= 7)) && tmp_trade_point > 0)
+                {
+                	bank_wood_reduction ++;
+                	mvprintw(9, 47, "-%d", bank_wood_reduction);
+                }
+                else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) && tmp_trade_point > 0)
+                {
+                	bank_brick_reduction ++;
+                	mvprintw(15, 47, "-%d", bank_brick_reduction);
+                }
+                else if(((x >= 44 && y >= 17) && (x <= 46 && y <= 19)) && tmp_trade_point > 0)
+                {
+                	bank_sheep_reduction ++;
+                	mvprintw(21, 47, "-%d", bank_sheep_reduction);
+                }
+                else if(((x >= 60 && y >= 5) && (x <= 62 && y <= 7)) && tmp_trade_point > 0)
+                {
+                	bank_wheat_reduction ++;
+                	mvprintw(9, 63, "-%d", bank_wheat_reduction);
+                }
+                else if(((x >= 60 && y >= 11) && (x <= 62 && y <= 13)) && tmp_trade_point > 0)
+                {
+                	bank_stone_reduction ++;
+                	mvprintw(15, 63, "-%d", bank_stone_reduction);
+                }
+                else if(((x >= 60 && y >= 17) && (x <= 62 && y <= 19)))
+                {
+                	bank_special_card_reduction ++;
+                	player_sheep_reduction ++;
+                	player_stone_reduction ++;
+                	player_wheat_reduction ++;
+                	mvprintw(41, 63, "-%d", player_stone_reduction);
+                	mvprintw(47, 47, "-%d", player_sheep_reduction);
+                	mvprintw(35, 63, "-%d", player_wheat_reduction);
+                	mvprintw(21, 63, "-%d", bank_special_card_reduction);
+                }
+            }
+        }
+    }
+    if((player -> wood - player_wood_reduction < 0) || (player -> brick - player_brick_reduction < 0) || (player -> sheep - player_sheep_reduction < 0) || (player -> wheat - player_wheat_reduction < 0) || (player -> stone - player_stone_reduction < 0) ||(bank -> wood - bank_wood_reduction < 0 ) || (bank -> brick - bank_brick_reduction < 0) ||(bank -> sheep - bank_sheep_reduction < 0) ||(bank -> wheat - bank_wheat_reduction < 0) ||(bank -> stone - bank_stone_reduction < 0) ||(bank -> special_cards - bank_special_card_reduction < 0))
+    {
+    	mvprintw(45,138, "Transaction Failed!");
+    }
+    else
+    {
+    	if(agree_or_disagree(43, 140, "Trade like this?", event))
+    	{
+    		player -> wood -= player_wood_reduction;
+    		player -> brick -= player_brick_reduction;
+    		player -> sheep -= player_sheep_reduction;
+    		player -> wheat -= player_wheat_reduction;
+    		player -> stone -= player_stone_reduction;
+    		player -> special_cards += bank_special_card_reduction;
+    		bank -> wood -= bank_wood_reduction;
+    		bank -> brick -= bank_brick_reduction;
+    		bank -> sheep -= bank_sheep_reduction;
+    		bank -> wheat -= bank_wheat_reduction;
+    		bank -> stone -= bank_stone_reduction;
+    		player -> wood += bank_wood_reduction;
+    		player -> brick += bank_brick_reduction;
+    		player -> sheep += bank_sheep_reduction;
+    		player -> wheat += bank_wheat_reduction;
+    		player -> stone += bank_stone_reduction;
+    		bank -> wood += player_wood_reduction;
+    		bank -> brick += player_brick_reduction;
+    		bank -> sheep += player_sheep_reduction;
+    		bank -> wheat += player_wheat_reduction;
+    		bank -> stone += player_stone_reduction;
+    		bank -> special_cards -= bank_special_card_reduction;
+    	}
+    }
+   	refresh_all_status(player,player_2,player_3,player_4,bank);
+    attroff(COLOR_PAIR(31));
+    //feature : u can discard card like this way!
+    mvprintw(50, 168," ");
+}
+
+
 void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank)
 {
+	print_in_game_ui();
 	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
 	print_YOU(player_1);
 	print_bank(bank);
 	show_all_objects();
+}
+
+void help(MEVENT event)
+{
+	set_background_color_init();
+	int ch;
+    while (ch = getch())
+    {
+		mvprintw(3, 5, "There are 12 kinds of cards that as follow:");
+		print_a_card(6, 5, 3);
+		mvprintw(7, 9, "This is Wood");
+		print_a_card(12, 5, 1);
+		mvprintw(13, 9, "This is Brick");
+		print_a_card(18, 5, 5);
+		mvprintw(19, 9, "This is Sheep");
+		print_a_card(24, 5, 4);
+		mvprintw(25, 9, "This is Wheat");
+		print_a_card(30, 5, 8);
+		mvprintw(31, 9, "This is Stone");
+		print_a_card(36, 5, 2);
+		mvprintw(37, 9, "This means all resource cards");
+		print_a_card(6, 53, 6);
+		mvprintw(7, 57, "This is Knight");
+		attron(COLOR_PAIR(1));
+		mvprintw(7, 54, " ");
+		attroff(COLOR_PAIR(1));
+		print_a_card(12, 53, 6);
+		attron(COLOR_PAIR(5));
+		mvprintw(13, 54, " ");
+		attroff(COLOR_PAIR(5));
+		mvprintw(13, 57, "This is Year of Plenty");
+		print_a_card(18, 53, 6);
+		attron(COLOR_PAIR(8));
+		mvprintw(19, 54, " ");
+		attroff(COLOR_PAIR(8));
+		mvprintw(19, 57, "This is Road Building");
+		print_a_card(24, 53, 6);
+		attron(COLOR_PAIR(2));
+		mvprintw(25, 54, " ");
+		attroff(COLOR_PAIR(2));
+		mvprintw(25, 57, "This is Monopoly");
+		print_a_card(30, 53, 6);
+		attron(COLOR_PAIR(4));
+		mvprintw(31, 54, " ");
+		attroff(COLOR_PAIR(4));
+		mvprintw(31, 57, "This is Victory Card");
+		print_a_card(36, 53, 6);
+		mvprintw(37, 57, "This means all development cards");
+		attron(COLOR_PAIR(8));
+		int c_y = 6;
+		int c_x = 104;
+		for (int i = 0; i < 5; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				mvprintw(c_y + j, c_x + i, " ");
+			}
+
+		}
+		attroff(COLOR_PAIR(8));
+		attron(COLOR_PAIR(7));
+		for (int i = 0; i < 3; ++i)
+		{
+			mvprintw(c_y + 1, c_x + 1 + i, " ");
+			if(i == 1)
+			{
+				mvprintw(c_y + 2, c_x + 1 + i, " ");
+			}
+		}
+		attroff(COLOR_PAIR(7));
+		mvprintw(7, 110, "This is the knight player has");
+		c_y = 18;
+		c_x = 103;
+		attron(COLOR_PAIR(8));
+		for (int i = 0; i < 7; ++i)
+		{
+			mvprintw(c_y ,c_x + i, " ");
+			if(i < 2)
+			{
+				c_y --;
+			}
+			else if(i > 3)
+			{
+				c_y ++;
+			}
+		}
+		attroff(COLOR_PAIR(8));
+		mvprintw(17, 113, "This is the maxium road player has");
+		mvprintw(45, 4, "If you done reading, press 'q' to back to menu.");
+		//draw_with_mouse_and_return_value(event);
+		if(ch == 'q')
+		{
+			clear();
+			return;
+		}
+	}
+}
+
+void print_a_card(int y, int x, int color)
+{
+	attron(COLOR_PAIR(color));
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			mvprintw(y + i, x + j, " ");
+		}
+	}
+	attroff(COLOR_PAIR(color));
+}
+
+int check_winner(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4)
+{
+	if(player_1 -> total_victory_points >= 10)
+	{
+		return 1;
+	}
+	else if(player_2 -> total_victory_points >= 10)
+	{
+		return 2;
+	}
+	else if(player_3 -> total_victory_points >= 10)
+	{
+		return 3;
+	}
+	else if(player_4 -> total_victory_points >= 10)
+	{
+		return 4;
+	}
 }
 
 void set_background_color_init()
@@ -1386,6 +1794,7 @@ void set_background_color_init()
     init_pair(22,COLOR_CYAN,COLOR_BLACK);
     init_pair(23,COLOR_GREEN,COLOR_BLACK);
     init_pair(24,COLOR_YELLOW,COLOR_BLACK);
+    init_pair(31,COLOR_RED,COLOR_BLACK);
     init_color(COLOR_WHITE,850,850,850);
     init_color(COLOR_MAGENTA,800,0,800);
     init_color(COLOR_BLUE,0,750,0);
