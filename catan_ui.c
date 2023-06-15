@@ -1627,6 +1627,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(47, 47, "-%d", player_sheep_reduction);
                 	mvprintw(35, 63, "-%d", player_wheat_reduction);
                 	mvprintw(21, 63, "-%d", bank_special_card_reduction);
+                	specialcard_get( player, bank );
                 }
             }
         }
