@@ -126,7 +126,6 @@ void fprintf_bank(bank_property bank1) {
     fprintf(file, "Monopoly: %u\n", bank1.monopoly);
     fprintf(file, "Victory cards: %u\n", bank1.victory_card);
 
-
     fclose(file);
 }
 void clear_log()
@@ -161,6 +160,7 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 obj* clicked= get_obj_from_mouse(event.x,event.y);
                 if(clicked)
                 {
+
                     for(i32 i=0;i<7;i++)mvprintw(i,172,"                                                    ");
                     switch(clicked->attr)
                     {
@@ -210,6 +210,20 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
 
                 refresh();
             }
+            /*if (event.bstate & BUTTON2_PRESSED)
+            {
+                obj *clicked= get_obj_from_mouse(event.x,event.y);
+                if(clicked->attr==neg_vert||clicked->attr==pos_vert)
+                {
+                    build_village(player1,clicked);
+                    show_obj(clicked);
+                }
+                else if(clicked->attr!=body)
+                {
+                    build_road(player1,clicked);
+                    show_obj(clicked);
+                }
+            }*/
 			if (event.bstate & BUTTON3_PRESSED)
             {
                 int x = event.x;
@@ -218,6 +232,17 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 mvprintw(y,x," ");
                 attroff(COLOR_PAIR(7));
                 mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
+                obj *clicked= get_obj_from_mouse(event.x,event.y);
+                if(clicked->attr==neg_vert||clicked->attr==pos_vert)
+                {
+                    build_village(player1,clicked);
+                    show_obj(clicked);
+                }
+                else if(clicked->attr!=body)
+                {
+                    build_road(player1,clicked);
+                    show_obj(clicked);
+                }
                 refresh();
             }
         }

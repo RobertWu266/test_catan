@@ -154,12 +154,14 @@ obj **body_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_body(obj* tgt);
 obj** vertice_neighbor_vertice(obj* tgt);
 harbor locs_harbor(i32 *locs);
+void build_village(owner owner1, obj* tobuild);
+void build_road(owner owner1, obj* tobuild);
 void highlight_availible_village();
 void highlight_availible_village_beginning();
 
 void trade_init( int trade[] );
 int trade( player_property *player, bank_property *bank, int trade[] );
-void robber( obj *robber )
+void robber( obj *robber );
 void specialcard_init( int specialcard[] );
 int specialcard_get( player_property *player, bank_property *bank );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
