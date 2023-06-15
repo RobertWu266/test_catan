@@ -44,6 +44,7 @@ typedef struct
     uint8_t brick;
     uint8_t sheep;
     uint8_t wheat;
+    uint8_t special_cards;
     uint8_t knights;
     uint8_t year_of_plenty;
     uint8_t road_building;
@@ -159,7 +160,7 @@ void highlight_availible_village_beginning();
 
 void trade_init( int trade[] );
 int trade( player_property *player, bank_property *bank, int trade[] );
-void robber( obj *robber )
+void robber( obj *robber );
 void specialcard_init( int specialcard[] );
 int specialcard_get( player_property *player, bank_property *bank );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );

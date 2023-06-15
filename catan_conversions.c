@@ -505,16 +505,17 @@ void bank_init(bank_property *bank)
     bank->year_of_plenty=2;
     bank->road_building=2;
     bank->victory_card=6;
+    bank -> special_cards = bank -> knights + bank -> monopoly + bank -> year_of_plenty + bank -> road_building + bank -> victory_card;
 }
 
 void player_init(player_property *player)
 {
-    player -> total_resource_cards = 0;
-    player -> wood = 0;
-    player -> stone = 0;
-    player -> brick = 0;
-    player -> sheep = 0;;
-    player -> wheat = 0;;
+    player -> total_resource_cards = 100;
+    player -> wood = 20;
+    player -> stone = 20;
+    player -> brick = 20;
+    player -> sheep = 20;
+    player -> wheat = 20;
     player -> special_cards = 0;
     player -> knights = 0;
     player -> year_of_plenty = 0;
@@ -523,8 +524,8 @@ void player_init(player_property *player)
     player -> victory_card = 0;
     player -> total_victory_points = 0;
     player -> max_roads = 0;
-    player -> village_remain = 4;
-    player -> city_remain = 5;
+    player -> village_remain = 5;
+    player -> city_remain = 4;
     player -> road_remain = 15;
     player->wood_exchange_rate=4;
     player->brick_exchange_rate=4;
@@ -636,7 +637,9 @@ void highlight_availible_village_beginning()
         }
         vertice_list[i]->highlighted=1;
     }
-}void highlight_availible_village()
+}
+
+void highlight_availible_village()
 {
 
     for(i32 i=0;i<54;i++)
@@ -704,10 +707,10 @@ int trade( player_property *player, bank_property *bank, int trade[] )
 }
 
 
-void robber( obj *robber )
-{
+// void robber( obj *robber )
+// {
 	
-}
+// }
 
 
 int specialcard_get( player_property *player, bank_property *bank )
@@ -797,7 +800,6 @@ void specialcard_use( player_property *player1, player_property *player2, player
 	if( specialcard[0] == 1 ) //knights
 	{
 		player1 -> knights--;
-		
 	}
 	else if( specialcard[1] == 1 ) //year_of_plenty
 	{
