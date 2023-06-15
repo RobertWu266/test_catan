@@ -163,7 +163,11 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
             clear_all_highlight();
             show_all_objects();
         }
-
+        if(ch=='n')
+        {
+            highlight_available_road(player1);
+            show_all_objects();
+        }
         if(ch=='p')clear_log();
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
         {
@@ -256,12 +260,12 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                     if(clicked->attr==neg_vert||clicked->attr==pos_vert)
                     {
                         build_village(player1,clicked);
-                        show_obj(clicked);
+                        show_all_objects();
                     }
                     else if(clicked->attr!=body)
                     {
                         build_road(player1,clicked);
-                        show_obj(clicked);
+                        show_all_objects();
                     }
                     refresh();
                 }

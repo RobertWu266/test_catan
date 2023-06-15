@@ -571,7 +571,7 @@ void build_road(owner owner1, obj* tobuild)
     sprop(tobuild)->own=owner1;
     the_player->my_road[the_player->my_road_csr]=tobuild;
     the_player->my_road_csr++;
-
+    clear_all_highlight();
 }
 void build_village(owner owner1, obj* tobuild)
 {
@@ -593,6 +593,7 @@ void build_village(owner owner1, obj* tobuild)
     if(vprop(tobuild)->harb==WHEAT_HARBOR)the_player->wheat_exchange_rate=2;
     if(vprop(tobuild)->harb==BRICK_HARBOR)the_player->brick_exchange_rate=2;
     if(vprop(tobuild)->harb==WOOD_HARBOR)the_player->wood_exchange_rate=2;
+    clear_all_highlight();
 }
 
 void box_set()
@@ -677,6 +678,33 @@ void highlight_availible_village(owner owner1)
             tgt->highlighted=1;
             failure:;
 
+        }
+    }
+}
+void highlight_available_road(owner owner1)
+{
+    for (i32 i=0;i<72;i++)
+    {
+        obj* tgt=side_list[i];
+        if(sprop(tgt)->own!=None)continue;
+        if(tgt->highlighted)continue;
+        for(i32 j=0;j<2;j++)
+        {
+            obj *test=sprop(tgt)->nei_vert[j];
+            if(vprop(test)->own==owner1)
+            {
+                tgt->highlighted=1;
+                break;
+            }
+        }
+        for(i32 j=0;j<4;j++)
+        {
+            obj *test=sprop(tgt)->nei_side[j];
+            if(test!=NULL&&sprop(test)->own==owner1)
+            {
+                tgt->highlighted=1;
+                break;
+            }
         }
     }
 }
