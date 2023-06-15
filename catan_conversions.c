@@ -518,10 +518,15 @@ void player_init(player_property *player)
     player -> wheat = 20;
     player -> special_cards = 0;
     player -> knights = 0;
+    player -> knights_get = false;
     player -> year_of_plenty = 0;
+    player -> year_of_plenty_get = false;
     player -> road_building = 0;
+    player -> road_building_get = false;
     player -> monopoly = 0;
+    player -> monopoly_get = false;
     player -> victory_card = 0;
+    player -> victory_card_get = false;
     player -> total_victory_points = 0;
     player -> max_roads = 0;
     player -> village_remain = 5;
@@ -548,6 +553,14 @@ void specialcard_init( int specialcard[] )
 	{
 		specialcard[i] = 0;
 	}
+}
+void player_card_get_init( player_property *player )
+{
+	player -> knights_get = false;
+	player -> year_of_plenty_get = false;
+	player -> road_building_get = false;
+	player -> monopoly_get = false;
+	player -> victory_card_get = false;
 }
 
 void build_road(owner owner1, obj* tobuild)
@@ -713,7 +726,7 @@ int trade( player_property *player, bank_property *bank, int trade[] )
 // }
 
 
-int specialcard_get( player_property *player, bank_property *bank )
+int specialcard_get( player_property *player, bank_property *bank ) //use "void player_card_get_init( player_property *player )" after this
 {
 	if( player -> stone < 1 || player -> sheep < 1 || player -> wheat < 1 )
 		return -1;
@@ -771,22 +784,27 @@ int specialcard_get( player_property *player, bank_property *bank )
 		case 1: 
 			player -> knights++;
 			bank -> knights--;
+			player -> knights_get = true;
 			break;
 		case 2: 
 			player -> year_of_plenty++;
 			bank -> year_of_plenty--;
+			player -> year_of_plenty_get = true;
 			break;
 		case 3: 
 			player -> road_building++;
 			bank -> road_building--;
+			player -> road_building_get = true;
 			break;
 		case 4: 
 			player -> monopoly++;
 			bank -> monopoly--;
+			player -> monopoly_get = true;
 			break;
 		case 5: 
 			player -> victory_card++;
 			bank -> victory_card--;
+			player -> victory_card_get = true;
 			break;
 		default:
 			break;
