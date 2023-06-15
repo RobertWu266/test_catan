@@ -565,33 +565,34 @@ void player_card_get_init( player_property *player )
 
 void build_road(owner owner1, obj* tobuild)
 {
-    player_property the_player=players[owner1-player1];
-    the_player.road_remain--;
+    player_property *the_player=&(players[owner1-player1]);
+    the_player->road_remain--;
     if(tobuild->attr!=v_side&&tobuild->attr!=main_side&&tobuild->attr!=minor_side)assert(0);
     sprop(tobuild)->own=owner1;
-    the_player.my_road[the_player.my_road_csr]=tobuild;
-    the_player.my_road_csr++;
+    the_player->my_road[the_player->my_road_csr]=tobuild;
+    the_player->my_road_csr++;
 
 }
 void build_village(owner owner1, obj* tobuild)
 {
-    player_property the_player=players[owner1-player1];
-    the_player.road_remain--;
+    player_property *the_player=&(players[owner1-player1]);
+    the_player->road_remain--;
     if(tobuild->attr!=pos_vert&&tobuild->attr!=neg_vert)assert(0);
     vprop(tobuild)->own=owner1;
+    if(vprop(tobuild)->build!=city)vprop(tobuild)->build++;//building upgrade 1
     if(vprop(tobuild)->harb==ALL_HARBOR)
     {
-        if(the_player.wheat_exchange_rate>3)the_player.wheat_exchange_rate=3;
-        if(the_player.wood_exchange_rate>3)the_player.wood_exchange_rate=3;
-        if(the_player.stone_exchange_rate>3)the_player.stone_exchange_rate=3;
-        if(the_player.brick_exchange_rate>3)the_player.brick_exchange_rate=3;
-        if(the_player.sheep_exchange_rate>3)the_player.sheep_exchange_rate=3;
+        if(the_player->wheat_exchange_rate>3)the_player->wheat_exchange_rate=3;
+        if(the_player->wood_exchange_rate>3)the_player->wood_exchange_rate=3;
+        if(the_player->stone_exchange_rate>3)the_player->stone_exchange_rate=3;
+        if(the_player->brick_exchange_rate>3)the_player->brick_exchange_rate=3;
+        if(the_player->sheep_exchange_rate>3)the_player->sheep_exchange_rate=3;
     }
-    if(vprop(tobuild)->harb==SHEEP_HARBOR)the_player.sheep_exchange_rate=2;
-    if(vprop(tobuild)->harb==STONE_HARBOR)the_player.stone_exchange_rate=2;
-    if(vprop(tobuild)->harb==WHEAT_HARBOR)the_player.wheat_exchange_rate=2;
-    if(vprop(tobuild)->harb==BRICK_HARBOR)the_player.brick_exchange_rate=2;
-    if(vprop(tobuild)->harb==WOOD_HARBOR)the_player.wood_exchange_rate=2;
+    if(vprop(tobuild)->harb==SHEEP_HARBOR)the_player->sheep_exchange_rate=2;
+    if(vprop(tobuild)->harb==STONE_HARBOR)the_player->stone_exchange_rate=2;
+    if(vprop(tobuild)->harb==WHEAT_HARBOR)the_player->wheat_exchange_rate=2;
+    if(vprop(tobuild)->harb==BRICK_HARBOR)the_player->brick_exchange_rate=2;
+    if(vprop(tobuild)->harb==WOOD_HARBOR)the_player->wood_exchange_rate=2;
 }
 
 void box_set()
@@ -642,28 +643,40 @@ void highlight_availible_village_beginning()
 {
     for(i32 i=0;i<54;i++)
     {
+        if(vprop(vertice_list[i])->own!=None)continue;
         for(i32 j=0;j<3;j++)
         {
             obj *tgt=vprop(vertice_list[i])->nei_vert[j];
-            if(NULL==tgt)continue;
-            if(vprop(tgt)->own!=None)continue;
+            if(tgt != NULL && vprop(tgt)->build != empty)
+            {
+                goto failure;
+            }
         }
         vertice_list[i]->highlighted=1;
+        failure:
     }
 }
-
-void highlight_availible_village()
+void highlight_availible_village(owner owner1)
 {
-
-    for(i32 i=0;i<54;i++)
+    player_property *the_player=&(players[owner1-player1]);
+    for(i32 i=0; i<the_player->my_road_csr;i++)
     {
 
-        for(i32 j=0;j<3;j++)
+        for(i32 j=0;j<2;j++)
         {
-            obj *tgt=vprop(vertice_list[i])->nei_vert[j];
-            if(NULL==tgt||vprop(tgt)->own!=None)continue;
+            obj *tgt=sprop(the_player->my_road[j])->nei_vert;//get vert around my road
+            if(tgt->highlighted)continue;
+            for(i32 k=0;k<3;k++)
+            {
+                obj* test=vprop(tgt)->nei_vert[k];//check if the nei_vert of "the vert by my road" is empty
+                if(test != NULL && vprop(test)->build != empty)
+                {
+                    goto failure;
+                }
+            }
+            tgt->highlighted=1;
+            failure:
         }
-        vertice_list[i]->highlighted=1;
     }
 }
 

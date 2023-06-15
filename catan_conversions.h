@@ -160,7 +160,9 @@ obj **body_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_body(obj* tgt);
 obj** vertice_neighbor_vertice(obj* tgt);
 harbor locs_harbor(i32 *locs);
-void highlight_availible_village();
+void build_village(owner owner1, obj* tobuild);
+void build_road(owner owner1, obj* tobuild);
+void highlight_availible_village(owner);
 void highlight_availible_village_beginning();
 
 void trade_init( int trade[] );
