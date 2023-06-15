@@ -251,17 +251,20 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                 attroff(COLOR_PAIR(7));
                 mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
                 obj *clicked= get_obj_from_mouse(event.x,event.y);
-                if(clicked->attr==neg_vert||clicked->attr==pos_vert)
+                if(clicked)
                 {
-                    build_village(player1,clicked);
-                    show_obj(clicked);
+                    if(clicked->attr==neg_vert||clicked->attr==pos_vert)
+                    {
+                        build_village(player1,clicked);
+                        show_obj(clicked);
+                    }
+                    else if(clicked->attr!=body)
+                    {
+                        build_road(player1,clicked);
+                        show_obj(clicked);
+                    }
+                    refresh();
                 }
-                else if(clicked->attr!=body)
-                {
-                    build_road(player1,clicked);
-                    show_obj(clicked);
-                }
-                refresh();
             }
         }
     }
