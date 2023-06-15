@@ -165,6 +165,7 @@ void build_road(owner owner1, obj* tobuild);
 void highlight_availible_village(owner);
 void highlight_availible_village_beginning();
 void highlight_available_road(owner owner1);
+void highlight_available_upgrade(owner owner1);
 void clear_all_highlight();
 
 void trade_init( int trade[] );

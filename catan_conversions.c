@@ -566,7 +566,14 @@ void player_card_get_init( player_property *player )
 void build_road(owner owner1, obj* tobuild)
 {
     player_property *the_player=&(players[owner1-player1]);
-    the_player->road_remain--;
+    if(the_player->road_remain)
+    {
+        the_player->road_remain--;
+    }
+    else
+    {
+        return;
+    }
     if(tobuild->attr!=v_side&&tobuild->attr!=main_side&&tobuild->attr!=minor_side)assert(0);
     sprop(tobuild)->own=owner1;
     the_player->my_road[the_player->my_road_csr]=tobuild;
@@ -576,10 +583,37 @@ void build_road(owner owner1, obj* tobuild)
 void build_village(owner owner1, obj* tobuild)
 {
     player_property *the_player=&(players[owner1-player1]);
-    the_player->road_remain--;
+    if (vprop(tobuild)->build==village)
+    {
+        if(the_player->city_remain)
+        {
+            vprop(tobuild)->build=city;
+            the_player->city_remain--;
+        }
+        else
+        {
+            return;
+        }
+    }
+    else if(vprop(tobuild)->build==empty)
+    {
+        if(the_player->village_remain)
+        {
+            vprop(tobuild)->build=village;
+            the_player->village_remain--;
+        }
+        else
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
     if(tobuild->attr!=pos_vert&&tobuild->attr!=neg_vert)assert(0);
     vprop(tobuild)->own=owner1;
-    if(vprop(tobuild)->build!=city)vprop(tobuild)->build++;//building upgrade 1
+
     if(vprop(tobuild)->harb==ALL_HARBOR)
     {
         if(the_player->wheat_exchange_rate>3)the_player->wheat_exchange_rate=3;
@@ -705,6 +739,16 @@ void highlight_available_road(owner owner1)
                 tgt->highlighted=1;
                 break;
             }
+        }
+    }
+}
+void highlight_available_upgrade(owner owner1)
+{
+    for(i32 i=0;i<54;i++)
+    {
+        if(vprop(vertice_list[i])->build==village&&vprop(vertice_list[i])->own==owner1)
+        {
+            vertice_list[i]->highlighted=1;
         }
     }
 }

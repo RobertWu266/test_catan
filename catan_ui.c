@@ -151,22 +151,27 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
         if(ch == 'j')
         {
             highlight_availible_village_beginning();
-            show_all_objects();
+            refresh_all_status(players,players+1,players+2,players+3,&bank);
         }
         if(ch=='k')
         {
             highlight_availible_village(player1);
-            show_all_objects();
+            refresh_all_status(players,players+1,players+2,players+3,&bank);
         }
         if(ch=='l')
         {
             clear_all_highlight();
-            show_all_objects();
+            refresh_all_status(players,players+1,players+2,players+3,&bank);
         }
         if(ch=='n')
         {
             highlight_available_road(player1);
-            show_all_objects();
+            refresh_all_status(players,players+1,players+2,players+3,&bank);
+        }
+        if(ch=='m')
+        {
+            highlight_available_upgrade(player1);
+            refresh_all_status(players,players+1,players+2,players+3,&bank);
         }
         if(ch=='p')clear_log();
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
@@ -260,12 +265,12 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                     if(clicked->attr==neg_vert||clicked->attr==pos_vert)
                     {
                         build_village(player1,clicked);
-                        show_all_objects();
+                        refresh_all_status(players,players+1,players+2,players+3,&bank);
                     }
                     else if(clicked->attr!=body)
                     {
                         build_road(player1,clicked);
-                        show_all_objects();
+                        refresh_all_status(players,players+1,players+2,players+3,&bank);
                     }
                     refresh();
                 }
