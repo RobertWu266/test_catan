@@ -1627,6 +1627,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(47, 47, "-%d", player_sheep_reduction);
                 	mvprintw(35, 63, "-%d", player_wheat_reduction);
                 	mvprintw(21, 63, "-%d", bank_special_card_reduction);
+                	specialcard_get( player, bank );
                 }
             }
         }
@@ -1661,6 +1662,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
     		bank -> wheat += player_wheat_reduction;
     		bank -> stone += player_stone_reduction;
     		bank -> special_cards -= bank_special_card_reduction;
+    		
+    		player -> total_resource_cards = player -> wood + player -> brick + player -> sheep + player -> wheat + player -> stone;
     	}
     }
    	refresh_all_status(player,player_2,player_3,player_4,bank);
@@ -1675,6 +1678,7 @@ void refresh_all_status(player_property *player_1, player_property *player_2, pl
 	print_in_game_ui();
 	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
 	print_YOU(player_1);
+	_print_player(player_1, 11, 97, 1);
 	print_bank(bank);
 	show_all_objects();
 }

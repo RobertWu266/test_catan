@@ -882,13 +882,8 @@ void robber( obj *robber )
 
 }
 
-int specialcard_get( player_property *player, bank_property *bank ) //use "void player_card_get_init( player_property *player )" after this
+void specialcard_get( player_property *player, bank_property *bank ) //use "void player_card_get_init( player_property *player )" after this
 {
-	if( player -> stone < 1 || player -> sheep < 1 || player -> wheat < 1 )
-		return -1;
-	player -> stone--;
-	player -> sheep--;
-	player -> wheat--;
 	int card = rand() % 5 + 1;
 	int c = 0;
 	while( c == 0 )
@@ -965,7 +960,6 @@ int specialcard_get( player_property *player, bank_property *bank ) //use "void 
 		default:
 			break;
 	}
-	return 0;
 }
 
 
