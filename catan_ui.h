@@ -44,7 +44,7 @@ int check_winner(player_property *player_1, player_property *player_2, player_pr
 void _print_player(player_property *player ,int y, int x , int color);
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
 void print_YOU(player_property *player_1);
-void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event);
+void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade[]);
 void fprintf_bank(bank_property bank1);
 void fprintf_player(player_property player1);
 void clear_log();
