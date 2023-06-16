@@ -62,15 +62,16 @@ typedef struct
     uint8_t wheat;
     uint8_t special_cards;
     uint8_t knights;
-    bool knights_get;
+    uint8_t knights_use;
+    //bool knights_get;
     uint8_t year_of_plenty;
-    bool year_of_plenty_get;
+    //bool year_of_plenty_get;
     uint8_t road_building;
-    bool road_building_get;
+    //bool road_building_get;
     uint8_t monopoly;
-    bool monopoly_get;
+    //bool monopoly_get;
     uint8_t victory_card;
-    bool victory_card_get;
+    //bool victory_card_get;
     uint8_t total_victory_points;
     uint8_t max_roads;
     uint8_t village_remain;
@@ -85,6 +86,14 @@ typedef struct
     i32 my_road_csr;
 
 }player_property;
+
+typedef struct
+{
+    uint8_t knights;
+    uint8_t year_of_plenty;
+    uint8_t road_building;
+    uint8_t monopoly;
+}card_temp;
 
 typedef struct _obj
 {
@@ -152,6 +161,7 @@ obj** side_neighbor_body(obj* tgt);
 
 void bank_init(bank_property *bank);
 void player_init(player_property *player);
+void card_temp_init( card_temp *cardtemp );
 
 obj** side_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_side(obj* tgt);
@@ -168,10 +178,12 @@ void highlight_available_road(owner owner1);
 void highlight_available_upgrade(owner owner1);
 void clear_all_highlight();
 
-void trade_init( int trade[] );
-int trade( player_property *player, bank_property *bank, int trade[] );
+void trade_init( int trade_withbank[] );
+void tradewithbank( player_property *player, bank_property *bank, int trade_withbank[] );
 void robber( obj *robber );
 void specialcard_init( int specialcard[] );
-int specialcard_get( player_property *player, bank_property *bank );
-void player_card_get_init( player_property *player );
+void specialcard_get( card_temp *cardtemp, player_property *player, bank_property *bank, int count );
+//void player_card_get_init( player_property *player );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
+uint8_t get_longest_road(owner owner1);
+uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr);
