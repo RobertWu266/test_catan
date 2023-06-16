@@ -20,6 +20,7 @@ i32 dice_nums[18]={11,3,6,5,4,9,10,8,4,11,12,9,10,8,3,6,2,5};
 
 player_property players[4]={0};
 bank_property bank={0};
+card_temp cardtemp = {0};
 
 i32 abs(i32 x)
 {
@@ -605,6 +606,13 @@ void player_init(player_property *player)
     player->wheat_exchange_rate=4;
 
 }
+void card_temp_init( card_temp *cardtemp )
+{
+	cardtemp -> knights = 0;
+	cardtemp -> year_of_plenty = 0;
+	cardtemp -> road_building = 0;
+	cardtemp -> monopoly = 0;
+}
 
 void trade_init( int trade_withbank[] )
 {
@@ -701,6 +709,7 @@ void box_set()
 {
     for(i32 i=0;i<4;i++)player_init(players+i);
     bank_init(&bank);
+    card_temp_init( &cardtemp );
     int trade_withbank[10] = {0};
     int specialcard[4] = {0};
     for (i32 i = 0; i < 13; i++)
@@ -883,7 +892,7 @@ void robber( obj *robber )
 
 }
 
-void specialcard_get( player_property *player, bank_property *bank, int count )
+void specialcard_get( card_temp *cardtemp, player_property *player, bank_property *bank, int count )
 {
 	for( int i = count; i > 0; i-- )
 	{
@@ -947,22 +956,22 @@ void specialcard_get( player_property *player, bank_property *bank, int count )
 	switch( card )
 	{
 		case 1: 
-			player -> knights++;
+			cardtemp -> knights++;
 			bank -> knights--;
 			//player -> knights_get = true;
 			break;
 		case 2: 
-			player -> year_of_plenty++;
+			cardtemp -> year_of_plenty++;
 			bank -> year_of_plenty--;
 			//player -> year_of_plenty_get = true;
 			break;
 		case 3: 
-			player -> road_building++;
+			cardtemp -> road_building++;
 			bank -> road_building--;
 			//player -> road_building_get = true;
 			break;
 		case 4: 
-			player -> monopoly++;
+			cardtemp -> monopoly++;
 			bank -> monopoly--;
 			//player -> monopoly_get = true;
 			break;

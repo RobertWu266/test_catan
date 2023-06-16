@@ -87,6 +87,14 @@ typedef struct
 
 }player_property;
 
+typedef struct
+{
+    uint8_t knights;
+    uint8_t year_of_plenty;
+    uint8_t road_building;
+    uint8_t monopoly;
+}card_temp;
+
 typedef struct _obj
 {
     attribute attr;
@@ -153,6 +161,7 @@ obj** side_neighbor_body(obj* tgt);
 
 void bank_init(bank_property *bank);
 void player_init(player_property *player);
+void card_temp_init( card_temp *cardtemp );
 
 obj** side_neighbor_vertice(obj* tgt);
 obj** vertice_neighbor_side(obj* tgt);
@@ -173,7 +182,7 @@ void trade_init( int trade_withbank[] );
 void tradewithbank( player_property *player, bank_property *bank, int trade_withbank[] );
 void robber( obj *robber );
 void specialcard_init( int specialcard[] );
-void specialcard_get( player_property *player, bank_property *bank, int count );
+void specialcard_get( card_temp *cardtemp, player_property *player, bank_property *bank, int count );
 //void player_card_get_init( player_property *player );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
 uint8_t get_longest_road(owner owner1);

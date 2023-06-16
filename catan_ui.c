@@ -17,18 +17,20 @@ void in_game_ui(MEVENT event, int trade_withbank[])
 	player_property player_2;
 	player_property player_3;
 	player_property player_4;
+	card_temp cardtemp;
 	player_init(&player_1);
 	player_init(&player_2);
 	player_init(&player_3);
 	player_init(&player_4);
 	bank_init(&bank);
+	card_temp_init( &cardtemp );
 	bool your_turn = TRUE;
 	bool trade = TRUE;
 	bool build_a_road = TRUE;//for test
 	print_in_game_ui();
 	print_bank(&bank);
 	print_players_status(&player_1, &player_2, &player_3, &player_4);
-	print_YOU(&player_1);
+	print_YOU(&player_1, &cardtemp);
 	if(your_turn)
 	{
 		int ch;
@@ -68,7 +70,7 @@ void in_game_ui(MEVENT event, int trade_withbank[])
 	                }
 	                if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
 	                {
-	                	print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank);
+	                	print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
 	                }
 	            }
 			}
@@ -141,6 +143,7 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
     int ch;
     while ((ch = getch()) != 'q')
     {
+    	card_temp cardtemp;
         if(ch=='1')fprintf_player(players[0]);
         if(ch=='2')fprintf_player(players[1]);
         if(ch=='3')fprintf_player(players[2]);
@@ -151,27 +154,27 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
         if(ch == 'j')
         {
             highlight_availible_village_beginning();
-            refresh_all_status(players,players+1,players+2,players+3,&bank);
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='k')
         {
             highlight_availible_village(player1);
-            refresh_all_status(players,players+1,players+2,players+3,&bank);
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='l')
         {
             clear_all_highlight();
-            refresh_all_status(players,players+1,players+2,players+3,&bank);
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='n')
         {
             highlight_available_road(player1);
-            refresh_all_status(players,players+1,players+2,players+3,&bank);
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='m')
         {
             highlight_available_upgrade(player1);
-            refresh_all_status(players,players+1,players+2,players+3,&bank);
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='p')clear_log();
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
@@ -265,12 +268,12 @@ void draw_with_mouse_and_return_value(MEVENT event)// for debug
                     if(clicked->attr==neg_vert||clicked->attr==pos_vert)
                     {
                         build_village(player1,clicked);
-                        refresh_all_status(players,players+1,players+2,players+3,&bank);
+                        refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
                     }
                     else if(clicked->attr!=body)
                     {
                         build_road(player1,clicked);
-                        refresh_all_status(players,players+1,players+2,players+3,&bank);
+                        refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
                     }
                     refresh();
                 }
@@ -1360,7 +1363,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 	mvprintw(c_y + 1, c_x + 2, "x%d",player -> max_roads);
 }
 
-void print_YOU(player_property *player)
+void print_YOU(player_property *player, card_temp *cardtemp)
 {
 	attron(COLOR_PAIR(1));
 	for (int i = 0; i < 9; ++i)
@@ -1459,17 +1462,22 @@ void print_YOU(player_property *player)
 	attron(COLOR_PAIR(4));
 	mvprintw(35, 140 ," ");
 	attroff(COLOR_PAIR(4));
-	mvprintw(38, 111, "x%d", player -> knights);
-	mvprintw(38, 118, "x%d", player -> year_of_plenty);
-	mvprintw(38, 125, "x%d", player -> road_building);
-	mvprintw(38, 132, "x%d", player -> monopoly);
+	mvprintw(38, 111, "x%d+%d", player -> knights, cardtemp -> knights);
+	mvprintw(38, 118, "x%d+%d", player -> year_of_plenty, cardtemp -> year_of_plenty);
+	mvprintw(38, 125, "x%d+%d", player -> road_building, cardtemp -> road_building);
+	mvprintw(38, 132, "x%d+%d", player -> monopoly, cardtemp -> monopoly);
 	mvprintw(38, 139, "x%d", player -> victory_card);
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
+	player -> knights += cardtemp -> knights;
+	player -> year_of_plenty += cardtemp -> year_of_plenty;
+	player -> road_building += cardtemp -> road_building;
+	player -> monopoly += cardtemp -> monopoly;
+	card_temp_init( cardtemp );
 }
 
-void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[])
+void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp)
 {
 	//clean map
 	attron(COLOR_PAIR(7));
@@ -1695,27 +1703,28 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
     		bank -> wheat += player_wheat_reduction;
     		bank -> stone += player_stone_reduction;
     		bank -> special_cards -= bank_special_card_reduction;
-    		specialcard_get( player, bank, special_card_count );
+    		specialcard_get( cardtemp, player, bank, special_card_count );
     		
     		player -> total_resource_cards = player -> wood + player -> brick + player -> sheep + player -> wheat + player -> stone;
     	}
     }
     //trade_init(trade_withbank);
-   	refresh_all_status(player,player_2,player_3,player_4,bank);
+   	refresh_all_status(player,player_2,player_3,player_4,bank, cardtemp);
     attroff(COLOR_PAIR(31));
     //feature : u can discard card like this way!
     mvprintw(50, 168," ");
 }
 
 
-void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank)
+void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp)
 {
 	print_in_game_ui();
 	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
-	print_YOU(player_1);
+	print_YOU(player_1, cardtemp);
 	_print_player(player_1, 11, 97, 1);
 	print_bank(bank);
 	show_all_objects();
+	card_temp_init( cardtemp );
 }
 
 void help(MEVENT event)
