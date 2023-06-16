@@ -140,6 +140,7 @@ void clear_log()
     FILE *file = fopen("catan_log.txt", "w");
     fclose(file);
 }
+
 void draw_with_mouse_and_return_value(MEVENT event,int trade_withbank[])// for debug
 {
 	set_background_color_init();
@@ -156,12 +157,12 @@ void draw_with_mouse_and_return_value(MEVENT event,int trade_withbank[])// for d
 
         if(ch == 'j')
         {
-            highlight_availible_village_beginning();
+            free(highlight_availible_village_beginning());
             refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp,trade_withbank);
         }
         if(ch=='k')
         {
-            highlight_availible_village(player1);
+            free(highlight_availible_village(player1));
             refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp,trade_withbank);
         }
         if(ch=='l')
@@ -171,12 +172,12 @@ void draw_with_mouse_and_return_value(MEVENT event,int trade_withbank[])// for d
         }
         if(ch=='n')
         {
-            highlight_available_road(player1);
+            free(highlight_available_road(player1));
             refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp,trade_withbank);
         }
         if(ch=='m')
         {
-            highlight_available_upgrade(player1);
+            free(highlight_available_upgrade(player1));
             refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp,trade_withbank);
         }
         if(ch=='p')clear_log();
@@ -2125,6 +2126,7 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 				    	{
 				    		//wood: if player has decide to discard those cards:
 				    		//I didn't do the reduction, leave it to you.
+                            discard_half_deck_action(player,discard_brick,discard_sheep,discard_stone,discard_wheat,discard_wood);
 				    		break;
 				    	}
 				    }

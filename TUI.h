@@ -15,6 +15,7 @@
 #define i32 int32_t
 
 obj *get_obj_from_mouse(i32 x,i32 y);
+obj* wait_until_get_obj_from_mouse();
 void shuffle_i32(i32 *array, i32 n);
 void show_obj(obj* tgt);
 void print_polygon(obj *tgt, int y, int x);

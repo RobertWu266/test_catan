@@ -21,7 +21,15 @@ const char *resources_name[] = {"HILL", "MOUNTAIN", "FIELD", "PASTURE", "FOREST"
 
 
 #define FORI(X, Y) for(int32_t i=X;i<Y;i++)
-
+obj* wait_until_get_obj_from_mouse()
+{
+    MEVENT event;
+    int ch;
+    while(ch == KEY_MOUSE && getmouse(&event) == OK && (event.bstate & BUTTON1_PRESSED))
+    {
+        return get_obj_from_mouse(event.x,event.y);
+    }
+}
 void shuffle_i32(i32 *array, i32 n)
 {
     if (n > 1)

@@ -73,6 +73,7 @@ i32 *custom2cube(i32 x, i32 y)
     pret[2] -= offset;
     return pret;
 }
+
 /*function LongestRoad(player):
     longest_road = 0
 
@@ -649,9 +650,9 @@ void build_road(owner owner1, obj* tobuild)
         return;
     }
     if(tobuild->attr!=v_side&&tobuild->attr!=main_side&&tobuild->attr!=minor_side)assert(0);
-    sprop(tobuild)->own=owner1;
-    the_player->my_road[the_player->my_road_csr]=tobuild;
-    the_player->my_road_csr++;
+    sprop(tobuild)->own=owner1;//can be reversed
+    the_player->my_road[the_player->my_road_csr]=tobuild;//can be reversed
+    the_player->my_road_csr++;//can be reversed
     the_player->max_roads= get_longest_road(owner1);
     clear_all_highlight();
 }
@@ -750,8 +751,10 @@ void box_set()
         }
     }
 }
-void highlight_availible_village_beginning()
+obj** highlight_availible_village_beginning()
 {
+    obj **ret=calloc(54,sizeof(obj*));
+    i32 ret_csr=0;
     for(i32 i=0;i<54;i++)
     {
         if(vprop(vertice_list[i])->own!=None)continue;
@@ -764,12 +767,17 @@ void highlight_availible_village_beginning()
             }
         }
         vertice_list[i]->highlighted=1;
+        ret[ret_csr]=vertice_list[i];
+        ret_csr++;
         failure:;
     }
+    return ret;
 }
-void highlight_availible_village(owner owner1)
+obj** highlight_availible_village(owner owner1)
 {
     player_property *the_player=&(players[owner1-player1]);
+    obj **ret=calloc(54,sizeof(obj*));
+    i32 ret_csr=0;
     for(i32 i=0; i<the_player->my_road_csr;i++)
     {
 
@@ -786,13 +794,18 @@ void highlight_availible_village(owner owner1)
                 }
             }
             tgt->highlighted=1;
+            ret[ret_csr]=tgt;
+            ret_csr++;
             failure:;
 
         }
     }
+    return ret;
 }
-void highlight_available_road(owner owner1)
+obj** highlight_available_road(owner owner1)
 {
+    obj **ret=calloc(72,sizeof(obj*));
+    i32 ret_csr=0;
     for (i32 i=0;i<72;i++)
     {
         obj* tgt=side_list[i];
@@ -804,6 +817,8 @@ void highlight_available_road(owner owner1)
             if(vprop(test)->own==owner1)
             {
                 tgt->highlighted=1;
+                ret[ret_csr]=tgt;
+                ret_csr++;
                 break;
             }
         }
@@ -813,21 +828,29 @@ void highlight_available_road(owner owner1)
             if(test!=NULL&&sprop(test)->own==owner1)
             {
                 tgt->highlighted=1;
+                ret[ret_csr]=tgt;
+                ret_csr++;
                 break;
             }
         }
     }
+    return ret;
 }
-void highlight_available_upgrade(owner owner1)
+obj** highlight_available_upgrade(owner owner1)
 {
+    obj **ret=calloc(54,sizeof(obj*));
+    i32 ret_csr=0;
     for(i32 i=0;i<54;i++)
     {
         obj *tgt=vertice_list[i];
         if(vprop(tgt)->build==village && vprop(tgt)->own==owner1)
         {
             tgt->highlighted=1;
+            ret[ret_csr]=tgt;
+            ret_csr++;
         }
     }
+    return ret;
 }
 void clear_all_highlight()
 {
@@ -986,8 +1009,6 @@ void specialcard_get( card_temp *cardtemp, player_property *player, bank_propert
 	}
 	}
 }
-
-
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild )
 {
 	if( specialcard[0] == 1 ) //knights
@@ -1057,7 +1078,14 @@ void specialcard_use( player_property *player1, player_property *player2, player
 		}
 	}
 }
-
+void discard_half_deck_action(player_property *the_player,uint8_t brick_discard,uint8_t sheep_discard,uint8_t stone_discard,uint8_t wheat_discard,uint8_t wood_discard)
+{
+    the_player->wheat-=wheat_discard;bank.wheat+=wheat_discard;
+    the_player->wood-=wood_discard;bank.wood+=wood_discard;
+    the_player->brick-=brick_discard;bank.brick+=brick_discard;
+    the_player->sheep-=sheep_discard;bank.sheep+=sheep_discard;
+    the_player->stone-=stone_discard;bank.stone+=stone_discard;
+}
 /*int main()
 {
     box_set();
