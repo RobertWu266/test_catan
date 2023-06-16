@@ -1576,7 +1576,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(35, 47, "-%d",player_wood_reduction);
                 	tmp_trade_point += player_wood_reduction / player -> wood_exchange_rate;*/
                 	trade_withbank[0] ++;
-                	mvprintw(35, 47, "-%d",trade_withbank[0]*4);
+                	mvprintw(35, 47, "-%d",trade_withbank[0]*player -> wood_exchange_rate);
                 	trade_pay++;
                 }
                 else if(((x >= 44 && y >= 37) && (x <= 46 && y <= 39)))
@@ -1585,7 +1585,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(41, 47, "-%d",player_brick_reduction);
                 	tmp_trade_point += player_brick_reduction / player -> brick_exchange_rate;*/
                 	trade_withbank[2] ++;
-                	mvprintw(41, 47, "-%d",trade_withbank[2]);
+                	mvprintw(41, 47, "-%d",trade_withbank[2]*player -> brick_exchange_rate);
                 	trade_pay++;
                 }
                 else if(((x >= 44 && y >= 43) && (x <= 46 && y <= 45)))
@@ -1594,7 +1594,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(47, 47, "-%d", player_sheep_reduction);
                 	tmp_trade_point += (player_sheep_reduction - bank_special_card_reduction) / player -> sheep_exchange_rate;*/
                 	trade_withbank[3] ++;
-                	mvprintw(47, 47, "-%d",trade_withbank[3]*4+player_sheep_reduction);
+                	mvprintw(47, 47, "-%d",trade_withbank[3]*player -> sheep_exchange_rate+player_sheep_reduction);
                 	trade_pay++;
                 }
                 else if(((x >= 60 && y >= 31) && (x <= 62 && y <= 33)))
@@ -1603,7 +1603,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(35, 63, "-%d", player_wheat_reduction);
                 	tmp_trade_point += (player_wheat_reduction - bank_special_card_reduction) / player -> wheat_exchange_rate;*/
                 	trade_withbank[4] ++;
-                	mvprintw(35, 63, "-%d",trade_withbank[4]*4+player_wheat_reduction);
+                	mvprintw(35, 63, "-%d",trade_withbank[4]*player -> wheat_exchange_rate+player_wheat_reduction);
                 	trade_pay++;
                 	
                 }
@@ -1613,7 +1613,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	mvprintw(41, 63, "-%d", player_stone_reduction);
                 	tmp_trade_point += (player_stone_reduction - bank_special_card_reduction) / player -> stone_exchange_rate;*/
                 	trade_withbank[1] ++;
-                	mvprintw(41, 63, "-%d",trade_withbank[1]*4+player_stone_reduction);
+                	mvprintw(41, 63, "-%d",trade_withbank[1]*player -> stone_exchange_rate+player_stone_reduction);
                 	trade_pay++;
                 }
                 else if(((x >= 87 && y >= 45) && (x <= 95 && y <= 49)))
@@ -1625,7 +1625,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	/*bank_wood_reduction ++;
                 	mvprintw(9, 47, "-%d", bank_wood_reduction);*/
                 	trade_withbank[5] ++;
-                	mvprintw(9, 47, "-%d",trade_withbank[5]*4);
+                	mvprintw(9, 47, "-%d",trade_withbank[5]);
                 	trade_get++;
                 }
                 else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) /*&& tmp_trade_point > 0*/)
@@ -1667,9 +1667,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 	player_sheep_reduction ++;
                 	player_stone_reduction ++;
                 	player_wheat_reduction ++;
-                	mvprintw(41, 63, "-%d",trade_withbank[1]*4+player_stone_reduction);
-                	mvprintw(47, 47, "-%d",trade_withbank[3]*4+player_sheep_reduction);
-                	mvprintw(35, 63, "-%d",trade_withbank[4]*4+player_wheat_reduction);
+                	mvprintw(41, 63, "-%d",trade_withbank[1]*player -> stone_exchange_rate+player_stone_reduction);
+                	mvprintw(47, 47, "-%d",trade_withbank[3]*player -> sheep_exchange_rate+player_sheep_reduction);
+                	mvprintw(35, 63, "-%d",trade_withbank[4]*player -> wheat_exchange_rate+player_wheat_reduction);
                 	mvprintw(21, 63, "-%d", bank_special_card_reduction);
                 }
             }
