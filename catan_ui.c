@@ -2194,7 +2194,7 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 	        }
 		}
 	}
-	refresh_all_status(player,player_2,player_3,player_4,bank,cardtemp,trade_withbank);
+	refresh_all_status(player,player_2,player_3,player_4,bank,cardtemp);
 }
 
 void set_background_color_init()
