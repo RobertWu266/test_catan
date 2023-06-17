@@ -10,6 +10,7 @@ char *attr_names[] = {"body", "v_side", "main_side", "minor_side", "pos_vert", "
 i32 resources_id[] = {HILL, HILL, HILL, MOUNTAIN, MOUNTAIN, MOUNTAIN, FIELD, FIELD, FIELD, FIELD, PASTURE, PASTURE,
                       PASTURE, PASTURE, FOREST, FOREST, FOREST, FOREST, DESERT};
 //const char* resource_name[]={"HILL", "HILL", "HILL", "MOUNTAIN", "MOUNTAIN", "MOUNTAIN", "FIELD", "FIELD", "FIELD", "FIELD", "PASTURE", "PASTURE","PASTURE", "PASTURE", "FOREST", "FOREST", "FOREST", "FOREST", "DESERT"};
+
 i32 resources_id_csr = 0;
 obj* body_list[19]={0};
 obj* vertice_list[54]={0};
@@ -17,10 +18,16 @@ obj* side_list[72]={0};
 i32 side_list_csr=0;
 i32 vertice_list_csr=0;
 i32 dice_nums[18]={11,3,6,5,4,9,10,8,4,11,12,9,10,8,3,6,2,5};
+i32 identity_list[4]={0};
 
 player_property players[4]={0};
 bank_property bank={0};
 card_temp cardtemp = {0};
+player_property *human_player={0};
+player_property *road_AI_player={0};
+player_property *develop_AI_player={0};
+player_property *village_AI_player={0};
+i32 human_id=1;
 
 i32 abs(i32 x)
 {
@@ -73,7 +80,48 @@ i32 *custom2cube(i32 x, i32 y)
     pret[2] -= offset;
     return pret;
 }
-
+void shuffle_identity_list(i32 idx)
+{
+    for(i32 i=0; i<4;i++)identity_list[i]=i;
+    for(i32 i=0;i<100;i++)
+    {
+        i32 j=rand()%4;
+        i32 k=rand()%4;
+        i32 tmp=identity_list[j];
+        identity_list[j]=identity_list[k];
+        identity_list[k]=tmp;
+    }
+    i32 human_loc=0;
+    for(i32 i=0;i<4;i++)
+    {
+        if(identity_list[i]==0)
+        {
+            human_loc=i;
+            break;
+        }
+    }
+    identity_list[human_loc]=identity_list[idx];
+    identity_list[idx]=0;
+    //player_property **tmp_players={&human_player,&road_AI_player,&develop_AI_player,&village_AI_player};
+    for(i32 i=0;i<4;i++)
+    {
+        switch (identity_list[i])
+        {
+            case 0:
+                human_player=&players[i];
+                break;
+            case 1:
+                road_AI_player=&players[i];
+                break;
+            case 2:
+                develop_AI_player=&players[i];
+                break;
+            case 3:
+                village_AI_player=&players[i];
+                break;
+        }
+    }
+}
 /*function LongestRoad(player):
     longest_road = 0
 
@@ -605,7 +653,7 @@ void player_init(player_property *player)
     player->sheep_exchange_rate=4;
     player->stone_exchange_rate=4;
     player->wheat_exchange_rate=4;
-
+    player->iden=identity_list[player-players];
 }
 void card_temp_init( card_temp *cardtemp )
 {
@@ -708,9 +756,12 @@ void build_village(owner owner1, obj* tobuild)
 
 void box_set()
 {
+    shuffle_identity_list(human_id);
     for(i32 i=0;i<4;i++)player_init(players+i);
     bank_init(&bank);
     card_temp_init( &cardtemp );
+
+
     int trade_withbank[10] = {0};
     int specialcard[4] = {0};
     for (i32 i = 0; i < 13; i++)

@@ -27,8 +27,10 @@ int main()
     }
 
     in_game_ui(&event);//actuall middle point:(25,47)
+    card_temp cardtemp={0};
+    i32 trade_withbank[10]={0};
 
-    draw_with_mouse_and_return_value();//for debug
+    draw_with_mouse_and_return_value(event,&cardtemp);//for debug
 
 
 

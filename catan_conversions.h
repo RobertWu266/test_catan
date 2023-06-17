@@ -30,6 +30,8 @@ typedef enum _building{empty,village,city}building;
 typedef enum _harbor{Nil, ALL_HARBOR,WHEAT_HARBOR,SHEEP_HARBOR,WOOD_HARBOR,BRICK_HARBOR,STONE_HARBOR}harbor;
 typedef enum _identity{human,road_AI,develop_AI,village_AI}identity;
 
+
+void shuffle_identity_list(i32 idx);
 /*
  * body: Represents the center of the hexagon
  * v_side: The side of the hexagon that is vertical
