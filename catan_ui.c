@@ -2214,9 +2214,9 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 	}
     refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
 }
->>>>>>> d0de06ee3d3cedba3d914b646cf8d47cc91b81e1
 
-}
+
+
 /*void general_discard_half_deck(player_property *the_player)
 {
     switch (the_player->iden)
