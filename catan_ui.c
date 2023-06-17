@@ -191,6 +191,7 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
         if(ch=='m')
         {
             free(highlight_available_upgrade(human_id));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='p')clear_log();
@@ -1784,7 +1785,6 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
     }
     trade_init(trade_withbank);
    	refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
-
     attroff(COLOR_PAIR(31));
     //feature : u can discard card like this way!
     mvprintw(50, 168," ");
@@ -2213,6 +2213,8 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 		}
 	}
     refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
+}
+>>>>>>> d0de06ee3d3cedba3d914b646cf8d47cc91b81e1
 
 }
 /*void general_discard_half_deck(player_property *the_player)
