@@ -149,7 +149,6 @@ void clear_log()
     FILE *file = fopen("catan_log.txt", "w");
     fclose(file);
 }
-
 void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for debug
 {
 	set_background_color_init();
@@ -159,7 +158,6 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
     refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp1,trade_withbank);*/
     while ((ch = getch()) != 'q')
     {
-    	//card_temp cardtemp;
         if(ch=='1')fprintf_player(players[0]);
         if(ch=='2')fprintf_player(players[1]);
         if(ch=='3')fprintf_player(players[2]);
@@ -169,12 +167,14 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
 
         if(ch == 'j')
         {
+
             free(highlight_availible_village_beginning());
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='k')
         {
             free(highlight_availible_village(human_id));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='l')
@@ -185,6 +185,7 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
         if(ch=='n')
         {
             free(highlight_available_road(human_id));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='m')
@@ -283,11 +284,13 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
                     if(clicked->attr==neg_vert||clicked->attr==pos_vert)
                     {
                         build_village(human_id+player1,clicked);
+
                         refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
                     }
                     else if(clicked->attr!=body)
                     {
                         build_road(human_id+player1,clicked);
+
                         refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
                     }
                     refresh();
@@ -1781,6 +1784,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
     }
     trade_init(trade_withbank);
    	refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
+
     attroff(COLOR_PAIR(31));
     //feature : u can discard card like this way!
     mvprintw(50, 168," ");
@@ -1796,7 +1800,6 @@ void refresh_all_status(player_property *player_1, player_property *player_2, pl
 	_print_player(player_1, 11, 97, 1);
 	print_bank(bank);
 	show_all_objects();
-	card_temp_init( cardtemp );
 }
 
 void help(MEVENT event)
@@ -2210,6 +2213,7 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 		}
 	}
     refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
+
 }
 /*void general_discard_half_deck(player_property *the_player)
 {
