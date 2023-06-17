@@ -35,7 +35,7 @@ void print_a(int y, int x);
 void print_t(int y, int x);
 void print_n(int y, int x);
 void print_a_card(int y, int x, int color);
-void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp, int trade_withbank[]);
+void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp);
 void help();
 void discard_half_deck(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
 void bank_init(bank_property *bank);
