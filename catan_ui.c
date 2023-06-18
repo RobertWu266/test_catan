@@ -102,7 +102,6 @@ void in_game_ui_2(MEVENT *event)
     set_background_color_init();
     roll_and_print_dice(43,104);
     roll_and_print_dice(43,116);
-    card_temp cardtemp;
     card_temp_init(&cardtemp);
     trade_init( trade_withbank );
     print_in_game_ui();
@@ -127,14 +126,15 @@ void in_game_ui_2(MEVENT *event)
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
 
-        /*(players+i) -> knights += cardtemp.knights;
+        (players+i) -> knights += cardtemp.knights;
         (players+i)  -> year_of_plenty += cardtemp .year_of_plenty;
         (players+i)  -> road_building += cardtemp.road_building;
         (players+i)  -> monopoly += cardtemp.monopoly;
-        card_temp_init( &cardtemp );*/
-        last_refresh=true;
+        card_temp_init( &cardtemp );
+        /*last_refresh=true;
         _refresh_all_status();
-        last_refresh=false;
+        last_refresh=false;*/
+        _refresh_all_status();
     }
 }
 void general_after_action(player_property *the_player,MEVENT event)
@@ -1970,14 +1970,14 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
-    if(last_refresh)
+    /*if(last_refresh)
     {
         player -> knights+=cardtemp -> knights;
         player -> year_of_plenty+=cardtemp -> year_of_plenty;
         player -> road_building+=cardtemp -> road_building;
         player -> monopoly+=cardtemp -> monopoly;
         card_temp_init( cardtemp );
-    }
+    }*/
 }
 void print_YOU_HIGHLIGHTED(player_property *player, card_temp *cardtemp)
 {
