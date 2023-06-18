@@ -1609,10 +1609,17 @@ i32 general_roll_dice(player_property *the_player,MEVENT event)
         default:
             dice1 = roll_and_print_dice(43,104);
             dice2 = roll_and_print_dice(43,116);
+<<<<<<< HEAD
 
 
             val_by_dice=dice1+dice2;
 
+=======
+
+
+            val_by_dice=dice1+dice2;
+
+>>>>>>> 814a01926f322fd8a0e9173f8d5a6722ee6ddd42
     }
     return val_by_dice;
 }
