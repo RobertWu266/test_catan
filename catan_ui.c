@@ -280,7 +280,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 print_YOU_HIGHLIGHTED(the_player,&cardtemp);
                                 resources res=get_highlighted_resource(event);
                                 print_YOU(the_player,&cardtemp);
-                                i32 max=99;
+                                i32 max=19;
                                 switch (res)
                                 {
                                     case PASTURE:
@@ -308,7 +308,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 develop_permission=false;
                                 the_player->monopoly--;
                             }
-                            if(abs(x-140)<=1 && abs(y-35) <=1 && the_player->monopoly)
+                            if(abs(x-140)<=1 && abs(y-35) <=1)
                             {
                                 if(the_player->total_victory_points>=10)
                                 {
@@ -1850,7 +1850,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 		}
 	}
 	attroff(COLOR_PAIR(6));
-	mvprintw(c_y + 4 , c_x, "x%d", player -> special_cards);
+	mvprintw(c_y + 4 , c_x, "x%d", player -> knights+player -> knights_use+player -> year_of_plenty+player -> road_building+player -> monopoly+player -> victory_card);
 	//print knights
 	c_x += 6;
 	attron(COLOR_PAIR(8));

@@ -640,20 +640,20 @@ void bank_init(bank_property *bank)
 void player_init(player_property *player)
 {
     player -> total_resource_cards = 100;
-    player -> wood = 20;
-    player -> stone = 20;
-    player -> brick = 20;
-    player -> sheep = 20;
-    player -> wheat = 20;
+    player -> wood = 4;
+    player -> stone = 0;
+    player -> brick = 4;
+    player -> sheep = 2;
+    player -> wheat = 2;
     player -> special_cards = 0;
     player -> knights = 0;
     player -> knights_use = 0;
     //player -> knights_get = false;
-    player -> year_of_plenty = 1;
+    player -> year_of_plenty =0 ;
     //player -> year_of_plenty_get = false;
-    player -> road_building = 1;
+    player -> road_building = 0;
     //player -> road_building_get = false;
-    player -> monopoly = 1;
+    player -> monopoly = 0;
     //player -> monopoly_get = false;
     player -> victory_card = 0;
     //player -> victory_card_get = false;
