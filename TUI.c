@@ -6,6 +6,10 @@
 #include "catan_ui.h"
 
 extern char *attr_names[];
+extern player_property players[];
+extern bank_property bank;
+extern card_temp cardtemp;
+extern i32 human_id;
 extern obj *innerbox[13][13][3];
 i32 off_x=47;
 i32 off_y=23;
@@ -21,13 +25,73 @@ const char *resources_name[] = {"HILL", "MOUNTAIN", "FIELD", "PASTURE", "FOREST"
 
 
 #define FORI(X, Y) for(int32_t i=X;i<Y;i++)
+
+obj* get_highlighted()
+{
+    obj *clicked=NULL;
+    while(!clicked || !clicked->highlighted)
+    {
+        clicked=wait_until_get_obj_from_mouse();
+    }
+    clear_all_highlight();
+    return clicked;
+}
 obj* wait_until_get_obj_from_mouse()
 {
     MEVENT event;
     int ch;
-    while(ch == KEY_MOUSE && getmouse(&event) == OK && (event.bstate & BUTTON1_PRESSED))
+    while(1)
     {
-        return get_obj_from_mouse(event.x,event.y);
+        ch = getch();
+        if(ch == KEY_MOUSE && getmouse(&event) == OK)
+        {
+            return get_obj_from_mouse(event.x,event.y);
+        }
+    }
+}
+void wait_space()
+{
+    int ch=0;
+    while(ch!=' ')
+    {
+        ch = getch();
+        if(ch=='1')fprintf_player(players[0]);
+        if(ch=='2')fprintf_player(players[1]);
+        if(ch=='3')fprintf_player(players[2]);
+        if(ch=='4')fprintf_player(players[3]);
+
+        if(ch=='b')fprintf_bank(bank);
+
+        if(ch == 'j')
+        {
+
+            free(highlight_availible_village_beginning(NULL));
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+        }
+        if(ch=='k')
+        {
+            free(highlight_availible_village(human_id+player1,NULL));
+
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+        }
+        if(ch=='l')
+        {
+            clear_all_highlight();
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+        }
+        if(ch=='n')
+        {
+            free(highlight_available_road(human_id,NULL));
+
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+        }
+        if(ch=='m')
+        {
+            free(highlight_available_upgrade(human_id+player1,NULL));
+
+            refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+        }
+        if(ch=='p')clear_log();
     }
 }
 void shuffle_i32(i32 *array, i32 n)
@@ -261,7 +325,23 @@ void show_obj(obj* tgt)
     {
         case body:
             print_polygon(tgt, y, x);
-            //mvprintw(y, x,"X%d",bprop(tgt)->num);
+            if(bprop(tgt)->has_robber)mvprintw(y,x-3,"stealer");
+            if(tgt -> highlighted)
+            {
+                if(bprop(tgt)->has_robber)
+                {
+                    attron(COLOR_PAIR(6));
+                    mvprintw(y, x,"a");
+                    attroff(COLOR_PAIR(6));
+                }
+                else
+                {
+                    attron(COLOR_PAIR(6));
+                    mvprintw(y, x," ");
+                    attroff(COLOR_PAIR(6));
+                }
+
+            }
             break;
         case neg_vert:
         case pos_vert:

@@ -18,11 +18,15 @@
 
 
 bool agree_or_disagree(int y, int x, char *deal , MEVENT event);
+int roll_and_print_dice(int y, int x);
 int start_screen();
 int roll_and_print_dice();
 void clear_right_cornor();
 void set_background_color_init();
 void in_game_ui();
+void in_game_ui_2(MEVENT *event);
+void general_set_beginning(player_property *the_player);
+void general_set_beginning_2(player_property *the_player);
 void check_ui_size();
 void start_ui();
 void print_pass();
@@ -36,12 +40,16 @@ void print_t(int y, int x);
 void print_n(int y, int x);
 void print_a_card(int y, int x, int color);
 void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp);
+void _refresh_all_status();
 void help();
 void discard_half_deck(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
-void general_discard_half_deck();
 void bank_init(bank_property *bank);
 void player_init(player_property *player);
 void print_bank(bank_property *bank);
+void wait_space();
+i32 general_roll_dice(player_property *the_player,MEVENT event);
+void general_execute_dice(player_property *the_player,i32 num,MEVENT event);
+void general_after_action(player_property *the_player,MEVENT event);
 int check_winner(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
 void _print_player(player_property *player ,int y, int x , int color);
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
@@ -50,6 +58,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
 void fprintf_bank(bank_property bank1);
 void fprintf_player(player_property player1);
 void clear_log();
+void general_move_robber(player_property *the_player);
+void general_discard_half_deck(player_property *the_player,MEVENT event);
+
 //player_1 is red at top left cornor, player_2 blue is at top right cornor
 //player_3 is green at down left cornor, player_4 yellow is at down right cornor
 

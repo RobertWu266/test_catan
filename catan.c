@@ -24,9 +24,10 @@ int main()
     {
         endwin();
         return 0;
+
     }
 
-    in_game_ui(&event);//actuall middle point:(25,47)
+    in_game_ui_2(&event);//actuall middle point:(25,47)
     card_temp cardtemp={0};
     i32 trade_withbank[10]={0};
 

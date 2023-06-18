@@ -170,6 +170,10 @@ bool in_list(obj *the_road, obj *visited_road[15],const uint8_t *p_visited_road_
     }
     return false;
 }
+bool turning_back(obj* past,obj* now, obj* future)
+{
+    return (now->locs[0]-past->locs[0])*(future->locs[0]-now->locs[0])+(now->locs[1]-past->locs[1])*(future->locs[1]-now->locs[1])+(now->locs[2]-past->locs[2])*(future->locs[2]-now->locs[2])<1;
+}
 uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr)
 {
     visited_road[*p_visited_road_csr]=the_road;
@@ -179,6 +183,7 @@ uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited
     {
         obj *nei_road=sprop(the_road)->nei_side[i];
         if(nei_road==NULL || sprop(nei_road)->own!=owner1||in_list(nei_road,visited_road,p_visited_road_csr)) continue;
+        if(*p_visited_road_csr>1 && nei_road != NULL && turning_back(visited_road[(*p_visited_road_csr)-2],the_road,nei_road))continue;
         uint8_t current_depth=DFS(owner1,nei_road,visited_road,p_visited_road_csr);
         if(current_depth>max_depth) max_depth=current_depth;
     }
@@ -269,6 +274,7 @@ void set_neighbor(obj *tgt)
             bprop(tgt)->flag = BODY_PROPERTY;//Its useless
             bprop(tgt)->nei_vert = body_neighbor_vertice(tgt);//robber's case
             bprop(tgt)->resource = resources_id[resources_id_csr];
+            if(bprop(tgt)->resource ==DESERT)bprop(tgt)->has_robber=1;
             resources_id_csr++;
             break;
         case neg_vert:
@@ -277,6 +283,7 @@ void set_neighbor(obj *tgt)
             vprop(tgt)->flag = VERTICE_PROPERTY;//Its useless
             vprop(tgt)->nei_body = vertice_neighbor_body(tgt);//for getting neighboring resource (opening)
             vprop(tgt)->nei_vert = vertice_neighbor_vertice(tgt);//for checking no neighboring building
+            vprop(tgt)->nei_side= vertice_neighbor_side(tgt);
             vprop(tgt)->harb= locs_harbor(tgt->locs);
             vertice_list[vertice_list_csr]=tgt;
             vertice_list_csr++;
@@ -802,7 +809,7 @@ void box_set()
         }
     }
 }
-obj** highlight_availible_village_beginning()
+obj** highlight_availible_village_beginning(i32 *csr)
 {
     obj **ret=calloc(54,sizeof(obj*));
     i32 ret_csr=0;
@@ -822,9 +829,36 @@ obj** highlight_availible_village_beginning()
         ret_csr++;
         failure:;
     }
+    if(csr)*csr=ret_csr;
     return ret;
 }
-obj** highlight_availible_village(owner owner1)
+obj** highlight_available_road_beginning(obj *vill,i32 *csr)
+{
+    obj **ret=calloc(3,sizeof(obj*));
+    i32 ret_csr=0;
+    for(i32 i=0;i<3;i++)
+    {
+        obj *nei_s=vprop(vill)->nei_side[i];
+        if((size_t)nei_s>1000)
+        {
+            nei_s->highlighted=1;
+            ret[ret_csr]=nei_s;
+            ret_csr++;
+        }
+
+    }
+    if(csr)*csr=ret_csr;
+    return ret;
+}
+void highlight_all_robber_movable()
+{
+    for(i32 i=0;i<19;i++)
+    {
+        if(bprop(body_list[i])->has_robber)continue;
+        body_list[i]->highlighted=1;
+    }
+}
+obj** highlight_availible_village(owner owner1,i32 *csr)
 {
     player_property *the_player=&(players[owner1-player1]);
     obj **ret=calloc(54,sizeof(obj*));
@@ -851,9 +885,10 @@ obj** highlight_availible_village(owner owner1)
 
         }
     }
+    if(csr)*csr=ret_csr;
     return ret;
 }
-obj** highlight_available_road(owner owner1)
+obj** highlight_available_road(owner owner1,i32 *csr)
 {
     obj **ret=calloc(72,sizeof(obj*));
     i32 ret_csr=0;
@@ -885,9 +920,10 @@ obj** highlight_available_road(owner owner1)
             }
         }
     }
+    if(csr)*csr=ret_csr;
     return ret;
 }
-obj** highlight_available_upgrade(owner owner1)
+obj** highlight_available_upgrade(owner owner1,i32 *csr)
 {
     obj **ret=calloc(54,sizeof(obj*));
     i32 ret_csr=0;
@@ -901,6 +937,24 @@ obj** highlight_available_upgrade(owner owner1)
             ret_csr++;
         }
     }
+    if(csr)*csr=ret_csr;
+    return ret;
+}
+obj** highlight_all_stealable(obj* land,owner owner1,i32 *csr)
+{
+    obj **ret=calloc(6,sizeof(obj*));
+    i32 ret_csr=0;
+    for(i32 i=0;i<6;i++)
+    {
+        obj *tgt=bprop(land)->nei_vert[i];
+        if(vprop(tgt)->build!=empty && vprop(tgt)->own!=owner1)
+        {
+            tgt->highlighted=1;
+            ret[ret_csr]=tgt;
+            ret_csr++;
+        }
+    }
+    if(csr)*csr=ret_csr;
     return ret;
 }
 void clear_all_highlight()
@@ -908,6 +962,19 @@ void clear_all_highlight()
     for(i32 i=0;i<19;i++)body_list[i]->highlighted=0;
     for(i32 i=0;i<54;i++)vertice_list[i]->highlighted=0;
     for(i32 i=0;i<72;i++)side_list[i]->highlighted=0;
+}
+obj *get_random_from_highlighted(obj** pobjlist,i32 *csr)
+{
+    i32 idx=*csr;
+    if(!idx)return NULL;
+    obj *ret=pobjlist[rand()%idx];
+    clear_all_highlight();
+    free(pobjlist);
+    return ret;
+}
+void clear_all_has_robber()
+{
+    for(i32 i=0;i<19;i++)bprop(body_list[i])->has_robber=0;
 }
 void box_dtor()
 {
@@ -1137,6 +1204,135 @@ void discard_half_deck_action(player_property *the_player,uint8_t brick_discard,
     the_player->sheep-=sheep_discard;bank.sheep+=sheep_discard;
     the_player->stone-=stone_discard;bank.stone+=stone_discard;
 }
+void resource_generate(i32 num)
+{
+    for(i32 i=0;i<19;i++)
+    {
+        if(bprop(body_list[i])->num==num)
+        {
+            if(bprop(body_list[i])->has_robber)continue;
+            switch (bprop(body_list[i])->resource)
+            {
+                case FOREST:
+                    for(i32 j=0;j<6;j++)
+                    {
+                        obj* nei_v=bprop(body_list[i])->nei_vert[j];
+                        if(nei_v==NULL || vprop(nei_v)->own==None)continue;
+                        player_property *the_player=&players[vprop(nei_v)->own-player1];
+                        if(bank.wood)
+                        {
+                            bank.wood--;
+                            the_player->wood++;
+                        }
+
+                    }
+                    break;
+                case PASTURE:
+                    for(i32 j=0;j<6;j++)
+                    {
+                        obj* nei_v=bprop(body_list[i])->nei_vert[j];
+                        if(nei_v==NULL || vprop(nei_v)->own==None)continue;
+                        player_property *the_player=&players[vprop(nei_v)->own-player1];
+                        if(bank.sheep)
+                        {
+                            bank.sheep--;
+                            the_player->sheep++;
+                        }
+                    }
+                    break;
+                case HILL:
+                    for(i32 j=0;j<6;j++)
+                    {
+                        obj* nei_v=bprop(body_list[i])->nei_vert[j];
+                        if(nei_v==NULL || vprop(nei_v)->own==None)continue;
+                        player_property *the_player=&players[vprop(nei_v)->own-player1];
+                        if(bank.brick)
+                        {
+                            bank.brick--;
+                            the_player->brick++;
+                        }
+                    }
+                    break;
+                case MOUNTAIN:
+                    for(i32 j=0;j<6;j++)
+                    {
+                        obj* nei_v=bprop(body_list[i])->nei_vert[j];
+                        if(nei_v==NULL || vprop(nei_v)->own==None)continue;
+                        player_property *the_player=&players[vprop(nei_v)->own-player1];
+                        if(bank.stone)
+                        {
+                            bank.stone--;
+                            the_player->stone++;
+                        }
+                    }
+                    break;
+                case FIELD:
+                    for(i32 j=0;j<6;j++)
+                    {
+                        obj* nei_v=bprop(body_list[i])->nei_vert[j];
+                        if(nei_v==NULL || vprop(nei_v)->own==None)continue;
+                        player_property *the_player=&players[vprop(nei_v)->own-player1];
+                        if(bank.wheat)
+                        {
+                            bank.wheat--;
+                            the_player->wheat++;
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+}
+resources least_valueable_resource(player_property* the_player)
+{
+    switch(the_player->iden)
+    {
+        case human:
+            assert(0);
+        case road_AI:
+            if(the_player->sheep)return PASTURE;
+            if(the_player->wheat)return FIELD;
+            if(the_player->stone)return MOUNTAIN;
+            if(the_player->brick>=the_player->wood)return HILL;
+            return FOREST;
+            break;
+        case develop_AI:
+        case village_AI:
+            if(the_player->brick)return HILL;
+            if(the_player->wood)return FOREST;
+            if(the_player->sheep>=the_player->wheat && the_player->sheep>=the_player->stone)return PASTURE;
+            if(the_player->wheat>=the_player->sheep && the_player->wheat>=the_player->stone)return FIELD;
+            if(the_player->stone>=the_player->wheat && the_player->stone>=the_player->sheep)return MOUNTAIN;
+            break;
+    }
+}
+obj* human_weakness()
+{
+    i32 house=0;
+    i32 most_house_id=0;
+    for(i32 i=0;i<19;i++)
+    {
+        if(bprop(body_list[i])->has_robber || bprop(body_list[i])->resource==DESERT)continue;
+        obj *tgt=body_list[i];
+        i32 cur_house=0;
+        for (i32 j=0;j<6;j++)
+        {
+            obj *nei_v=bprop(tgt)->nei_vert[j];
+            if(vprop(nei_v)->own-player1==human_id)
+            {
+                cur_house++;
+            }
+        }
+        if(cur_house>house)
+        {
+            house=cur_house;
+            most_house_id=i;
+        }
+    }
+    return body_list[most_house_id];
+}
+
+
 /*int main()
 {
     box_set();

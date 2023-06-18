@@ -1,0 +1,276 @@
+==367300== Memcheck, a memory error detector
+==367300== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==367300== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==367300== Command: ./catan
+==367300== Parent PID: 301847
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x487CA57: wenclose (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487CB80: wmouse_trafo (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A211: main (catan.c:21)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x487CA61: wenclose (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487CB80: wmouse_trafo (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A211: main (catan.c:21)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x487CA6E: wenclose (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487CB80: wmouse_trafo (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A211: main (catan.c:21)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x487CB83: wmouse_trafo (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A211: main (catan.c:21)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x4940B56: __vfprintf_internal (vfprintf-internal.c:1516)
+==367300==    by 0x4952519: __vsnprintf_internal (vsnprintf.c:114)
+==367300==    by 0x48889F9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x1102AA: print_YOU (catan_ui.c:1635)
+==367300==    by 0x10A970: in_game_ui_2 (catan_ui.c:109)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== Use of uninitialised value of size 8
+==367300==    at 0x492433B: _itoa_word (_itoa.c:177)
+==367300==    by 0x493FB3D: __vfprintf_internal (vfprintf-internal.c:1516)
+==367300==    by 0x4952519: __vsnprintf_internal (vsnprintf.c:114)
+==367300==    by 0x48889F9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x1102AA: print_YOU (catan_ui.c:1635)
+==367300==    by 0x10A970: in_game_ui_2 (catan_ui.c:109)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x492434C: _itoa_word (_itoa.c:177)
+==367300==    by 0x493FB3D: __vfprintf_internal (vfprintf-internal.c:1516)
+==367300==    by 0x4952519: __vsnprintf_internal (vsnprintf.c:114)
+==367300==    by 0x48889F9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x1102AA: print_YOU (catan_ui.c:1635)
+==367300==    by 0x10A970: in_game_ui_2 (catan_ui.c:109)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x4940643: __vfprintf_internal (vfprintf-internal.c:1516)
+==367300==    by 0x4952519: __vsnprintf_internal (vsnprintf.c:114)
+==367300==    by 0x48889F9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x1102AA: print_YOU (catan_ui.c:1635)
+==367300==    by 0x10A970: in_game_ui_2 (catan_ui.c:109)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== Conditional jump or move depends on uninitialised value(s)
+==367300==    at 0x493FC85: __vfprintf_internal (vfprintf-internal.c:1516)
+==367300==    by 0x4952519: __vsnprintf_internal (vsnprintf.c:114)
+==367300==    by 0x48889F9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4882B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x1102AA: print_YOU (catan_ui.c:1635)
+==367300==    by 0x10A970: in_game_ui_2 (catan_ui.c:109)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== 
+==367300== HEAP SUMMARY:
+==367300==     in use at exit: 249,949 bytes in 1,265 blocks
+==367300==   total heap usage: 3,206 allocs, 1,941 frees, 286,895 bytes allocated
+==367300== 
+==367300== 9 bytes in 1 blocks are possibly lost in loss record 8 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x497260E: strdup (strdup.c:42)
+==367300==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F2A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 9 bytes in 1 blocks are possibly lost in loss record 9 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x497260E: strdup (strdup.c:42)
+==367300==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F4FB: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 16 bytes in 2 blocks are definitely lost in loss record 13 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x113B4E: get_obj_from_mouse (TUI.c:71)
+==367300==    by 0x1139DC: wait_until_get_obj_from_mouse (TUI.c:44)
+==367300==    by 0x11395D: get_highlighted (TUI.c:30)
+==367300==    by 0x10AC02: general_set_beginning (catan_ui.c:149)
+==367300==    by 0x10A9B2: in_game_ui_2 (catan_ui.c:113)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== 16 bytes in 2 blocks are definitely lost in loss record 14 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x113B4E: get_obj_from_mouse (TUI.c:71)
+==367300==    by 0x1139DC: wait_until_get_obj_from_mouse (TUI.c:44)
+==367300==    by 0x11395D: get_highlighted (TUI.c:30)
+==367300==    by 0x10AC67: general_set_beginning (catan_ui.c:153)
+==367300==    by 0x10A9B2: in_game_ui_2 (catan_ui.c:113)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== 24 bytes in 1 blocks are possibly lost in loss record 31 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x49EA14E: tsearch (tsearch.c:337)
+==367300==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F2A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 24 bytes in 1 blocks are possibly lost in loss record 32 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x49EA14E: tsearch (tsearch.c:337)
+==367300==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F4FB: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 24 bytes in 1 blocks are possibly lost in loss record 33 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x49EA14E: tsearch (tsearch.c:337)
+==367300==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48794D9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487C997: mousemask_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1E3: main (catan.c:19)
+==367300== 
+==367300== 24 bytes in 1 blocks are possibly lost in loss record 34 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x49EA14E: tsearch (tsearch.c:337)
+==367300==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x4878628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487BE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 24 bytes in 1 blocks are possibly lost in loss record 35 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x49EA14E: tsearch (tsearch.c:337)
+==367300==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48785A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 32 bytes in 1 blocks are possibly lost in loss record 36 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x497260E: strdup (strdup.c:42)
+==367300==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48794D9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487C997: mousemask_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1E3: main (catan.c:19)
+==367300== 
+==367300== 63 bytes in 1 blocks are possibly lost in loss record 40 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x497260E: strdup (strdup.c:42)
+==367300==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x4878628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487BE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 64 bytes in 1 blocks are possibly lost in loss record 41 of 111
+==367300==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x497260E: strdup (strdup.c:42)
+==367300==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48785A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 168 bytes in 1 blocks are possibly lost in loss record 63 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F2A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 168 bytes in 1 blocks are possibly lost in loss record 64 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x487F4FB: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1A7: main (catan.c:9)
+==367300== 
+==367300== 168 bytes in 1 blocks are possibly lost in loss record 65 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48794D9: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487C997: mousemask_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x11A1E3: main (catan.c:19)
+==367300== 
+==367300== 168 bytes in 1 blocks are possibly lost in loss record 66 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x4878628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487BE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 168 bytes in 1 blocks are possibly lost in loss record 67 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==367300==    by 0x48785A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x488E895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x487FF27: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x4883E3B: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==367300==    by 0x10F373: start_screen (catan_ui.c:1310)
+==367300==    by 0x11A21B: main (catan.c:23)
+==367300== 
+==367300== 432 bytes in 1 blocks are definitely lost in loss record 73 of 111
+==367300==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==367300==    by 0x1187A9: highlight_availible_village_beginning (catan_conversions.c:813)
+==367300==    by 0x10ABEE: general_set_beginning (catan_ui.c:147)
+==367300==    by 0x10A9B2: in_game_ui_2 (catan_ui.c:113)
+==367300==    by 0x11A238: main (catan.c:30)
+==367300== 
+==367300== LEAK SUMMARY:
+==367300==    definitely lost: 464 bytes in 5 blocks
+==367300==    indirectly lost: 0 bytes in 0 blocks
+==367300==      possibly lost: 1,137 bytes in 15 blocks
+==367300==    still reachable: 248,348 bytes in 1,245 blocks
+==367300==         suppressed: 0 bytes in 0 blocks
+==367300== Reachable blocks (those to which a pointer was found) are not shown.
+==367300== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==367300== 
+==367300== Use --track-origins=yes to see where uninitialised values come from
+==367300== For lists of detected and suppressed errors, rerun with: -s
+==367300== ERROR SUMMARY: 238 errors from 27 contexts (suppressed: 0 from 0)
