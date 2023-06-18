@@ -102,11 +102,13 @@ void in_game_ui_2(MEVENT *event)
     roll_and_print_dice(43,104);
     roll_and_print_dice(43,116);
     card_temp cardtemp;
+    card_temp_init(&cardtemp);
     trade_init( trade_withbank );
     print_in_game_ui();
     print_bank(&bank);
     print_players_status(players,players+1,players+2,players+3);
     print_YOU(human_player, &cardtemp);
+
     _refresh_all_status();
     for(i32 i=0;i<4;i++)
     {
@@ -124,6 +126,11 @@ void in_game_ui_2(MEVENT *event)
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
 
+        (players+i) -> knights += cardtemp.knights;
+        (players+i)  -> year_of_plenty += cardtemp .year_of_plenty;
+        (players+i)  -> road_building += cardtemp.road_building;
+        (players+i)  -> monopoly += cardtemp.monopoly;
+        card_temp_init( &cardtemp );
     }
 }
 void general_after_action(player_property *the_player,MEVENT event)
@@ -202,6 +209,69 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 }
                             }
                         }
+                        if(abs(x-112)<=1 && abs(y-35) <=1 && the_player->knights)
+                        {
+                            //knight
+                            general_move_robber(the_player);
+                            the_player->knights--;
+                            _refresh_all_status();
+                        }
+                        if(abs(x-119)<=1 && abs(y-35) <=1 && the_player->year_of_plenty)
+                        {
+                            //year of plenty
+                            year_of_plenty(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
+                            the_player->year_of_plenty--;
+                            _refresh_all_status();
+                        }
+                        if(abs(x-126)<=1 && abs(y-35) <=1 && the_player->road_building)
+                        {
+                            //road building
+                            obj *clicked=NULL;
+                            for(i32 i=0;i<2;i++)
+                            {
+                                if(the_player->road_remain)
+                                {
+                                    free(highlight_available_road(the_player-players+player1,NULL));
+                                    _refresh_all_status();
+                                    clicked=get_highlighted();
+                                    build_road(the_player-players+player1,clicked);
+                                    _refresh_all_status();
+                                }
+                            }
+                        }
+                        if(abs(x-133)<=1 && abs(y-35) <=1 && the_player->monopoly)
+                        {
+                            //monopoly
+                            print_YOU_HIGHLIGHTED(the_player,&cardtemp);
+                            resources res=get_highlighted_resource(event);
+                            print_YOU(the_player,&cardtemp);
+                            i32 max=99;
+                            switch (res)
+                            {
+                                case PASTURE:
+                                    for(i32 i=0;i<4;i++)players[i].sheep=0;
+                                    the_player->sheep=max-bank.sheep;
+                                    break;
+                                case MOUNTAIN:
+                                    for(i32 i=0;i<4;i++)players[i].stone=0;
+                                    the_player->stone=max-bank.stone;
+                                    break;
+                                case HILL:
+                                    for(i32 i=0;i<4;i++)players[i].brick=0;
+                                    the_player->brick=max-bank.brick;
+                                    break;
+                                case FIELD:
+                                    for(i32 i=0;i<4;i++)players[i].wheat=0;
+                                    the_player->wheat=max-bank.wheat;
+                                    break;
+                                case FOREST:
+                                    for(i32 i=0;i<4;i++)players[i].wood=0;
+                                    the_player->wood=max-bank.wood;
+                                    break;
+                            }
+                            _refresh_all_status();
+                        }
+
                     }
                 }
             }
@@ -1886,13 +1956,130 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
-	player -> knights += cardtemp -> knights;
-	player -> year_of_plenty += cardtemp -> year_of_plenty;
-	player -> road_building += cardtemp -> road_building;
-	player -> monopoly += cardtemp -> monopoly;
-	card_temp_init( cardtemp );
-}
 
+}
+void print_YOU_HIGHLIGHTED(player_property *player, card_temp *cardtemp)
+{
+    attron(COLOR_PAIR(1+human_id));
+
+    for (int i = 0; i < 9; ++i)
+    {
+        for (int j = 0; j < 13; ++j)
+        {
+            mvprintw(27 + j, 97 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(1+human_id));
+
+    //clean and print card frame
+    attron(COLOR_PAIR(7));
+    for (int i = 0; i < 13; ++i)
+    {
+        for (int j = 0; j < 39; ++j)
+        {
+            if((abs(j-5)<=2 || abs(j-12)<=2|| abs(j-19)<=2 || abs(j-26)<=2 || abs(j-33)<=2) && abs(i-2)<=2)
+            {
+                attron(COLOR_PAIR(6));
+                mvprintw(27 + i, 107 + j, " ");
+                attroff(COLOR_PAIR(6));
+            }
+            else
+            {
+                mvprintw(27 + i, 107 + j, " ");
+            }
+        }
+    }
+    attroff(COLOR_PAIR(7));
+
+
+    //print cards
+    attron(COLOR_PAIR(3));
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            mvprintw(28 + i, 111 + j, " ");
+        }
+    }
+    attroff(COLOR_PAIR(3));
+    mvprintw(32, 111, "x%d", player -> wood);
+    attron(COLOR_PAIR(1));
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            mvprintw(28 + i, 118 + j, " ");
+        }
+    }
+    attroff(COLOR_PAIR(1));
+    mvprintw(32, 118, "x%d", player -> brick);
+    attron(COLOR_PAIR(5));
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            mvprintw(28 + i, 125 + j, " ");
+        }
+    }
+    attroff(COLOR_PAIR(5));
+    mvprintw(32, 125, "x%d", player -> sheep);
+    attron(COLOR_PAIR(4));
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            mvprintw(28 + i, 132 + j, " ");
+        }
+    }
+    attroff(COLOR_PAIR(4));
+    mvprintw(32, 132, "x%d", player -> wheat);
+    attron(COLOR_PAIR(8));
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            mvprintw(28 + i, 139 + j, " ");
+        }
+    }
+    attroff(COLOR_PAIR(8));
+    mvprintw(32, 139, "x%d", player -> stone);
+    attron(COLOR_PAIR(6));
+    for (int i = 0; i < 5; ++i)
+    {
+        for (int a = 0; a < 3; ++a)
+        {
+            for (int b = 0; b < 3; ++b)
+            {
+                mvprintw(34 + a, 111 + b + (i * 7), " ");
+            }
+        }
+    }
+    attroff(COLOR_PAIR(6));
+    attron(COLOR_PAIR(1));
+    mvprintw(35, 112 ," ");
+    attroff(COLOR_PAIR(1));
+    attron(COLOR_PAIR(5));
+    mvprintw(35, 119 ," ");
+    attroff(COLOR_PAIR(5));
+    attron(COLOR_PAIR(8));
+    mvprintw(35, 126 ," ");
+    attroff(COLOR_PAIR(8));
+    attron(COLOR_PAIR(2));
+    mvprintw(35, 133 ," ");
+    attroff(COLOR_PAIR(2));
+    attron(COLOR_PAIR(4));
+    mvprintw(35, 140 ," ");
+    attroff(COLOR_PAIR(4));
+    mvprintw(38, 111, "x%d+%d", player -> knights, cardtemp -> knights);
+    mvprintw(38, 118, "x%d+%d", player -> year_of_plenty, cardtemp -> year_of_plenty);
+    mvprintw(38, 125, "x%d+%d", player -> road_building, cardtemp -> road_building);
+    mvprintw(38, 132, "x%d+%d", player -> monopoly, cardtemp -> monopoly);
+    mvprintw(38, 139, "x%d", player -> victory_card);
+    mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
+    mvprintw(32, 149, "City Remain: %d", player -> city_remain);
+    mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
+
+}
 void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp)
 {
 	//clean map
@@ -2614,7 +2801,290 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
     refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
 }
 
-
+void year_of_plenty(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp)
+{
+    int discard_wood = 0;
+    int discard_brick = 0;
+    int discard_sheep = 0;
+    int discard_wheat = 0;
+    int discard_stone = 0;
+    //int discard_num = player -> total_resource_cards - (player -> total_resource_cards) / 2;
+    int discard_num = 2;
+    attron(COLOR_PAIR(7));
+    for (int i = 0; i < 95; ++i)
+    {
+        for (int j = 0; j < 49; ++j)
+        {
+            mvprintw(1 + j, 1 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(7));
+    attron(COLOR_PAIR(8));
+    for (int i = 0; i < 95; ++i)
+    {
+        mvprintw(26, 1 + i, " ");
+    }
+    clear_right_cornor();
+    attroff(COLOR_PAIR(8));
+    attron(A_BOLD);
+    mvprintw(11, 2, "You have %d cards remain to get.", discard_num);
+    mvprintw(13, 2, "Those are the cards");
+    mvprintw(14, 2, "you choose to get: ");
+    mvprintw(38, 2, "You have to choose %d cards to get: ", discard_num);
+    attroff(A_BOLD);
+    print_a_card(31, 44, 3);
+    mvprintw(35, 44, "x%d",player -> wood);
+    print_a_card(37, 44, 1);
+    mvprintw(41, 44, "x%d", player -> brick);
+    print_a_card(43, 44, 5);
+    mvprintw(47, 44, "x%d", player -> sheep);
+    print_a_card(31, 60, 4);
+    mvprintw(35, 60, "x%d",player -> wheat);
+    print_a_card(37, 60, 8);
+    mvprintw(41, 60, "x%d", player -> stone);
+    print_a_card(5, 44, 3);
+    mvprintw(9, 44, "x%d", discard_wood);
+    print_a_card(11, 44, 1);
+    mvprintw(15, 44, "x%d", discard_brick);
+    print_a_card(17, 44, 5);
+    mvprintw(21, 44, "x%d", discard_sheep);
+    print_a_card(5, 60, 4);
+    mvprintw(9, 60, "x%d", discard_wheat);
+    print_a_card(11, 60, 8);
+    mvprintw(15, 60, "x%d", discard_stone);
+    int ch;
+    int check = 0;
+    int remains = 0;
+    remains = discard_num;
+    while (ch = getch())
+    {
+        if(remains > 0)
+        {
+            if (ch == KEY_MOUSE && getmouse(&event) == OK)
+            {
+                if (event.bstate & BUTTON1_PRESSED)
+                {
+                    int x = event.x;
+                    int y = event.y;
+                    if(((x >= 44 && y >= 31) && (x <= 46 && y <= 33)) && discard_wood < bank->wood)
+                    {
+                        remains --;
+                        attron(COLOR_PAIR(31));
+                        discard_wood ++;
+                        mvprintw(35, 48, "      ");
+                        mvprintw(35, 48, "+%d",discard_wood);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 44, "      ");
+                        mvprintw(9, 44, "x%d",discard_wood);
+                    }
+                    else if(((x >= 44 && y >= 37) && (x <= 46 && y <= 39)) && discard_brick < bank->brick)
+                    {
+                        remains --;
+                        attron(COLOR_PAIR(31));
+                        discard_brick ++;
+                        mvprintw(41, 48, "      ");
+                        mvprintw(41, 48, "+%d",discard_brick);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 44, "      ");
+                        mvprintw(15, 44, "x%d",discard_brick);
+                    }
+                    else if(((x >= 44 && y >= 43) && (x <= 46 && y <= 45)) && discard_sheep < bank->sheep)
+                    {
+                        remains --;
+                        attron(COLOR_PAIR(31));
+                        discard_sheep ++;
+                        mvprintw(47, 48, "      ");
+                        mvprintw(47, 48, "+%d",discard_sheep);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(21, 44, "      ");
+                        mvprintw(21, 44, "x%d",discard_sheep);
+                    }
+                    else if(((x >= 60 && y >= 31) && (x <= 62 && y <= 33)) && discard_wheat < bank->wheat)
+                    {
+                        remains --;
+                        attron(COLOR_PAIR(31));
+                        discard_wheat ++;
+                        mvprintw(35, 64, "      ");
+                        mvprintw(35, 64, "+%d",discard_wheat);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 60, "      ");
+                        mvprintw(9, 60, "x%d",discard_wheat);
+                    }
+                    else if(((x >= 60 && y >= 37) && (x <= 62 && y <= 39)) && discard_stone < bank->stone)
+                    {
+                        remains --;
+                        attron(COLOR_PAIR(31));
+                        discard_stone ++;
+                        mvprintw(41, 64, "      ");
+                        mvprintw(41, 64, "+%d",discard_stone);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 60, "      ");
+                        mvprintw(15, 60, "x%d",discard_stone);
+                    }
+                    else if(((x >= 44 && y >= 5) && (x <= 46 && y <= 7)) && discard_wood > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_wood --;
+                        mvprintw(35, 48, "      ");
+                        mvprintw(35, 48, "-%d",discard_wood);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 44, "      ");
+                        mvprintw(9, 44, "x%d",discard_wood);
+                    }
+                    else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) && discard_brick > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_brick --;
+                        mvprintw(41, 48, "      ");
+                        mvprintw(41, 48, "-%d",discard_brick);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 44, "      ");
+                        mvprintw(15, 44, "x%d",discard_brick);
+                    }
+                    else if(((x >= 44 && y >= 17) && (x <= 46 && y <= 19)) && discard_sheep > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_sheep --;
+                        mvprintw(47, 48, "      ");
+                        mvprintw(47, 48, "-%d",discard_sheep);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(21, 44, "      ");
+                        mvprintw(21, 44, "x%d",discard_sheep);
+                    }
+                    else if(((x >= 60 && y >= 5) && (x <= 62 && y <= 7)) && discard_wheat > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_wheat --;
+                        mvprintw(35, 64, "      ");
+                        mvprintw(35, 64, "-%d",discard_wheat);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 60, "       ");
+                        mvprintw(9, 60, "x%d",discard_wheat);
+                    }
+                    else if(((x >= 60 && y >= 11) && (x <= 62 && y <= 13)) && discard_stone > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_stone --;
+                        mvprintw(41, 64, "      ");
+                        mvprintw(41, 64, "-%d",discard_stone);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 60, "      ");
+                        mvprintw(15, 60, "x%d",discard_stone);
+                    }
+                }
+                mvprintw(11, 2, "You have %d cards remain to get.", remains);
+            }
+        }
+        else
+        {
+            attron(COLOR_PAIR(3));
+            for (int i = 0; i < 9; ++i)
+            {
+                for (int j = 0; j < 5; ++j)
+                {
+                    mvprintw(45 + j, 87 + i, " ");
+                }
+            }
+            attroff(COLOR_PAIR(3));
+            attron(COLOR_PAIR(8));
+            mvprintw(45 + 2, 87 + 2, " ");
+            mvprintw(45 + 3, 87 + 3, " ");
+            mvprintw(45 + 3, 87 + 4, " ");
+            mvprintw(45 + 2, 87 + 5, " ");
+            mvprintw(45 + 1, 87 + 6, " ");
+            attroff(COLOR_PAIR(8));
+            if (ch == KEY_MOUSE && getmouse(&event) == OK)
+            {
+                if (event.bstate & BUTTON1_PRESSED)
+                {
+                    int x = event.x;
+                    int y = event.y;
+                    if(((x >= 87 && y >= 45) && (x <= 95 && y <= 49)) && remains < 1)
+                    {
+                        if(agree_or_disagree(43, 140, "Discard those card?", event))
+                        {
+                            //wood: if player has decide to discard those cards:
+                            //I didn't do the reduction, leave it to you.
+                            year_of_plenty_action(player,discard_brick,discard_sheep,discard_stone,discard_wheat,discard_wood);
+                            break;
+                        }
+                    }
+                    else if(((x >= 44 && y >= 5) && (x <= 46 && y <= 7)) && discard_wood > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_wood --;
+                        mvprintw(35, 48, "      ");
+                        mvprintw(35, 48, "+%d",discard_wood);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 44, "      ");
+                        mvprintw(9, 44, "x%d",discard_wood);
+                    }
+                    else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) && discard_brick > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_brick --;
+                        mvprintw(41, 48, "      ");
+                        mvprintw(41, 48, "+%d",discard_brick);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 44, "      ");
+                        mvprintw(15, 44, "x%d",discard_brick);
+                    }
+                    else if(((x >= 44 && y >= 17) && (x <= 46 && y <= 19)) && discard_sheep > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_sheep --;
+                        mvprintw(47, 48, "      ");
+                        mvprintw(47, 48, "+%d",discard_sheep);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(21, 44, "      ");
+                        mvprintw(21, 44, "x%d",discard_sheep);
+                    }
+                    else if(((x >= 60 && y >= 5) && (x <= 62 && y <= 7)) && discard_wheat > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_wheat --;
+                        mvprintw(35, 64, "      ");
+                        mvprintw(35, 64, "+%d",discard_wheat);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(9, 60, "      ");
+                        mvprintw(9, 60, "x%d",discard_wheat);
+                    }
+                    else if(((x >= 60 && y >= 11) && (x <= 62 && y <= 13)) && discard_stone > 0)
+                    {
+                        remains ++;
+                        attron(COLOR_PAIR(31));
+                        discard_stone --;
+                        mvprintw(41, 64, "      ");
+                        mvprintw(41, 64, "+%d",discard_stone);
+                        attroff(COLOR_PAIR(31));
+                        mvprintw(15, 60, "      ");
+                        mvprintw(15, 60, "x%d",discard_stone);
+                    }
+                    mvprintw(11, 2, "You have %d cards remain to get.", remains);
+                    attron(COLOR_PAIR(7));
+                    for (int i = 0; i < 9; ++i)
+                    {
+                        for (int j = 0; j < 5; ++j)
+                        {
+                            mvprintw(45 + j, 87 + i, " ");
+                        }
+                    }
+                    attroff(COLOR_PAIR(7));
+                }
+            }
+        }
+    }
+    refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
+}
 
 /*void general_discard_half_deck(player_property *the_player)
 {

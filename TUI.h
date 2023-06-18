@@ -17,6 +17,7 @@
 obj *get_obj_from_mouse(i32 x,i32 y);
 obj* wait_until_get_obj_from_mouse();
 obj* get_highlighted();
+resources get_highlighted_resource(MEVENT event);
 void shuffle_i32(i32 *array, i32 n);
 void show_obj(obj* tgt);
 void print_polygon(obj *tgt, int y, int x);

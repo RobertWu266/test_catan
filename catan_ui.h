@@ -43,6 +43,7 @@ void refresh_all_status(player_property *player_1, player_property *player_2, pl
 void _refresh_all_status();
 void help();
 void discard_half_deck(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
+void year_of_plenty(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
 void bank_init(bank_property *bank);
 void player_init(player_property *player);
 void print_bank(bank_property *bank);
@@ -54,6 +55,7 @@ int check_winner(player_property *player_1, player_property *player_2, player_pr
 void _print_player(player_property *player ,int y, int x , int color);
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4);
 void print_YOU(player_property *player_1, card_temp *cardtemp);
+void print_YOU_HIGHLIGHTED(player_property *player_1, card_temp *cardtemp);
 void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
 void fprintf_bank(bank_property bank1);
 void fprintf_player(player_property player1);

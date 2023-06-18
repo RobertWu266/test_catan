@@ -200,6 +200,7 @@ uint8_t get_longest_road(owner owner1);
 bool turning_back(obj* past,obj* now, obj* future);
 uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr);
 void discard_half_deck_action(player_property *the_player,uint8_t brick_discard,uint8_t sheep_discard,uint8_t stone_discard,uint8_t wheat_discard,uint8_t wood_discard);
+void year_of_plenty_action(player_property *the_player,uint8_t brick_discard,uint8_t sheep_discard,uint8_t stone_discard,uint8_t wheat_discard,uint8_t wood_discard);
 void resource_generate(i32 num);
 
 resources least_valueable_resource(player_property* the_player);

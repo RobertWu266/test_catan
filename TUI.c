@@ -36,6 +36,45 @@ obj* get_highlighted()
     clear_all_highlight();
     return clicked;
 }
+resources get_highlighted_resource(MEVENT event)
+{
+
+    int ch;
+
+    while(1)
+    {
+        ch = getch();
+        if(ch == KEY_MOUSE && getmouse(&event) == OK)
+        {
+            i32 x=event.x;
+            i32 y=event.y;
+            if(abs(y-29)<=2)
+            {
+                if(abs(x-112)<=2)
+                {
+                    return FOREST;
+                }
+                if(abs(x-119)<=2)
+                {
+                    return HILL;
+                }
+                if(abs(x-126)<=2)
+                {
+                    return PASTURE;
+                }
+                if(abs(x-133)<=2)
+                {
+                    return FIELD;
+                }
+                if(abs(x-140)<=2)
+                {
+                    return MOUNTAIN;
+                }
+            }
+            //mvprintw(0, 0, "Mouse Clicked at: x=%d, y=%d", x, y);
+        }
+    }
+}
 obj* wait_until_get_obj_from_mouse()
 {
     MEVENT event;

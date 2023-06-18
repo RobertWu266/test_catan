@@ -642,11 +642,11 @@ void player_init(player_property *player)
     player -> knights = 0;
     player -> knights_use = 0;
     //player -> knights_get = false;
-    player -> year_of_plenty = 0;
+    player -> year_of_plenty = 1;
     //player -> year_of_plenty_get = false;
-    player -> road_building = 0;
+    player -> road_building = 1;
     //player -> road_building_get = false;
-    player -> monopoly = 0;
+    player -> monopoly = 1;
     //player -> monopoly_get = false;
     player -> victory_card = 0;
     //player -> victory_card_get = false;
@@ -1204,6 +1204,14 @@ void discard_half_deck_action(player_property *the_player,uint8_t brick_discard,
     the_player->brick-=brick_discard;bank.brick+=brick_discard;
     the_player->sheep-=sheep_discard;bank.sheep+=sheep_discard;
     the_player->stone-=stone_discard;bank.stone+=stone_discard;
+}
+void year_of_plenty_action(player_property *the_player,uint8_t brick_discard,uint8_t sheep_discard,uint8_t stone_discard,uint8_t wheat_discard,uint8_t wood_discard)
+{
+    the_player->wheat+=wheat_discard;bank.wheat-=wheat_discard;
+    the_player->wood+=wood_discard;bank.wood-=wood_discard;
+    the_player->brick+=brick_discard;bank.brick-=brick_discard;
+    the_player->sheep+=sheep_discard;bank.sheep-=sheep_discard;
+    the_player->stone+=stone_discard;bank.stone-=stone_discard;
 }
 void resource_generate(i32 num)
 {
