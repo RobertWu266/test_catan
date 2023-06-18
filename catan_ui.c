@@ -131,6 +131,7 @@ void in_game_ui_2(MEVENT *event)
         (players+i)  -> road_building += cardtemp.road_building;
         (players+i)  -> monopoly += cardtemp.monopoly;
         card_temp_init( &cardtemp );
+        _refresh_all_status();
     }
 }
 void general_after_action(player_property *the_player,MEVENT event)
