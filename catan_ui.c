@@ -13,6 +13,7 @@ extern player_property *develop_AI_player;
 extern player_property *village_AI_player;
 extern card_temp cardtemp;
 int trade_withbank[10] = {0};
+bool last_refresh=false;
 
 void _refresh_all_status()
 {
@@ -126,17 +127,20 @@ void in_game_ui_2(MEVENT *event)
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
 
-        (players+i) -> knights += cardtemp.knights;
+        /*(players+i) -> knights += cardtemp.knights;
         (players+i)  -> year_of_plenty += cardtemp .year_of_plenty;
         (players+i)  -> road_building += cardtemp.road_building;
         (players+i)  -> monopoly += cardtemp.monopoly;
-        card_temp_init( &cardtemp );
+        card_temp_init( &cardtemp );*/
+        last_refresh=true;
         _refresh_all_status();
+        last_refresh=false;
     }
 }
 void general_after_action(player_property *the_player,MEVENT event)
 {
     int ch;
+    bool develop_permission=TRUE;
     switch (the_player->iden)
     {
         case human:
@@ -210,68 +214,77 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 }
                             }
                         }
-                        if(abs(x-112)<=1 && abs(y-35) <=1 && the_player->knights)
+                        if(develop_permission)
                         {
-                            //knight
-                            general_move_robber(the_player);
-                            the_player->knights--;
-                            _refresh_all_status();
-                        }
-                        if(abs(x-119)<=1 && abs(y-35) <=1 && the_player->year_of_plenty)
-                        {
-                            //year of plenty
-                            year_of_plenty(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
-                            the_player->year_of_plenty--;
-                            _refresh_all_status();
-                        }
-                        if(abs(x-126)<=1 && abs(y-35) <=1 && the_player->road_building)
-                        {
-                            //road building
-                            obj *clicked=NULL;
-                            for(i32 i=0;i<2;i++)
+                            if(abs(x-112)<=1 && abs(y-35) <=1 && the_player->knights)
                             {
-                                if(the_player->road_remain)
+                                //knight
+                                general_move_robber(the_player);
+                                the_player->knights--;
+                                the_player->knights_use++;
+                                develop_permission=false;
+                                _refresh_all_status();
+                            }
+                            if(abs(x-119)<=1 && abs(y-35) <=1 && the_player->year_of_plenty)
+                            {
+                                //year of plenty
+                                year_of_plenty(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
+                                the_player->year_of_plenty--;
+                                develop_permission=false;
+                                _refresh_all_status();
+                            }
+                            if(abs(x-126)<=1 && abs(y-35) <=1 && the_player->road_building)
+                            {
+                                //road building
+                                obj *clicked=NULL;
+                                for(i32 i=0;i<2;i++)
                                 {
-                                    free(highlight_available_road(the_player-players+player1,NULL));
-                                    _refresh_all_status();
-                                    clicked=get_highlighted();
-                                    build_road(the_player-players+player1,clicked);
-                                    _refresh_all_status();
+                                    if(the_player->road_remain)
+                                    {
+                                        free(highlight_available_road(the_player-players+player1,NULL));
+                                        _refresh_all_status();
+                                        clicked=get_highlighted();
+                                        build_road(the_player-players+player1,clicked);
+                                        _refresh_all_status();
+                                    }
                                 }
+                                develop_permission=false;
                             }
-                        }
-                        if(abs(x-133)<=1 && abs(y-35) <=1 && the_player->monopoly)
-                        {
-                            //monopoly
-                            print_YOU_HIGHLIGHTED(the_player,&cardtemp);
-                            resources res=get_highlighted_resource(event);
-                            print_YOU(the_player,&cardtemp);
-                            i32 max=99;
-                            switch (res)
+                            if(abs(x-133)<=1 && abs(y-35) <=1 && the_player->monopoly)
                             {
-                                case PASTURE:
-                                    for(i32 i=0;i<4;i++)players[i].sheep=0;
-                                    the_player->sheep=max-bank.sheep;
-                                    break;
-                                case MOUNTAIN:
-                                    for(i32 i=0;i<4;i++)players[i].stone=0;
-                                    the_player->stone=max-bank.stone;
-                                    break;
-                                case HILL:
-                                    for(i32 i=0;i<4;i++)players[i].brick=0;
-                                    the_player->brick=max-bank.brick;
-                                    break;
-                                case FIELD:
-                                    for(i32 i=0;i<4;i++)players[i].wheat=0;
-                                    the_player->wheat=max-bank.wheat;
-                                    break;
-                                case FOREST:
-                                    for(i32 i=0;i<4;i++)players[i].wood=0;
-                                    the_player->wood=max-bank.wood;
-                                    break;
+                                //monopoly
+                                print_YOU_HIGHLIGHTED(the_player,&cardtemp);
+                                resources res=get_highlighted_resource(event);
+                                print_YOU(the_player,&cardtemp);
+                                i32 max=99;
+                                switch (res)
+                                {
+                                    case PASTURE:
+                                        for(i32 i=0;i<4;i++)players[i].sheep=0;
+                                        the_player->sheep=max-bank.sheep;
+                                        break;
+                                    case MOUNTAIN:
+                                        for(i32 i=0;i<4;i++)players[i].stone=0;
+                                        the_player->stone=max-bank.stone;
+                                        break;
+                                    case HILL:
+                                        for(i32 i=0;i<4;i++)players[i].brick=0;
+                                        the_player->brick=max-bank.brick;
+                                        break;
+                                    case FIELD:
+                                        for(i32 i=0;i<4;i++)players[i].wheat=0;
+                                        the_player->wheat=max-bank.wheat;
+                                        break;
+                                    case FOREST:
+                                        for(i32 i=0;i<4;i++)players[i].wood=0;
+                                        the_player->wood=max-bank.wood;
+                                        break;
+                                }
+                                _refresh_all_status();
+                                develop_permission=false;
                             }
-                            _refresh_all_status();
                         }
+
 
                     }
                 }
@@ -1957,7 +1970,14 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
-
+    if(last_refresh)
+    {
+        player -> knights+=cardtemp -> knights;
+        player -> year_of_plenty+=cardtemp -> year_of_plenty;
+        player -> road_building+=cardtemp -> road_building;
+        player -> monopoly+=cardtemp -> monopoly;
+        card_temp_init( cardtemp );
+    }
 }
 void print_YOU_HIGHLIGHTED(player_property *player, card_temp *cardtemp)
 {
