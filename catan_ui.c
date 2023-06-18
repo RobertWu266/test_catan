@@ -319,7 +319,6 @@ void general_move_robber(player_property *the_player)
                 player_property *the_player2=&players[vprop(clicked)->own-player1];
                 get_random_card(the_player2,the_player);
             }
-
             _refresh_all_status();
             break;
         case develop_AI:

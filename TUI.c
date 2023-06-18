@@ -82,7 +82,6 @@ void wait_space()
         if(ch=='n')
         {
             free(highlight_available_road(human_id,NULL));
-
             refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
         }
         if(ch=='m')
