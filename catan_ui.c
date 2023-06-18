@@ -182,6 +182,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                         }
                         if((37>=y && y>=35 )&& (167>=x &&x>=147))//build road
                         {
+
                             if(the_player->brick && the_player->wood && the_player->road_remain)
                             {
                                 i32 csr=0;
@@ -236,6 +237,8 @@ void general_after_action(player_property *the_player,MEVENT event)
                             if(abs(x-126)<=1 && abs(y-35) <=1 && the_player->road_building)
                             {
                                 //road building
+                                the_player->brick+=2;
+                                the_player->wood+=2;
                                 obj *clicked=NULL;
                                 for(i32 i=0;i<2;i++)
                                 {
@@ -249,6 +252,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                                     }
                                 }
                                 develop_permission=false;
+                                the_player->road_building--;
                             }
                             if(abs(x-133)<=1 && abs(y-35) <=1 && the_player->monopoly)
                             {
@@ -282,6 +286,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 }
                                 _refresh_all_status();
                                 develop_permission=false;
+                                the_player->monopoly--;
                             }
                         }
 
