@@ -147,6 +147,11 @@ void general_after_action(player_property *the_player,MEVENT event)
                             clear_right_cornor();
                             break;
                         }
+                        if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
+                        {
+                            print_trade_ui(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
+                            //print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
+                        }
                     }
                 }
             }
