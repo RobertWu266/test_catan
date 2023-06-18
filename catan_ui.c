@@ -310,11 +310,16 @@ void general_move_robber(player_property *the_player)
             clicked=get_highlighted();
             clear_all_has_robber();
             bprop(clicked)->has_robber=1;
-            free(highlight_all_stealable(clicked,the_player-players+player1,NULL));
+            i32 idx=0;
+            highlight_all_stealable(clicked,the_player-players+player1,&idx);
             show_all_objects();
-            clicked=get_highlighted();
-            player_property *the_player2=&players[vprop(clicked)->own-player1];
-            get_random_card(the_player2,the_player);
+            if(idx)
+            {
+                clicked=get_highlighted();
+                player_property *the_player2=&players[vprop(clicked)->own-player1];
+                get_random_card(the_player2,the_player);
+            }
+
             _refresh_all_status();
             break;
         case develop_AI:
