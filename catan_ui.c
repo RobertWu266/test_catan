@@ -13,8 +13,15 @@ extern player_property *develop_AI_player;
 extern player_property *village_AI_player;
 extern card_temp cardtemp;
 int trade_withbank[10] = {0};
+extern bool largest_army_start;
+extern bool longest_road_start;
+extern i32 max_road_player_id;
+extern i32 max_army_player_id;
+extern i32 max_road_record;
+extern i32 max_army_record;
+bool wanna_win=0;
 bool last_refresh=false;
-
+i32 winner=0;
 void _refresh_all_status()
 {
     refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
@@ -131,6 +138,11 @@ void in_game_ui_2(MEVENT *event)
         (players+i)  -> road_building += cardtemp.road_building;
         (players+i)  -> monopoly += cardtemp.monopoly;
         card_temp_init( &cardtemp );
+        if(wanna_win)
+        {
+            winner=i+1;
+            return;
+        }
         /*last_refresh=true;
         _refresh_all_status();
         last_refresh=false;*/
@@ -162,6 +174,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                         if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
                         {
                             print_trade_ui(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
+                            print_pass();
                             //print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
                         }
                         if((29>=y && y>=27 )&& (167>=x &&x>=147))//build village
@@ -223,6 +236,13 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 general_move_robber(the_player);
                                 the_player->knights--;
                                 the_player->knights_use++;
+                                if(largest_army_start && the_player->knights_use>max_army_record)
+                                {
+                                    players[max_army_player_id].total_victory_points-=2;
+                                    max_army_player_id=the_player-players;
+                                    max_army_record=the_player->knights_use;
+                                    players[max_army_player_id].total_victory_points+=2;
+                                }
                                 develop_permission=false;
                                 _refresh_all_status();
                             }
@@ -287,6 +307,14 @@ void general_after_action(player_property *the_player,MEVENT event)
                                 _refresh_all_status();
                                 develop_permission=false;
                                 the_player->monopoly--;
+                            }
+                            if(abs(x-140)<=1 && abs(y-35) <=1 && the_player->monopoly)
+                            {
+                                if(the_player->total_victory_points>=10)
+                                {
+                                    wanna_win=1;
+                                    return;
+                                }
                             }
                         }
 
@@ -1971,7 +1999,7 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 	mvprintw(38, 118, "x%d+%d", player -> year_of_plenty, cardtemp -> year_of_plenty);
 	mvprintw(38, 125, "x%d+%d", player -> road_building, cardtemp -> road_building);
 	mvprintw(38, 132, "x%d+%d", player -> monopoly, cardtemp -> monopoly);
-	mvprintw(38, 139, "x%d", player -> victory_card);
+	mvprintw(38, 139, "x%d", player -> total_victory_points);
 	mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
 	mvprintw(32, 149, "City Remain: %d", player -> city_remain);
 	mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
@@ -2100,7 +2128,7 @@ void print_YOU_HIGHLIGHTED(player_property *player, card_temp *cardtemp)
     mvprintw(38, 118, "x%d+%d", player -> year_of_plenty, cardtemp -> year_of_plenty);
     mvprintw(38, 125, "x%d+%d", player -> road_building, cardtemp -> road_building);
     mvprintw(38, 132, "x%d+%d", player -> monopoly, cardtemp -> monopoly);
-    mvprintw(38, 139, "x%d", player -> victory_card);
+    mvprintw(38, 139, "x%d", player -> total_victory_points);
     mvprintw(28, 149, "Village Remain: %d", player -> village_remain);
     mvprintw(32, 149, "City Remain: %d", player -> city_remain);
     mvprintw(36, 149, "Road Remain: %d ", player -> road_remain);
@@ -2404,6 +2432,34 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
 
 void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp)
 {
+    if(!largest_army_start)
+    {
+        for(i32 i=0;i<4;i++)
+        {
+            if(players[i].knights_use>=3)
+            {
+                largest_army_start=true;
+                max_army_record=players[i].knights_use;
+                max_army_player_id=i;
+                players[i].total_victory_points+=2;
+                break;
+            }
+        }
+    }
+    if(!longest_road_start)
+    {
+        for(i32 i=0;i<4;i++)
+        {
+            if(players[i].max_roads>=3)
+            {
+                longest_road_start=true;
+                max_road_record=players[i].max_roads;
+                max_road_player_id=i;
+                players[i].total_victory_points+=2;
+                break;
+            }
+        }
+    }
 	print_in_game_ui();
 	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
 	print_YOU(&players[human_id], cardtemp);

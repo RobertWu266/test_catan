@@ -29,6 +29,13 @@ player_property *develop_AI_player={0};
 player_property *village_AI_player={0};
 i32 human_id=1;
 
+bool largest_army_start=false;
+bool longest_road_start=false;
+i32 max_road_player_id=0;
+i32 max_army_player_id=0;
+i32 max_road_record=0;
+i32 max_army_record=0;
+
 i32 abs(i32 x)
 {
     if (x < 0)return -1 * x;
@@ -711,6 +718,13 @@ void build_road(owner owner1, obj* tobuild)
     the_player->my_road[the_player->my_road_csr]=tobuild;//can be reversed
     the_player->my_road_csr++;//can be reversed
     the_player->max_roads= get_longest_road(owner1);
+    if(longest_road_start && the_player->max_roads>max_road_record)
+    {
+        players[max_road_player_id].total_victory_points-=2;
+        max_road_player_id=owner1-player1;
+        max_road_record=the_player->max_roads;
+        players[max_road_player_id].total_victory_points+=2;
+    }
     clear_all_highlight();
 }
 void build_village(owner owner1, obj* tobuild)
@@ -725,6 +739,7 @@ void build_village(owner owner1, obj* tobuild)
             the_player->village_remain++;
             the_player->wheat-=2;
             the_player->stone-=3;
+            the_player->total_victory_points++;
         }
         else
         {
@@ -741,6 +756,7 @@ void build_village(owner owner1, obj* tobuild)
             the_player->sheep--;
             the_player->wood--;
             the_player->brick--;
+            the_player->total_victory_points++;
         }
         else
         {

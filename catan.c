@@ -1,9 +1,12 @@
 #include "catan_ui.h"
 extern i32 resources_id[];
+extern i32 winner;
+extern i32 human_id;
 int main()
 {
     srand(time(NULL));
     shuffle_i32(resources_id,19);
+    human_id=rand()%4;
     box_set();
 	check_ui_size();
     initscr();
@@ -28,13 +31,14 @@ int main()
     }
 
     in_game_ui_2(&event);//actuall middle point:(25,47)
-    card_temp cardtemp={0};
+    /*card_temp cardtemp={0};
     i32 trade_withbank[10]={0};
 
-    draw_with_mouse_and_return_value(event,&cardtemp);//for debug
+    draw_with_mouse_and_return_value(event,&cardtemp);//for debug*/
 
 
 
 	endwin();
+    printf("The winner is player %d!\n",winner);
 	return 0;
 }
