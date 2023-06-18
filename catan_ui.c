@@ -6,23 +6,37 @@ extern obj* body_list[];
 extern obj* vertice_list[];
 extern bank_property bank;
 extern player_property players[];
+extern i32 human_id;
+extern player_property * human_player;
+extern player_property *road_AI_player;
+extern player_property *develop_AI_player;
+extern player_property *village_AI_player;
+extern card_temp cardtemp;
+int trade_withbank[10] = {0};
 
-void in_game_ui(MEVENT event)
+void _refresh_all_status()
 {
+    refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
+}
+void in_game_ui()
+{
+    MEVENT event;
 	int trade_withbank[10] = {0};
 	set_background_color_init();
 	roll_and_print_dice(43,104);
 	roll_and_print_dice(43,116);
 	bank_property bank;
-	player_property player_1;
-	player_property player_2;
-	player_property player_3;
-	player_property player_4;
-	card_temp cardtemp;
-	player_init(&player_1);
-	player_init(&player_2);
-	player_init(&player_3);
-	player_init(&player_4);
+    /*player_property player_1;
+    player_property player_2;
+    player_property player_3;
+    player_property player_4;
+
+    player_init(&player_1);
+    player_init(&player_2);
+    player_init(&player_3);
+    player_init(&player_4);*/
+    card_temp cardtemp;
+
 	bank_init(&bank);
 	card_temp_init( &cardtemp );
 	trade_init( trade_withbank );
@@ -31,8 +45,10 @@ void in_game_ui(MEVENT event)
 	bool build_a_road = TRUE;//for test
 	print_in_game_ui();
 	print_bank(&bank);
-	print_players_status(&player_1, &player_2, &player_3, &player_4);
-	print_YOU(&player_1, &cardtemp);
+	//print_players_status(human_player ,road_AI_player, develop_AI_player, village_AI_player);
+    print_players_status(players,players+1,players+2,players+3);
+	print_YOU(human_player, &cardtemp);
+
 	if(your_turn)
 	{
 		int ch;
@@ -72,7 +88,7 @@ void in_game_ui(MEVENT event)
 	                }
 	                if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
 	                {
-	                	discard_half_deck(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
+	                	discard_half_deck(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
 	                	//print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
 	                }
 	            }
@@ -80,7 +96,297 @@ void in_game_ui(MEVENT event)
 		}
 	}
 }
+void in_game_ui_2(MEVENT *event)
+{
+    set_background_color_init();
+    roll_and_print_dice(43,104);
+    roll_and_print_dice(43,116);
+    card_temp cardtemp;
+    trade_init( trade_withbank );
+    print_in_game_ui();
+    print_bank(&bank);
+    print_players_status(players,players+1,players+2,players+3);
+    print_YOU(human_player, &cardtemp);
+    _refresh_all_status();
+    for(i32 i=0;i<4;i++)
+    {
+        general_set_beginning(players+i);
+    }
+    for(i32 i=0;i<4;i++)
+    {
+        general_set_beginning_2(players+3-i);
+    }
+    for(i32 i=0;i<4;i=(i+1)%4)
+    {
+        i32 num=general_roll_dice(players+i,*event);
+        mvprintw(0,172,"player %d rolled %d!",i+1,num);
+        wait_space();
+        general_execute_dice(players+i, num,*event);
+        general_after_action(players+i,*event);
 
+    }
+}
+void general_after_action(player_property *the_player,MEVENT event)
+{
+    int ch;
+    switch (the_player->iden)
+    {
+        case human:
+            print_pass();
+            while(ch = getch())
+            {
+                if (ch == KEY_MOUSE && getmouse(&event) == OK)
+                {
+                    if (event.bstate & BUTTON1_PRESSED)
+                    {
+                        print_pass();
+                        int x = event.x;
+                        int y = event.y;
+                        if (((x >= 133 && y >= 41) && (x <= 167 && y <= 49)))//pass pressed
+                        {
+                            clear_right_cornor();
+                            break;
+                        }
+                        if(((x >= 155 && y >= 1) && (x <= 167 && y <= 9)))//trade zone
+                        {
+                            print_trade_ui(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
+                            //print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
+                        }
+                    }
+                }
+            }
+            return;
+        default:
+            ;//to be finished
+    }
+}
+void get_random_card(player_property* from, player_property* to){
+    int total_cards = from->stone + from->brick + from->sheep + from->wood + from->wheat;
+    if(total_cards == 0) {
+        return;
+    }
+    int random_card = rand() % total_cards;
+
+    if(random_card < from->stone){
+        from->stone--;
+        to->stone++;
+    } else if (random_card < from->stone + from->brick){
+        from->brick--;
+        to->brick++;
+    } else if (random_card < from->stone + from->brick + from->sheep){
+        from->sheep--;
+        to->sheep++;
+    } else if (random_card < from->stone + from->brick + from->sheep + from->wood){
+        from->wood--;
+        to->wood++;
+    } else {
+        from->wheat--;
+        to->wheat++;
+    }
+}
+void general_set_beginning(player_property *the_player)
+{
+    obj *clicked=NULL;
+    i32 idx=0;
+    switch (the_player->iden)
+    {
+        case human:
+            highlight_availible_village_beginning(NULL);
+            show_all_objects();
+            clicked=get_highlighted();
+            build_village(the_player-players+player1,clicked);
+            free(highlight_available_road_beginning(clicked,NULL));
+            _refresh_all_status();
+            clicked=get_highlighted();
+            build_road(the_player-players+player1,clicked);
+            _refresh_all_status();
+            break;
+        case road_AI:
+        case develop_AI:
+        case village_AI:
+            clicked= get_random_from_highlighted(highlight_availible_village_beginning(&idx),&idx);
+            build_village(the_player-players+player1,clicked);
+            obj **highlighted_list=highlight_available_road_beginning(clicked,&idx);
+            if(idx==0)assert(0);
+            clicked= get_random_from_highlighted(highlighted_list,&idx);
+            build_road(the_player-players+player1,clicked);
+            _refresh_all_status();
+    }
+}
+void general_set_beginning_2(player_property *the_player)
+{
+    obj *clicked=NULL;
+    i32 idx=0;
+    switch (the_player->iden)
+    {
+        case human:
+            highlight_availible_village_beginning(NULL);
+            show_all_objects();
+            clicked=get_highlighted();
+            build_village(the_player-players+player1,clicked);
+            for(i32 i=0;i<3;i++)
+            {
+                obj *tgt=vprop(clicked)->nei_body[i];
+                if(tgt)
+                {
+                    switch (bprop(tgt)->resource)
+                    {
+                        case PASTURE:
+                            the_player->sheep++;
+                            bank.sheep--;
+                            break;
+                        case MOUNTAIN:
+                            the_player->stone++;
+                            bank.stone--;
+                            break;
+                        case HILL:
+                            the_player->brick++;
+                            bank.brick--;
+                            break;
+                        case FIELD:
+                            the_player->wheat++;
+                            bank.wheat--;
+                            break;
+                        case FOREST:
+                            the_player->wood++;
+                            bank.wood--;
+                            break;
+                    }
+                }
+            }
+            free(highlight_available_road_beginning(clicked,NULL));
+            _refresh_all_status();
+            clicked=get_highlighted();
+            build_road(the_player-players+player1,clicked);
+            _refresh_all_status();
+            break;
+        case road_AI:
+        case develop_AI:
+        case village_AI:
+            clicked= get_random_from_highlighted(highlight_availible_village_beginning(&idx),&idx);
+            build_village(the_player-players+player1,clicked);
+            for(i32 i=0;i<3;i++)
+            {
+                obj *tgt=vprop(clicked)->nei_body[i];
+                if(tgt)
+                {
+                    switch (bprop(tgt)->resource)
+                    {
+                        case PASTURE:
+                            the_player->sheep++;
+                            bank.sheep--;
+                            break;
+                        case MOUNTAIN:
+                            the_player->stone++;
+                            bank.stone--;
+                            break;
+                        case HILL:
+                            the_player->brick++;
+                            bank.brick--;
+                            break;
+                        case FIELD:
+                            the_player->wheat++;
+                            bank.wheat--;
+                            break;
+                        case FOREST:
+                            the_player->wood++;
+                            bank.wood--;
+                            break;
+                    }
+                }
+            }
+            obj **highlighted_list=highlight_available_road_beginning(clicked,&idx);
+            if(idx==0)assert(0);
+            clicked= get_random_from_highlighted(highlighted_list,&idx);
+            build_road(the_player-players+player1,clicked);
+            _refresh_all_status();
+    }
+}
+void general_move_robber(player_property *the_player)
+{
+    obj* clicked=NULL;
+    obj* land=NULL;
+    switch (the_player->iden)
+    {
+        case human:
+            highlight_all_robber_movable();
+            //guidance
+            show_all_objects();
+            clicked=get_highlighted();
+            clear_all_has_robber();
+            bprop(clicked)->has_robber=1;
+            i32 idx=0;
+            highlight_all_stealable(clicked,the_player-players+player1,&idx);
+            show_all_objects();
+            if(idx)
+            {
+                clicked=get_highlighted();
+                player_property *the_player2=&players[vprop(clicked)->own-player1];
+                get_random_card(the_player2,the_player);
+            }
+            _refresh_all_status();
+            break;
+        case develop_AI:
+        case road_AI:
+        case village_AI:
+            land=human_weakness();
+            clear_all_has_robber();
+            bprop(land)->has_robber=1;
+            for(i32 j=0;j<6;j++)
+            {
+                obj *nei_v=bprop(land)->nei_vert[j];
+                if(vprop(nei_v)->own && players[vprop(nei_v)->own-player1].iden==human)
+                {
+                    get_random_card(&players[vprop(nei_v)->own-player1],the_player);
+                    break;
+                }
+            }
+            _refresh_all_status();
+    }
+}
+void general_discard_half_deck(player_property *the_player,MEVENT event)
+{
+    i32 total_resource=the_player->sheep+the_player->stone+the_player->wheat+the_player->wood+the_player->brick;
+    if(total_resource<=7)return;
+    i32 to_discard=total_resource/2+total_resource%2;
+    switch(the_player->iden)
+    {
+        case human:
+            discard_half_deck(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
+            _refresh_all_status();
+            break;
+        case road_AI:
+        case develop_AI:
+        case village_AI:
+            for(i32 i=0;i<to_discard;i++)
+            {
+                switch (least_valueable_resource(the_player))
+                {
+                    case PASTURE:
+                        the_player->sheep--;
+                        bank.sheep++;
+                        break;
+                    case MOUNTAIN:
+                        the_player->stone--;
+                        bank.stone++;
+                        break;
+                    case HILL:
+                        the_player->brick--;
+                        bank.brick++;
+                        break;
+                    case FIELD:
+                        the_player->wheat--;
+                        bank.wheat++;
+                        break;
+                    case FOREST:
+                        the_player->wood--;
+                        bank.wood++;
+                        break;
+                }
+            }
+            _refresh_all_status();
+    }
+}
 void fprintf_player(player_property player1) {
     FILE *fptr;
     fptr = fopen("catan_log.txt", "a");
@@ -112,6 +418,7 @@ void fprintf_player(player_property player1) {
     fprintf(fptr, "Brick Exchange Rate: %d\n", player1.brick_exchange_rate);
     fprintf(fptr, "Sheep Exchange Rate: %d\n", player1.sheep_exchange_rate);
     fprintf(fptr, "Wheat Exchange Rate: %d\n", player1.wheat_exchange_rate);
+    fprintf(fptr,"identity:%d\n",player1.iden);
 
     fclose(fptr);
 }
@@ -144,6 +451,9 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
 {
 	set_background_color_init();
     int ch;
+    /*build_village(0, find_obj(1,1,-1));
+    card_temp cardtemp1;
+    refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp1,trade_withbank);*/
     while ((ch = getch()) != 'q')
     {
         if(ch=='1')fprintf_player(players[0]);
@@ -155,12 +465,14 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
 
         if(ch == 'j')
         {
-            highlight_availible_village_beginning();
+
+            free(highlight_availible_village_beginning(NULL));
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='k')
         {
-            highlight_availible_village(player1);
+            free(highlight_availible_village(human_id+player1,NULL));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='l')
@@ -170,12 +482,14 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
         }
         if(ch=='n')
         {
-            highlight_available_road(player1);
+            free(highlight_available_road(human_id,NULL));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='m')
         {
-            highlight_available_upgrade(player1);
+            free(highlight_available_upgrade(human_id+player1,NULL));
+
             refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
         }
         if(ch=='p')clear_log();
@@ -207,7 +521,6 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
                             break;
                         case pos_vert:
                         case neg_vert:
-
                             mvprintw(0,172,"");
                             vertice_printw(clicked);
                             for(i32 i=0;i<3;i++)
@@ -269,12 +582,14 @@ void draw_with_mouse_and_return_value(MEVENT event,card_temp *cardtemp)// for de
                 {
                     if(clicked->attr==neg_vert||clicked->attr==pos_vert)
                     {
-                        build_village(player1,clicked);
+                        build_village(human_id+player1,clicked);
+
                         refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
                     }
                     else if(clicked->attr!=body)
                     {
-                        build_road(player1,clicked);
+                        build_road(human_id+player1,clicked);
+
                         refresh_all_status(players,players+1,players+2,players+3,&bank,cardtemp);
                     }
                     refresh();
@@ -1262,13 +1577,62 @@ void print_bank(bank_property *bank)
 		attroff(COLOR_PAIR(tmp));
 	}
 }
+i32 general_roll_dice(player_property *the_player,MEVENT event)
+{
+    int ch;
+    int val_by_dice = 0;
+    int dice1 = 0;
+    int dice2 = 0;
+    switch(the_player->iden)
+    {
+        case human:
+            while (ch = getch())
+            {
+                if (ch == KEY_MOUSE && getmouse(&event) == OK)
+                {
+                    if (event.bstate & BUTTON1_PRESSED)
+                    {
+                        int x = event.x;
+                        int y = event.y;
+                        if(((x >= 105 && y >= 43) && (x <= 113 && y <= 47)) ||((x >= 117 && y >= 43) && (x <= 125 && y <= 47)))
+                        {
 
+                            val_by_dice += roll_and_print_dice(43,104);
+                            val_by_dice += roll_and_print_dice(43,116);
+                            mvprintw(50,168,"");
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        default:
+            dice1 = roll_and_print_dice(43,104);
+            dice2 = roll_and_print_dice(43,116);
+
+
+            val_by_dice=dice1+dice2;
+
+    }
+    return val_by_dice;
+}
+void general_execute_dice(player_property *the_player,i32 num,MEVENT event)
+{
+    if(num!=7)
+    {
+        resource_generate(num);
+        _refresh_all_status();
+        return;
+    }
+    for(i32 i=0;i<4;i++)general_discard_half_deck(players+i,event);
+    general_move_robber(the_player);
+}
 void print_players_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4)
 {
-	_print_player(player_1, 11, 97, 1);
-	_print_player(player_2, 11, 133, 2);
-	_print_player(player_3, 19, 97 ,3);
-	_print_player(player_4, 19, 133, 4);
+	_print_player(players, 11, 97, 1);
+	_print_player(players+1, 11, 133, 2);
+	_print_player(players+2, 19, 97 ,3);
+	_print_player(players+3, 19, 133, 4);
 }
 
 void _print_player(player_property *player ,int y, int x , int color)
@@ -1309,7 +1673,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 		}
 	}
 	attroff(COLOR_PAIR(2));
-	mvprintw(c_y + 4 , c_x, "x%d", player -> total_resource_cards);
+	mvprintw(c_y + 4 , c_x, "x%d", player -> wood+player->sheep+player->wheat+player->stone+player->brick);
 	//print total special cards
 	c_x += 6;
 	attron(COLOR_PAIR(6));
@@ -1367,7 +1731,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 
 void print_YOU(player_property *player, card_temp *cardtemp)
 {
-	attron(COLOR_PAIR(1));
+	attron(COLOR_PAIR(human_id + 1));
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 13; ++j)
@@ -1375,7 +1739,7 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 			mvprintw(27 + j, 97 + i, " ");
 		}
 	}
-	attroff(COLOR_PAIR(2));
+	attroff(COLOR_PAIR(human_id + 1));
 	//clean
 	attron(COLOR_PAIR(7));
 	for (int i = 0; i < 13; ++i)
@@ -1767,7 +2131,7 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
     	}
     }
     trade_init(trade_withbank);
-   	refresh_all_status(player,player_2,player_3,player_4,bank,cardtemp);
+   	refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
     attroff(COLOR_PAIR(31));
     //feature : u can discard card like this way!
     mvprintw(50, 168," ");
@@ -1779,7 +2143,7 @@ void refresh_all_status(player_property *player_1, player_property *player_2, pl
 {
 	print_in_game_ui();
 	print_players_status(player_1 ,player_2 ,player_3 ,player_4);
-	print_YOU(player_1, cardtemp);
+	print_YOU(&players[human_id], cardtemp);
 	_print_player(player_1, 11, 97, 1);
 	print_bank(bank);
 	show_all_objects();
@@ -1921,7 +2285,9 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 	int discard_sheep = 0;
 	int discard_wheat = 0;
 	int discard_stone = 0;
-	int discard_num = player -> total_resource_cards - (player -> total_resource_cards) / 2;
+    player -> total_resource_cards=player->stone+player->brick+player->sheep+player->wheat+player->wood;
+	//int discard_num = player -> total_resource_cards - (player -> total_resource_cards) / 2;
+    int discard_num = player -> total_resource_cards/2+(player -> total_resource_cards)%2;
 	attron(COLOR_PAIR(7));
 	for (int i = 0; i < 95; ++i)
 	{
@@ -2122,6 +2488,7 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 				    	{
 				    		//wood: if player has decide to discard those cards:
 				    		//I didn't do the reduction, leave it to you.
+                            discard_half_deck_action(player,discard_brick,discard_sheep,discard_stone,discard_wheat,discard_wood);
 				    		break;
 				    	}
 				    }
@@ -2194,9 +2561,23 @@ void discard_half_deck(player_property *player, player_property *player_2, playe
 	        }
 		}
 	}
-	refresh_all_status(player,player_2,player_3,player_4,bank,cardtemp);
+    refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
 }
 
+
+
+/*void general_discard_half_deck(player_property *the_player)
+{
+    switch (the_player->iden)
+    {
+        case human:
+            //discard_half_deck()
+            break;
+        case road_AI:
+            discard_half_deck_action()
+    }
+
+}*/
 void set_background_color_init()
 {
 	init_pair(1,COLOR_WHITE,COLOR_RED);
@@ -2214,10 +2595,10 @@ void set_background_color_init()
     init_pair(31,COLOR_RED,COLOR_BLACK);
     init_color(COLOR_WHITE,850,850,850);
     init_color(COLOR_MAGENTA,800,0,800);
-    init_color(COLOR_BLUE,0,750,0);
+    init_color(COLOR_BLUE,0,800,0);
     init_color(COLOR_RED,800,0,0);
-    init_color(COLOR_GREEN,0,400,0);
-	init_color(COLOR_YELLOW,800,800,0);
-    init_color(COLOR_BLACK,200,200,200);
+    init_color(COLOR_GREEN,0,550,0);
+    init_color(COLOR_YELLOW,800,800,0);
+    init_color(COLOR_BLACK,150,150,150);
     init_color(COLOR_CYAN,0,200,750);
 }

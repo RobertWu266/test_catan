@@ -28,6 +28,10 @@ typedef enum _owner{None,player1,player2,player3,player4}owner;
 //player 1 is red follow as blue green yellow.
 typedef enum _building{empty,village,city}building;
 typedef enum _harbor{Nil, ALL_HARBOR,WHEAT_HARBOR,SHEEP_HARBOR,WOOD_HARBOR,BRICK_HARBOR,STONE_HARBOR}harbor;
+typedef enum _identity{human,road_AI,develop_AI,village_AI}identity;
+
+
+void shuffle_identity_list(i32 idx);
 /*
  * body: Represents the center of the hexagon
  * v_side: The side of the hexagon that is vertical
@@ -84,6 +88,7 @@ typedef struct
     uint8_t wheat_exchange_rate;
     struct _obj* my_road[15];
     i32 my_road_csr;
+    identity iden;
 
 }player_property;
 
@@ -128,6 +133,7 @@ typedef struct _vertice_property
     building build;
     obj **nei_vert;
     obj **nei_body;
+    obj **nei_side;
     harbor harb;
 
 }vertice_property;
@@ -172,11 +178,16 @@ obj** vertice_neighbor_vertice(obj* tgt);
 harbor locs_harbor(i32 *locs);
 void build_village(owner owner1, obj* tobuild);
 void build_road(owner owner1, obj* tobuild);
-void highlight_availible_village(owner);
-void highlight_availible_village_beginning();
-void highlight_available_road(owner owner1);
-void highlight_available_upgrade(owner owner1);
+void highlight_all_robber_movable();
+obj** highlight_availible_village(owner,i32 *csr);
+obj** highlight_availible_village_beginning(i32 *csr);
+obj** highlight_available_road_beginning(obj *vill,i32 *csr);
+obj** highlight_available_road(owner owner1,i32 *csr);
+obj** highlight_available_upgrade(owner owner1,i32 *csr);
+obj** highlight_all_stealable(obj* land,owner owner1,i32 *csr);
+obj *get_random_from_highlighted(obj** pobjlist,i32 *csr);
 void clear_all_highlight();
+void clear_all_has_robber();
 
 void trade_init( int trade_withbank[] );
 void tradewithbank( player_property *player, bank_property *bank, int trade_withbank[] );
@@ -186,4 +197,12 @@ void specialcard_get( card_temp *cardtemp, player_property *player, bank_propert
 //void player_card_get_init( player_property *player );
 void specialcard_use( player_property *player1, player_property *player2, player_property *player3, player_property *player4, bank_property *bank, int specialcard[], int trade[], owner owner, obj* tobuild );
 uint8_t get_longest_road(owner owner1);
+bool turning_back(obj* past,obj* now, obj* future);
 uint8_t DFS(owner owner1,obj *the_road,obj *visited_road[15], uint8_t *p_visited_road_csr);
+void discard_half_deck_action(player_property *the_player,uint8_t brick_discard,uint8_t sheep_discard,uint8_t stone_discard,uint8_t wheat_discard,uint8_t wood_discard);
+void resource_generate(i32 num);
+
+resources least_valueable_resource(player_property* the_player);
+obj* human_weakness();
+
+
