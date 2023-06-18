@@ -152,7 +152,7 @@ void general_after_action(player_property *the_player,MEVENT event)
                             print_trade_ui(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
                             //print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
                         }
-                        if(y==28&& (163>=x &&x>=149))//build village
+                        if((29>=y && y>=27 )&& (167>=x &&x>=147))//build village
                         {
                             if(the_player->sheep && the_player->wheat && the_player->brick && the_player->wood && the_player->village_remain)
                             {
@@ -168,7 +168,7 @@ void general_after_action(player_property *the_player,MEVENT event)
 
                             }
                         }
-                        if(y==36&& (160>=x &&x>=149))//build road
+                        if((37>=y && y>=35 )&& (167>=x &&x>=147))//build road
                         {
                             if(the_player->brick && the_player->wood && the_player->road_remain)
                             {
@@ -181,9 +181,13 @@ void general_after_action(player_property *the_player,MEVENT event)
                                     build_road(the_player-players+player1,tgt);
                                     _refresh_all_status();
                                 }
+                                else
+                                {
+                                    mvprintw(0,172,"No road you can build");
+                                }
                             }
                         }
-                        if(y==32&& (160>=x &&x>=149))//build city
+                        if((33>=y && y>=31 )&& (167>=x &&x>=147))//build city
                         {
                             if(the_player->wheat>=2 && the_player->stone>=3 && the_player->city_remain)
                             {
