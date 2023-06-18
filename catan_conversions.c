@@ -699,6 +699,8 @@ void build_road(owner owner1, obj* tobuild)
     if(the_player->road_remain)
     {
         the_player->road_remain--;
+        the_player->wood--;
+        the_player->brick--;
     }
     else
     {
@@ -721,6 +723,8 @@ void build_village(owner owner1, obj* tobuild)
             vprop(tobuild)->build=city;
             the_player->city_remain--;
             the_player->village_remain++;
+            the_player->wheat-=2;
+            the_player->stone-=3;
         }
         else
         {
@@ -733,6 +737,10 @@ void build_village(owner owner1, obj* tobuild)
         {
             vprop(tobuild)->build=village;
             the_player->village_remain--;
+            the_player->wheat--;
+            the_player->sheep--;
+            the_player->wood--;
+            the_player->brick--;
         }
         else
         {
