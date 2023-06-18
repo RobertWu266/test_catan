@@ -152,6 +152,52 @@ void general_after_action(player_property *the_player,MEVENT event)
                             print_trade_ui(human_player, road_AI_player, develop_AI_player, village_AI_player,  &bank, event, trade_withbank, &cardtemp);
                             //print_trade_ui(&player_1, &player_1, &player_1, &player_1,  &bank, event, trade_withbank, &cardtemp);
                         }
+                        if(y==28&& (163>=x &&x>=149))//build village
+                        {
+                            if(the_player->sheep && the_player->wheat && the_player->brick && the_player->wood && the_player->village_remain)
+                            {
+                                i32 csr=0;
+                                free(highlight_availible_village(the_player-players+player1,&csr));
+                                show_all_objects();
+                                if(csr)
+                                {
+                                    obj *tgt=get_highlighted();
+                                    build_village(the_player-players+player1,tgt);
+                                    _refresh_all_status();
+                                }
+
+                            }
+                        }
+                        if(y==36&& (160>=x &&x>=149))//build road
+                        {
+                            if(the_player->brick && the_player->wood && the_player->road_remain)
+                            {
+                                i32 csr=0;
+                                free(highlight_available_road(the_player-players+player1,&csr));
+                                show_all_objects();
+                                if(csr)
+                                {
+                                    obj *tgt=get_highlighted();
+                                    build_road(the_player-players+player1,tgt);
+                                    _refresh_all_status();
+                                }
+                            }
+                        }
+                        if(y==32&& (160>=x &&x>=149))//build city
+                        {
+                            if(the_player->wheat>=2 && the_player->stone>=3 && the_player->city_remain)
+                            {
+                                i32 csr=0;
+                                free(highlight_available_upgrade(the_player-players+player1,&csr));
+                                show_all_objects();
+                                if(csr)
+                                {
+                                    obj *tgt=get_highlighted();
+                                    build_village(the_player-players+player1,tgt);
+                                    _refresh_all_status();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1731,7 +1777,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 
 void print_YOU(player_property *player, card_temp *cardtemp)
 {
-	attron(COLOR_PAIR(1));
+	attron(COLOR_PAIR(1+human_id));
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 13; ++j)
@@ -1739,7 +1785,7 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 			mvprintw(27 + j, 97 + i, " ");
 		}
 	}
-	attroff(COLOR_PAIR(2));
+	attroff(COLOR_PAIR(1+human_id));
 	//clean
 	attron(COLOR_PAIR(7));
 	for (int i = 0; i < 13; ++i)

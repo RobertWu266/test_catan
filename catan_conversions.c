@@ -720,6 +720,7 @@ void build_village(owner owner1, obj* tobuild)
         {
             vprop(tobuild)->build=city;
             the_player->city_remain--;
+            the_player->village_remain++;
         }
         else
         {
@@ -869,7 +870,7 @@ obj** highlight_availible_village(owner owner1,i32 *csr)
         for(i32 j=0;j<2;j++)
         {
             obj *tgt=sprop(the_player->my_road[i])->nei_vert[j];//get vert around my road
-            if(tgt->highlighted)continue;
+            if(tgt->highlighted || vprop(tgt)->build!=empty)continue;
             for(i32 k=0;k<3;k++)
             {
                 obj* test=vprop(tgt)->nei_vert[k];//check if the nei_vert of "the vert by my road" is empty

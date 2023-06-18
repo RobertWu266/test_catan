@@ -92,6 +92,7 @@ void wait_space()
         }
         if(ch=='p')clear_log();
     }
+    mvprintw(0,172,"                                                    ");
 }
 void shuffle_i32(i32 *array, i32 n)
 {
