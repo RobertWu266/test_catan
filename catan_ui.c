@@ -1655,8 +1655,6 @@ i32 general_roll_dice(player_property *the_player,MEVENT event)
         default:
             dice1 = roll_and_print_dice(43,104);
             dice2 = roll_and_print_dice(43,116);
-
-
             val_by_dice=dice1+dice2;
 
     }
@@ -1778,6 +1776,7 @@ void _print_player(player_property *player ,int y, int x , int color)
 void print_YOU(player_property *player, card_temp *cardtemp)
 {
 	attron(COLOR_PAIR(1+human_id));
+
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 13; ++j)
@@ -1786,6 +1785,7 @@ void print_YOU(player_property *player, card_temp *cardtemp)
 		}
 	}
 	attroff(COLOR_PAIR(1+human_id));
+
 	//clean
 	attron(COLOR_PAIR(7));
 	for (int i = 0; i < 13; ++i)
@@ -2641,10 +2641,10 @@ void set_background_color_init()
     init_pair(31,COLOR_RED,COLOR_BLACK);
     init_color(COLOR_WHITE,850,850,850);
     init_color(COLOR_MAGENTA,800,0,800);
-    init_color(COLOR_BLUE,0,750,0);
+    init_color(COLOR_BLUE,0,800,0);
     init_color(COLOR_RED,800,0,0);
-    init_color(COLOR_GREEN,0,400,0);
-	init_color(COLOR_YELLOW,800,800,0);
-    init_color(COLOR_BLACK,200,200,200);
+    init_color(COLOR_GREEN,0,550,0);
+    init_color(COLOR_YELLOW,800,800,0);
+    init_color(COLOR_BLACK,150,150,150);
     init_color(COLOR_CYAN,0,200,750);
 }
