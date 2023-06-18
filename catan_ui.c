@@ -102,6 +102,7 @@ void in_game_ui_2(MEVENT *event)
     roll_and_print_dice(43,104);
     roll_and_print_dice(43,116);
     card_temp cardtemp;
+    card_temp_init ( &cardtemp );
     trade_init( trade_withbank );
     print_in_game_ui();
     print_bank(&bank);
@@ -123,7 +124,7 @@ void in_game_ui_2(MEVENT *event)
         wait_space();
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
-
+	print_YOU(human_player, &cardtemp);
     }
 }
 void general_after_action(player_property *the_player,MEVENT event)
