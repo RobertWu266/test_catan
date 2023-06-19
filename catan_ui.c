@@ -139,7 +139,7 @@ void in_game_ui_2(MEVENT *event)
         i32 num=general_roll_dice(players+i,*event);
         /*mvprintw(0,172,"player %d rolled %d!",i+1,num);
         wait_space();*/
-        ADD_NEW_MESSAGE("%s rolled %d!",iden_string[(players+i)->iden],i+1,num);
+        ADD_NEW_MESSAGE("%s rolled %d!",iden_string[(players+i)->iden],num);
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
 
@@ -191,6 +191,14 @@ void build_the_best_road(player_property *the_player)
     }
     build_road(the_player-players+player1,available_road[longest_road_id]);
 }
+void use_knight(player_property *the_player)
+{
+    players[max_army_player_id].total_victory_points-=2;
+    max_army_player_id=the_player-players;
+    max_army_record=the_player->knights_use;
+    players[max_army_player_id].total_victory_points+=2;
+    ADD_NEW_MESSAGE("%s use a knight");
+}
 void general_after_action(player_property *the_player,MEVENT event)
 {
     int ch;
@@ -221,142 +229,315 @@ void general_after_action(player_property *the_player,MEVENT event)
                         }
                         if((29>=y && y>=27 )&& (167>=x &&x>=147))//build village
                         {
-                            if(the_player->sheep && the_player->wheat && the_player->brick && the_player->wood && the_player->village_remain)
+                            if(agree_or_disagree(43,140," build a village?",event))
                             {
-                                i32 csr=0;
-                                free(highlight_availible_village(the_player-players+player1,&csr));
-                                show_all_objects();
-                                if(csr)
+                                if(the_player->sheep && the_player->wheat && the_player->brick && the_player->wood && the_player->village_remain)
                                 {
-                                    obj *tgt=get_highlighted();
-                                    build_village(the_player-players+player1,tgt);
-                                    _refresh_all_status();
-                                }
-
-                            }
-                        }
-                        if((37>=y && y>=35 )&& (167>=x &&x>=147))//build road
-                        {
-
-                            if(the_player->brick && the_player->wood && the_player->road_remain)
-                            {
-                                i32 csr=0;
-                                free(highlight_available_road(the_player-players+player1,&csr));
-                                show_all_objects();
-                                if(csr)
-                                {
-                                    obj *tgt=get_highlighted();
-                                    build_road(the_player-players+player1,tgt);
-                                    _refresh_all_status();
+                                    i32 csr=0;
+                                    free(highlight_availible_village(the_player-players+player1,&csr));
+                                    show_all_objects();
+                                    if(csr)
+                                    {
+                                        obj *tgt=get_highlighted();
+                                        build_village(the_player-players+player1,tgt);
+                                        _refresh_all_status();
+                                    }
                                 }
                                 else
                                 {
-                                    mvprintw(0,172,"No road you can build");
+                                    ADD_NEW_MESSAGE("resource insufficient");
                                 }
                             }
+                            clear_right_cornor();
+                            print_pass();
+                        }
+                        if((37>=y && y>=35 )&& (167>=x &&x>=147))//build road
+                        {
+                            if(agree_or_disagree(43,140," build a road?",event))
+                            {
+                                if(the_player->brick && the_player->wood && the_player->road_remain)
+                                {
+                                    i32 csr=0;
+                                    free(highlight_available_road(the_player-players+player1,&csr));
+                                    show_all_objects();
+                                    if(csr)
+                                    {
+                                        obj *tgt=get_highlighted();
+                                        build_road(the_player-players+player1,tgt);
+                                        _refresh_all_status();
+                                    }
+                                    else
+                                    {
+                                        mvprintw(0,172,"No road you can build");
+                                    }
+                                }
+                                else
+                                {
+                                    ADD_NEW_MESSAGE("resource insufficient");
+                                }
+                            }
+                            clear_right_cornor();
+                            print_pass();
+
                         }
                         if((33>=y && y>=31 )&& (167>=x &&x>=147))//build city
                         {
-                            if(the_player->wheat>=2 && the_player->stone>=3 && the_player->city_remain)
+                            if(agree_or_disagree(43,140," build a city?",event))
                             {
-                                i32 csr=0;
-                                free(highlight_available_upgrade(the_player-players+player1,&csr));
-                                show_all_objects();
-                                if(csr)
+                                if(the_player->wheat>=2 && the_player->stone>=3 && the_player->city_remain)
                                 {
-                                    obj *tgt=get_highlighted();
-                                    build_village(the_player-players+player1,tgt);
-                                    _refresh_all_status();
+                                    i32 csr=0;
+                                    free(highlight_available_upgrade(the_player-players+player1,&csr));
+                                    show_all_objects();
+                                    if(csr)
+                                    {
+                                        obj *tgt=get_highlighted();
+                                        build_village(the_player-players+player1,tgt);
+                                        _refresh_all_status();
+                                    }
                                 }
+                                else
+                                {
+                                    ADD_NEW_MESSAGE("resource insufficient");
+                                }
+                            }
+                            clear_right_cornor();
+                            print_pass();
+                        }
+                        if((18>=y && y>=11 )&& (101>=x &&x>=97))//player 1
+                        {
+                            switch(players[0].iden)
+                            {
+                                case human:
+                                    ADD_NEW_MESSAGE("You cannot trade with yourself");
+                                    break;
+                                case road_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[road_AI]);
+                                    break;
+                                case develop_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[develop_AI]);
+                                    break;
+                                case village_AI:
+                                    if(agree_or_disagree(43,140,"Trade with your ai friend?",event))
+                                    {
+                                        print_trade_ui_friend(human_player,village_AI_player,event);
+                                    }
+                                    clear_right_cornor();
+                                    print_pass();
+                                    break;
+                            }
+                        }
+                        if((18>=y && y>=11 )&& (137>=x &&x>=133))//player 2
+                        {
+                            switch(players[1].iden)
+                            {
+                                case human:
+                                    ADD_NEW_MESSAGE("You cannot trade with yourself");
+                                    break;
+                                case road_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[road_AI]);
+                                    break;
+                                case develop_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[develop_AI]);
+                                    break;
+                                case village_AI:
+                                    if(agree_or_disagree(43,140,"Trade with your ai friend?",event))
+                                    {
+                                        print_trade_ui_friend(human_player,village_AI_player,event);
+                                    }
+                                    clear_right_cornor();
+                                    print_pass();
+                                    break;
+                            }
+                        }
+                        if((26>=y && y>=19 )&& (101>=x &&x>=97))//player 3
+                        {
+                            switch(players[2].iden)
+                            {
+                                case human:
+                                    ADD_NEW_MESSAGE("You cannot trade with yourself");
+                                    break;
+                                case road_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[road_AI]);
+                                    break;
+                                case develop_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[develop_AI]);
+                                    break;
+                                case village_AI:
+                                    if(agree_or_disagree(43,140,"Trade with your ai friend?",event))
+                                    {
+                                        print_trade_ui_friend(human_player,village_AI_player,event);
+                                    }
+                                    clear_right_cornor();
+                                    print_pass();
+                                    break;
+                            }
+                        }
+                        if((26>=y && y>=19 )&& (137>=x &&x>=133))//player 4
+                        {
+                            switch(players[3].iden)
+                            {
+                                case human:
+                                    ADD_NEW_MESSAGE("You cannot trade with yourself");
+                                    break;
+                                case road_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[road_AI]);
+                                    break;
+                                case develop_AI:
+                                    ADD_NEW_MESSAGE("%s doesn't want to trade with you",iden_string[develop_AI]);
+                                    break;
+                                case village_AI:
+                                    if(agree_or_disagree(43,140,"Trade with your ai friend?",event))
+                                    {
+                                        print_trade_ui_friend(human_player,village_AI_player,event);
+                                    }
+                                    clear_right_cornor();
+                                    print_pass();
+                                    break;
                             }
                         }
                         if(develop_permission)
                         {
-                            if(abs(x-112)<=1 && abs(y-35) <=1 && the_player->knights)
+
+                            if(abs(x-112)<=1 && abs(y-35) <=1)
                             {
-                                //knight
-                                general_move_robber(the_player);
-                                the_player->knights--;
-                                the_player->knights_use++;
-                                if(largest_army_start && the_player->knights_use>max_army_record)
+                                if(agree_or_disagree(43,140,"use knight?",event))
                                 {
-                                    players[max_army_player_id].total_victory_points-=2;
-                                    max_army_player_id=the_player-players;
-                                    max_army_record=the_player->knights_use;
-                                    players[max_army_player_id].total_victory_points+=2;
-                                }
-                                develop_permission=false;
-                                _refresh_all_status();
-                            }
-                            if(abs(x-119)<=1 && abs(y-35) <=1 && the_player->year_of_plenty)
-                            {
-                                //year of plenty
-                                year_of_plenty(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
-                                the_player->year_of_plenty--;
-                                develop_permission=false;
-                                _refresh_all_status();
-                            }
-                            if(abs(x-126)<=1 && abs(y-35) <=1 && the_player->road_building)
-                            {
-                                //road building
-                                the_player->brick+=2;
-                                the_player->wood+=2;
-                                obj *clicked=NULL;
-                                for(i32 i=0;i<2;i++)
-                                {
-                                    if(the_player->road_remain)
+                                    if(the_player->knights)
                                     {
-                                        free(highlight_available_road(the_player-players+player1,NULL));
-                                        _refresh_all_status();
-                                        clicked=get_highlighted();
-                                        build_road(the_player-players+player1,clicked);
+                                        //knight
+                                        general_move_robber(the_player);
+                                        the_player->knights--;
+                                        the_player->knights_use++;
+                                        if(largest_army_start && the_player->knights_use>max_army_record)
+                                        {
+                                            use_knight(the_player);
+                                        }
+                                        develop_permission=false;
                                         _refresh_all_status();
                                     }
+                                    else
+                                    {
+                                        ADD_NEW_MESSAGE("You don't have that card!");
+                                    }
                                 }
-                                develop_permission=false;
-                                the_player->road_building--;
+                                clear_right_cornor();
+                                print_pass();
                             }
-                            if(abs(x-133)<=1 && abs(y-35) <=1 && the_player->monopoly)
+                            if(abs(x-119)<=1 && abs(y-35) <=1)
                             {
-                                //monopoly
-                                print_YOU_HIGHLIGHTED(the_player,&cardtemp);
-                                resources res=get_highlighted_resource(event);
-                                print_YOU(the_player,&cardtemp);
-                                i32 max=19;
-                                switch (res)
+                                if(agree_or_disagree(43,140,"use year of plenty?",event))
                                 {
-                                    case PASTURE:
-                                        for(i32 i=0;i<4;i++)players[i].sheep=0;
-                                        the_player->sheep=max-bank.sheep;
-                                        break;
-                                    case MOUNTAIN:
-                                        for(i32 i=0;i<4;i++)players[i].stone=0;
-                                        the_player->stone=max-bank.stone;
-                                        break;
-                                    case HILL:
-                                        for(i32 i=0;i<4;i++)players[i].brick=0;
-                                        the_player->brick=max-bank.brick;
-                                        break;
-                                    case FIELD:
-                                        for(i32 i=0;i<4;i++)players[i].wheat=0;
-                                        the_player->wheat=max-bank.wheat;
-                                        break;
-                                    case FOREST:
-                                        for(i32 i=0;i<4;i++)players[i].wood=0;
-                                        the_player->wood=max-bank.wood;
-                                        break;
+                                    if(the_player->year_of_plenty)
+                                    {
+                                        //year of plenty
+                                        year_of_plenty(human_player,road_AI_player,develop_AI_player,village_AI_player,&bank,event,trade_withbank,&cardtemp);
+                                        the_player->year_of_plenty--;
+                                        develop_permission=false;
+                                        _refresh_all_status();
+                                    }
+                                    else
+                                    {
+                                        ADD_NEW_MESSAGE("You don't have that card!");
+                                    }
                                 }
-                                _refresh_all_status();
-                                develop_permission=false;
-                                the_player->monopoly--;
+                                clear_right_cornor();
+                                print_pass();
+                            }
+                            if(abs(x-126)<=1 && abs(y-35) <=1)
+                            {
+                                if(agree_or_disagree(43,140,"use road building?",event))
+                                {
+                                    if(the_player->road_building)
+                                    {
+                                        //road building
+                                        the_player->brick+=2;
+                                        the_player->wood+=2;
+                                        obj *clicked=NULL;
+                                        for(i32 i=0;i<2;i++)
+                                        {
+                                            if(the_player->road_remain)
+                                            {
+                                                free(highlight_available_road(the_player-players+player1,NULL));
+                                                _refresh_all_status();
+                                                clicked=get_highlighted();
+                                                build_road(the_player-players+player1,clicked);
+                                                _refresh_all_status();
+                                            }
+                                        }
+                                        develop_permission=false;
+                                        the_player->road_building--;
+                                    }
+                                    else
+                                    {
+                                        ADD_NEW_MESSAGE("You don't have that card!");
+                                    }
+                                }
+                                clear_right_cornor();
+                                print_pass();
+                            }
+                            if(abs(x-133)<=1 && abs(y-35) <=1)
+                            {
+                                if(agree_or_disagree(43,140,"use monopoly?",event))
+                                {
+                                    if(the_player->monopoly)
+                                    {
+                                        //monopoly
+                                        print_YOU_HIGHLIGHTED(the_player,&cardtemp);
+                                        resources res=get_highlighted_resource(event);
+                                        print_YOU(the_player,&cardtemp);
+                                        i32 max=19;
+                                        switch (res)
+                                        {
+                                            case PASTURE:
+                                                for(i32 i=0;i<4;i++)players[i].sheep=0;
+                                                the_player->sheep=max-bank.sheep;
+                                                break;
+                                            case MOUNTAIN:
+                                                for(i32 i=0;i<4;i++)players[i].stone=0;
+                                                the_player->stone=max-bank.stone;
+                                                break;
+                                            case HILL:
+                                                for(i32 i=0;i<4;i++)players[i].brick=0;
+                                                the_player->brick=max-bank.brick;
+                                                break;
+                                            case FIELD:
+                                                for(i32 i=0;i<4;i++)players[i].wheat=0;
+                                                the_player->wheat=max-bank.wheat;
+                                                break;
+                                            case FOREST:
+                                                for(i32 i=0;i<4;i++)players[i].wood=0;
+                                                the_player->wood=max-bank.wood;
+                                                break;
+                                        }
+                                        _refresh_all_status();
+                                        develop_permission=false;
+                                        the_player->monopoly--;
+                                    }
+                                    else
+                                    {
+                                        ADD_NEW_MESSAGE("You don't have that card!");
+                                    }
+                                }
+                                clear_right_cornor();
+                                print_pass();
                             }
                             if(abs(x-140)<=1 && abs(y-35) <=1)
                             {
-                                if(the_player->total_victory_points>=10)
+                                if(agree_or_disagree(43,140,"win?",event))
                                 {
-                                    wanna_win=1;
-                                    return;
+                                    if(the_player->total_victory_points>=10)
+                                    {
+                                        wanna_win=1;
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        ADD_NEW_MESSAGE("Your points <10!");
+                                    }
                                 }
+                                clear_right_cornor();
+                                print_pass();
                             }
                         }
 
@@ -366,11 +547,53 @@ void general_after_action(player_property *the_player,MEVENT event)
             }
             return;
         case road_AI:
-            build_the_best_road(the_player);
+            road_AI_player->brick+=develop_AI_player->brick;
+            develop_AI_player->brick=0;
+            road_AI_player->wood+=develop_AI_player->wood;
+            develop_AI_player->wood=0;
+            if(develop_AI_player->sheep)road_AI_player->sheep+=(develop_AI_player->sheep-1);
+            develop_AI_player->sheep=1;
+            if(develop_AI_player->wheat)road_AI_player->wheat+=(develop_AI_player->wheat-1);
+            develop_AI_player->wheat=1;
+            if(develop_AI_player->stone)road_AI_player->stone+=(develop_AI_player->stone-1);
+
+            /*i32 *need2get=NULL;
+            if(the_player->wood>=the_player->brick)
+            {
+                need2get=&(the_player->brick);
+            }
+            else
+            {
+                need2get=&(the_player->wood);
+            }*/
+
+            for(i32 i=0;i<5;i++)
+            {
+                build_the_best_road(the_player);
+            };
+            _refresh_all_status();
             break;
         case develop_AI:
+            /*for(i32 i=0;i<MIN(2,the_player->brick,the_player->wood);i++)
+            {
 
-            ;//to be finished
+            }*/
+            if(the_player->stone && the_player->sheep && the_player->wheat)
+            {
+                uint8_t amount=MIN(3,the_player->stone,the_player->sheep,the_player->wheat);
+                the_player->stone-=amount;
+                the_player->sheep-=amount;
+                the_player->wheat-=amount;
+                specialcard_get(&cardtemp,the_player,&bank,amount);
+            }
+            if(the_player->knights)
+            {
+                use_knight(the_player);
+                general_move_robber(the_player);
+            }
+
+            _refresh_all_status();
+            break;
         case village_AI:
     }
 }
@@ -2183,89 +2406,89 @@ void print_YOU_HIGHLIGHTED(player_property *player, card_temp *cardtemp)
 }
 void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp)
 {
-	//clean map
-	attron(COLOR_PAIR(7));
-	for (int i = 0; i < 95; ++i)
-	{
-		for (int j = 0; j < 49; ++j)
-		{
-			mvprintw(1 + j, 1 + i, " ");
-		}
-	}
-	attroff(COLOR_PAIR(7));
-	attron(COLOR_PAIR(8));
-	for (int i = 0; i < 95; ++i)
-	{
-		mvprintw(26, 1 + i, " ");
-	}
-	clear_right_cornor();
-	attroff(COLOR_PAIR(8));
-	attron(COLOR_PAIR(7));
-	mvprintw(12, 1, "Bank's Storage: ");
-	mvprintw(28, 1, "Player's Resource: ");
-	mvprintw(32, 1, "Player's Wood Exchange Rate: %d : 1", player -> wood_exchange_rate);
-	mvprintw(36, 1, "Player's Brick Exchange Rate: %d : 1", player -> brick_exchange_rate);
-	mvprintw(40, 1, "Player's Sheep Exchange Rate: %d : 1", player -> sheep_exchange_rate);
-	mvprintw(44, 1, "Player's Wheat Exchange Rate: %d : 1", player -> wheat_exchange_rate);
-	mvprintw(48, 1, "Player's Stone Exchange Rate: %d : 1", player -> stone_exchange_rate);
-	attroff(COLOR_PAIR(7));
-	print_a_card(31, 44, 3);
-	mvprintw(35, 44, "x%d",player -> wood);
-	print_a_card(37, 44, 1);
-	mvprintw(41, 44, "x%d", player -> brick);
-	print_a_card(43, 44, 5);
-	mvprintw(47, 44, "x%d", player -> sheep);
-	print_a_card(31, 60, 4);
-	mvprintw(35, 60, "x%d",player -> wheat);
-	print_a_card(37, 60, 8);
-	mvprintw(41, 60, "x%d", player -> stone);
-	print_a_card(5, 44, 3);
-	mvprintw(9, 44, "x%d", bank -> wood);
-	print_a_card(11, 44, 1);
-	mvprintw(15, 44, "x%d", bank -> brick);
-	print_a_card(17, 44, 5);
-	mvprintw(21, 44, "x%d", bank -> sheep);
-	print_a_card(5, 60, 4);
-	mvprintw(9, 60, "x%d", bank -> wheat);
-	print_a_card(11, 60, 8);
-	mvprintw(15, 60, "x%d", bank -> stone);
-	print_a_card(17, 60, 6);
-	mvprintw(21, 60, "x%d",bank ->knights+bank->year_of_plenty+bank->road_building+bank->monopoly+bank->victory_card);
-	attron(COLOR_PAIR(3));
-	for (int i = 0; i < 9; ++i)
-	{
-		for (int j = 0; j < 5; ++j)
-		{
-			mvprintw(45 + j, 87 + i, " ");
-		}
-	}
-	attroff(COLOR_PAIR(3));
-	attron(COLOR_PAIR(8));
-	mvprintw(45 + 2, 87 + 2, " ");
-	mvprintw(45 + 3, 87 + 3, " ");
-	mvprintw(45 + 3, 87 + 4, " ");
-	mvprintw(45 + 2, 87 + 5, " ");
-	mvprintw(45 + 1, 87 + 6, " ");
-	attroff(COLOR_PAIR(8));
-	int ch;
-	int tmp_trade_point = 0;
-	int player_wood_reduction = 0;
-	int player_brick_reduction = 0;
-	int player_sheep_reduction = 0;
-	int player_wheat_reduction = 0;
-	int player_stone_reduction = 0;
-	int bank_wood_reduction = 0;
-	int bank_brick_reduction = 0;
-	int bank_sheep_reduction = 0;
-	int bank_wheat_reduction = 0;
-	int bank_stone_reduction = 0;
-	int bank_special_card_reduction = 0;
-	int special_card_count = 0;
-	int trade_pay = 0, trade_get = 0;
+    //clean map
+    attron(COLOR_PAIR(7));
+    for (int i = 0; i < 95; ++i)
+    {
+        for (int j = 0; j < 49; ++j)
+        {
+            mvprintw(1 + j, 1 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(7));
+    attron(COLOR_PAIR(8));
+    for (int i = 0; i < 95; ++i)
+    {
+        mvprintw(26, 1 + i, " ");
+    }
+    clear_right_cornor();
+    attroff(COLOR_PAIR(8));
+    attron(COLOR_PAIR(7));
+    mvprintw(12, 1, "Bank's Storage: ");
+    mvprintw(28, 1, "Player's Resource: ");
+    mvprintw(32, 1, "Player's Wood Exchange Rate: %d : 1", player -> wood_exchange_rate);
+    mvprintw(36, 1, "Player's Brick Exchange Rate: %d : 1", player -> brick_exchange_rate);
+    mvprintw(40, 1, "Player's Sheep Exchange Rate: %d : 1", player -> sheep_exchange_rate);
+    mvprintw(44, 1, "Player's Wheat Exchange Rate: %d : 1", player -> wheat_exchange_rate);
+    mvprintw(48, 1, "Player's Stone Exchange Rate: %d : 1", player -> stone_exchange_rate);
+    attroff(COLOR_PAIR(7));
+    print_a_card(31, 44, 3);
+    mvprintw(35, 44, "x%d",player -> wood);
+    print_a_card(37, 44, 1);
+    mvprintw(41, 44, "x%d", player -> brick);
+    print_a_card(43, 44, 5);
+    mvprintw(47, 44, "x%d", player -> sheep);
+    print_a_card(31, 60, 4);
+    mvprintw(35, 60, "x%d",player -> wheat);
+    print_a_card(37, 60, 8);
+    mvprintw(41, 60, "x%d", player -> stone);
+    print_a_card(5, 44, 3);
+    mvprintw(9, 44, "x%d", bank -> wood);
+    print_a_card(11, 44, 1);
+    mvprintw(15, 44, "x%d", bank -> brick);
+    print_a_card(17, 44, 5);
+    mvprintw(21, 44, "x%d", bank -> sheep);
+    print_a_card(5, 60, 4);
+    mvprintw(9, 60, "x%d", bank -> wheat);
+    print_a_card(11, 60, 8);
+    mvprintw(15, 60, "x%d", bank -> stone);
+    print_a_card(17, 60, 6);
+    mvprintw(21, 60, "x%d",bank ->knights+bank->year_of_plenty+bank->road_building+bank->monopoly+bank->victory_card);
+    attron(COLOR_PAIR(3));
+    for (int i = 0; i < 9; ++i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            mvprintw(45 + j, 87 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(3));
+    attron(COLOR_PAIR(8));
+    mvprintw(45 + 2, 87 + 2, " ");
+    mvprintw(45 + 3, 87 + 3, " ");
+    mvprintw(45 + 3, 87 + 4, " ");
+    mvprintw(45 + 2, 87 + 5, " ");
+    mvprintw(45 + 1, 87 + 6, " ");
+    attroff(COLOR_PAIR(8));
+    int ch;
+    int tmp_trade_point = 0;
+    int player_wood_reduction = 0;
+    int player_brick_reduction = 0;
+    int player_sheep_reduction = 0;
+    int player_wheat_reduction = 0;
+    int player_stone_reduction = 0;
+    int bank_wood_reduction = 0;
+    int bank_brick_reduction = 0;
+    int bank_sheep_reduction = 0;
+    int bank_wheat_reduction = 0;
+    int bank_stone_reduction = 0;
+    int bank_special_card_reduction = 0;
+    int special_card_count = 0;
+    int trade_pay = 0, trade_get = 0;
     mvprintw(50, 168," ");
-	attron(COLOR_PAIR(31));
-	while (ch = getch())
-	{
+    attron(COLOR_PAIR(31));
+    while (ch = getch())
+    {
         if (ch == KEY_MOUSE && getmouse(&event) == OK)
         {
             if (event.bstate & BUTTON1_PRESSED)
@@ -2274,9 +2497,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 int y = event.y;
                 if(((x >= 44 && y >= 31) && (x <= 46 && y <= 33)))
                 {
-                	/*player_wood_reduction ++;
-                	mvprintw(35, 47, "-%d",player_wood_reduction);
-                	tmp_trade_point += player_wood_reduction / player -> wood_exchange_rate;*/
+                    /*player_wood_reduction ++;
+                    mvprintw(35, 47, "-%d",player_wood_reduction);
+                    tmp_trade_point += player_wood_reduction / player -> wood_exchange_rate;*/
                     if(player -> wood >= player -> wood_exchange_rate * (trade_withbank[0]+1))
                     {
                         trade_withbank[0] ++;
@@ -2287,9 +2510,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 44 && y >= 37) && (x <= 46 && y <= 39)))
                 {
-                	/*player_brick_reduction ++;
-                	mvprintw(41, 47, "-%d",player_brick_reduction);
-                	tmp_trade_point += player_brick_reduction / player -> brick_exchange_rate;*/
+                    /*player_brick_reduction ++;
+                    mvprintw(41, 47, "-%d",player_brick_reduction);
+                    tmp_trade_point += player_brick_reduction / player -> brick_exchange_rate;*/
                     if(player -> brick >= player -> brick_exchange_rate * (trade_withbank[2]+1))
                     {
                         trade_withbank[2] ++;
@@ -2300,9 +2523,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 44 && y >= 43) && (x <= 46 && y <= 45)))
                 {
-                	/*player_sheep_reduction ++;
-                	mvprintw(47, 47, "-%d", player_sheep_reduction);
-                	tmp_trade_point += (player_sheep_reduction - bank_special_card_reduction) / player -> sheep_exchange_rate;*/
+                    /*player_sheep_reduction ++;
+                    mvprintw(47, 47, "-%d", player_sheep_reduction);
+                    tmp_trade_point += (player_sheep_reduction - bank_special_card_reduction) / player -> sheep_exchange_rate;*/
                     if(player -> sheep >= player -> sheep_exchange_rate * (trade_withbank[3]+1) + player_sheep_reduction)
                     {
                         trade_withbank[3] ++;
@@ -2313,9 +2536,9 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 60 && y >= 31) && (x <= 62 && y <= 33)))
                 {
-                	/*player_wheat_reduction ++;
-                	mvprintw(35, 63, "-%d", player_wheat_reduction);
-                	tmp_trade_point += (player_wheat_reduction - bank_special_card_reduction) / player -> wheat_exchange_rate;*/
+                    /*player_wheat_reduction ++;
+                    mvprintw(35, 63, "-%d", player_wheat_reduction);
+                    tmp_trade_point += (player_wheat_reduction - bank_special_card_reduction) / player -> wheat_exchange_rate;*/
                     if(player -> wheat >= player -> wheat_exchange_rate * (trade_withbank[4]+1) + player_wheat_reduction)
                     {
                         trade_withbank[4] ++;
@@ -2323,13 +2546,13 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                         trade_pay++;
                     }
 
-                	
+
                 }
                 else if(((x >= 60 && y >= 37) && (x <= 62 && y <= 39)))
                 {
-                	/*player_stone_reduction ++;
-                	mvprintw(41, 63, "-%d", player_stone_reduction);
-                	tmp_trade_point += (player_stone_reduction - bank_special_card_reduction) / player -> stone_exchange_rate;*/
+                    /*player_stone_reduction ++;
+                    mvprintw(41, 63, "-%d", player_stone_reduction);
+                    tmp_trade_point += (player_stone_reduction - bank_special_card_reduction) / player -> stone_exchange_rate;*/
                     if(player -> stone >= player -> stone_exchange_rate * (trade_withbank[1]+1) + player_stone_reduction)
                     {
                         trade_withbank[1] ++;
@@ -2340,12 +2563,12 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 87 && y >= 45) && (x <= 95 && y <= 49)))
                 {
-                	break;
+                    break;
                 }
                 else if(((x >= 44 && y >= 5) && (x <= 46 && y <= 7)) /*&& tmp_trade_point > 0*/)
                 {
-                	/*bank_wood_reduction ++;
-                	mvprintw(9, 47, "-%d", bank_wood_reduction);*/
+                    /*bank_wood_reduction ++;
+                    mvprintw(9, 47, "-%d", bank_wood_reduction);*/
                     if(bank -> wood >= (trade_withbank[5]+1))
                     {
                         trade_withbank[5] ++;
@@ -2356,8 +2579,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) /*&& tmp_trade_point > 0*/)
                 {
-                	/*bank_brick_reduction ++;
-                	mvprintw(15, 47, "-%d", bank_brick_reduction);*/
+                    /*bank_brick_reduction ++;
+                    mvprintw(15, 47, "-%d", bank_brick_reduction);*/
                     if(bank -> brick >= (trade_withbank[7]+1))
                     {
                         trade_withbank[7] ++;
@@ -2368,8 +2591,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 44 && y >= 17) && (x <= 46 && y <= 19)) /*&& tmp_trade_point > 0*/)
                 {
-                	/*bank_sheep_reduction ++;
-                	mvprintw(21, 47, "-%d", bank_sheep_reduction);*/
+                    /*bank_sheep_reduction ++;
+                    mvprintw(21, 47, "-%d", bank_sheep_reduction);*/
                     if(bank -> sheep >= (trade_withbank[8]+1))
                     {
                         trade_withbank[8] ++;
@@ -2380,8 +2603,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 60 && y >= 5) && (x <= 62 && y <= 7)) /*&& tmp_trade_point > 0*/)
                 {
-                	/*bank_wheat_reduction ++;
-                	mvprintw(9, 63, "-%d", bank_wheat_reduction);*/
+                    /*bank_wheat_reduction ++;
+                    mvprintw(9, 63, "-%d", bank_wheat_reduction);*/
                     if(bank -> wheat >= (trade_withbank[9]+1))
                     {
                         trade_withbank[9] ++;
@@ -2392,8 +2615,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 }
                 else if(((x >= 60 && y >= 11) && (x <= 62 && y <= 13)) /*&& tmp_trade_point > 0*/)
                 {
-                	/*bank_stone_reduction ++;
-                	mvprintw(15, 63, "-%d", bank_stone_reduction);*/
+                    /*bank_stone_reduction ++;
+                    mvprintw(15, 63, "-%d", bank_stone_reduction);*/
                     if(bank -> stone >= trade_withbank[6]+1)
                     {
                         trade_withbank[6] ++;
@@ -2404,8 +2627,8 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
                 else if(((x >= 60 && y >= 17) && (x <= 62 && y <= 19)))
                 {
                     if((player -> stone >= player -> stone_exchange_rate * trade_withbank[1] + player_stone_reduction+1) &&
-                    (player -> sheep >= player -> sheep_exchange_rate * trade_withbank[3] + player_sheep_reduction+1) &&
-                    (player -> wheat >= player -> wheat_exchange_rate * trade_withbank[4] + player_wheat_reduction+1) )
+                       (player -> sheep >= player -> sheep_exchange_rate * trade_withbank[3] + player_sheep_reduction+1) &&
+                       (player -> wheat >= player -> wheat_exchange_rate * trade_withbank[4] + player_wheat_reduction+1) )
                     {
                         special_card_count++;
                         bank_special_card_reduction ++;
@@ -2422,59 +2645,350 @@ void print_trade_ui(player_property *player, player_property *player_2, player_p
         }
     }
     /*if((player -> wood - player_wood_reduction < 0) || (player -> brick - player_brick_reduction < 0) || (player -> sheep - player_sheep_reduction < 0) || (player -> wheat - player_wheat_reduction < 0) || (player -> stone - player_stone_reduction < 0) ||(bank -> wood - bank_wood_reduction < 0 ) || (bank -> brick - bank_brick_reduction < 0) ||(bank -> sheep - bank_sheep_reduction < 0) ||(bank -> wheat - bank_wheat_reduction < 0) ||(bank -> stone - bank_stone_reduction < 0) ||(bank -> special_cards - bank_special_card_reduction < 0))*/
-    if( (player -> wood < player -> wood_exchange_rate * trade_withbank[0]) || 
-	    (player -> stone < player -> stone_exchange_rate * trade_withbank[1] + player_stone_reduction) ||
-	    (player -> brick < player -> brick_exchange_rate * trade_withbank[2]) ||
-	    (player -> sheep < player -> sheep_exchange_rate * trade_withbank[3] + player_sheep_reduction) ||
-	    (player -> wheat < player -> wheat_exchange_rate * trade_withbank[4] + player_wheat_reduction) ||
-	    (bank -> wood < trade_withbank[5]) ||
-	    (bank -> stone < trade_withbank[6]) ||
-	    (bank -> brick < trade_withbank[7]) ||
-	    (bank -> sheep < trade_withbank[8]) ||
-	    (bank -> wheat < trade_withbank[9]) ||
-	    (trade_get != trade_pay) )
+    if( (player -> wood < player -> wood_exchange_rate * trade_withbank[0]) ||
+        (player -> stone < player -> stone_exchange_rate * trade_withbank[1] + player_stone_reduction) ||
+        (player -> brick < player -> brick_exchange_rate * trade_withbank[2]) ||
+        (player -> sheep < player -> sheep_exchange_rate * trade_withbank[3] + player_sheep_reduction) ||
+        (player -> wheat < player -> wheat_exchange_rate * trade_withbank[4] + player_wheat_reduction) ||
+        (bank -> wood < trade_withbank[5]) ||
+        (bank -> stone < trade_withbank[6]) ||
+        (bank -> brick < trade_withbank[7]) ||
+        (bank -> sheep < trade_withbank[8]) ||
+        (bank -> wheat < trade_withbank[9]) ||
+        (trade_get != trade_pay) )
     {
-    	mvprintw(45,138, "Transaction Failed!");
+        //mvprintw(45,138, "Transaction Failed!");
+        ADD_NEW_MESSAGE("Transaction Failed!");
     }
     else
     {
-    	if(agree_or_disagree(43, 140, "Trade like this?", event))
-    	{
-    		tradewithbank( player, bank, trade_withbank );
-    		player -> wood -= player_wood_reduction;
-    		player -> brick -= player_brick_reduction;
-    		player -> sheep -= player_sheep_reduction;
-    		player -> wheat -= player_wheat_reduction;
-    		player -> stone -= player_stone_reduction;
-    		player -> special_cards += bank_special_card_reduction;
-    		bank -> wood -= bank_wood_reduction;
-    		bank -> brick -= bank_brick_reduction;
-    		bank -> sheep -= bank_sheep_reduction;
-    		bank -> wheat -= bank_wheat_reduction;
-    		bank -> stone -= bank_stone_reduction;
-    		player -> wood += bank_wood_reduction;
-    		player -> brick += bank_brick_reduction;
-    		player -> sheep += bank_sheep_reduction;
-    		player -> wheat += bank_wheat_reduction;
-    		player -> stone += bank_stone_reduction;
-    		bank -> wood += player_wood_reduction;
-    		bank -> brick += player_brick_reduction;
-    		bank -> sheep += player_sheep_reduction;
-    		bank -> wheat += player_wheat_reduction;
-    		bank -> stone += player_stone_reduction;
-    		bank -> special_cards -= bank_special_card_reduction;
-    		specialcard_get( cardtemp, player, bank, special_card_count );
-    		
-    		player -> total_resource_cards = player -> wood + player -> brick + player -> sheep + player -> wheat + player -> stone;
-    	}
+        if(agree_or_disagree(43, 140, "Trade like this?", event))
+        {
+            player -> wood -= player_wood_reduction;
+            player -> brick -= player_brick_reduction;
+            player -> sheep -= player_sheep_reduction;
+            player -> wheat -= player_wheat_reduction;
+            player -> stone -= player_stone_reduction;
+            bank -> wood -= bank_wood_reduction;
+            bank -> brick -= bank_brick_reduction;
+            bank -> sheep -= bank_sheep_reduction;
+            bank -> wheat -= bank_wheat_reduction;
+            bank -> stone -= bank_stone_reduction;
+            player -> wood += bank_wood_reduction;
+            player -> brick += bank_brick_reduction;
+            player -> sheep += bank_sheep_reduction;
+            player -> wheat += bank_wheat_reduction;
+            player -> stone += bank_stone_reduction;
+            bank -> wood += player_wood_reduction;
+            bank -> brick += player_brick_reduction;
+            bank -> sheep += player_sheep_reduction;
+            bank -> wheat += player_wheat_reduction;
+            bank -> stone += player_stone_reduction;
+
+            player -> total_resource_cards = player -> wood + player -> brick + player -> sheep + player -> wheat + player -> stone;
+        }
     }
     trade_init(trade_withbank);
-   	refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
+    refresh_all_status(players,players+1,players+2,players+3,bank,cardtemp);
     attroff(COLOR_PAIR(31));
     //feature : u can discard card like this way!
     mvprintw(50, 168," ");
 }
+void print_trade_ui_friend(player_property *player,player_property *player1,MEVENT event)
+{
+    //clean map
+    attron(COLOR_PAIR(7));
+    for (int i = 0; i < 95; ++i)
+    {
+        for (int j = 0; j < 49; ++j)
+        {
+            mvprintw(1 + j, 1 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(7));
+    attron(COLOR_PAIR(8));
+    for (int i = 0; i < 95; ++i)
+    {
+        mvprintw(26, 1 + i, " ");
+    }
+    clear_right_cornor();
+    attroff(COLOR_PAIR(8));
+    attron(COLOR_PAIR(7));
+    mvprintw(12, 1, "One's Storage: ");
+    mvprintw(28, 1, "Player's Resource: ");
 
+    attroff(COLOR_PAIR(7));
+    print_a_card(31, 44, 3);
+    mvprintw(35, 44, "x%d",player -> wood);
+    print_a_card(37, 44, 1);
+    mvprintw(41, 44, "x%d", player -> brick);
+    print_a_card(43, 44, 5);
+    mvprintw(47, 44, "x%d", player -> sheep);
+    print_a_card(31, 60, 4);
+    mvprintw(35, 60, "x%d",player -> wheat);
+    print_a_card(37, 60, 8);
+    mvprintw(41, 60, "x%d", player -> stone);
+    print_a_card(5, 44, 3);
+    mvprintw(9, 44, "x?");
+    print_a_card(11, 44, 1);
+    mvprintw(15, 44, "x?");
+    print_a_card(17, 44, 5);
+    mvprintw(21, 44, "x?");
+    print_a_card(5, 60, 4);
+    mvprintw(9, 60, "x?");
+    print_a_card(11, 60, 8);
+    mvprintw(15, 60, "x?");
+    print_a_card(17, 60, 6);
+    attron(COLOR_PAIR(3));
+    for (int i = 0; i < 9; ++i)
+    {
+        for (int j = 0; j < 5; ++j)
+        {
+            mvprintw(45 + j, 87 + i, " ");
+        }
+    }
+    attroff(COLOR_PAIR(3));
+    attron(COLOR_PAIR(8));
+    mvprintw(45 + 2, 87 + 2, " ");
+    mvprintw(45 + 3, 87 + 3, " ");
+    mvprintw(45 + 3, 87 + 4, " ");
+    mvprintw(45 + 2, 87 + 5, " ");
+    mvprintw(45 + 1, 87 + 6, " ");
+    attroff(COLOR_PAIR(8));
+    int ch;
+    int tmp_trade_point = 0;
+    int player_wood_reduction = 0;
+    int player_brick_reduction = 0;
+    int player_sheep_reduction = 0;
+    int player_wheat_reduction = 0;
+    int player_stone_reduction = 0;
+    int bank_wood_reduction = 0;
+    int bank_brick_reduction = 0;
+    int bank_sheep_reduction = 0;
+    int bank_wheat_reduction = 0;
+    int bank_stone_reduction = 0;
+    int bank_special_card_reduction = 0;
+    int special_card_count = 0;
+    int trade_pay = 0, trade_get = 0;
+    mvprintw(50, 168," ");
+    attron(COLOR_PAIR(31));
+    while (ch = getch())
+    {
+        if (ch == KEY_MOUSE && getmouse(&event) == OK)
+        {
+            if (event.bstate & BUTTON1_PRESSED)
+            {
+                int x = event.x;
+                int y = event.y;
+                if(((x >= 44 && y >= 31) && (x <= 46 && y <= 33)))
+                {
+                    /*player_wood_reduction ++;
+                    mvprintw(35, 47, "-%d",player_wood_reduction);
+                    tmp_trade_point += player_wood_reduction / player -> wood_exchange_rate;*/
+                    if(player -> wood >=player_wood_reduction+1)
+                    {
+                        player_wood_reduction ++;
+                        mvprintw(35, 47, "-%d",player_wood_reduction);
+                        trade_pay++;
+                    }
+
+                }
+                else if(((x >= 44 && y >= 37) && (x <= 46 && y <= 39)))
+                {
+                    /*player_brick_reduction ++;
+                    mvprintw(41, 47, "-%d",player_brick_reduction);
+                    tmp_trade_point += player_brick_reduction / player -> brick_exchange_rate;*/
+                    if(player -> brick >=(player_brick_reduction+1))
+                    {
+                        player_brick_reduction ++;
+                        mvprintw(41, 47, "-%d",player_brick_reduction);
+                        trade_pay++;
+                    }
+
+                }
+                else if(((x >= 44 && y >= 43) && (x <= 46 && y <= 45)))
+                {
+                    /*player_sheep_reduction ++;
+                    mvprintw(47, 47, "-%d", player_sheep_reduction);
+                    tmp_trade_point += (player_sheep_reduction - bank_special_card_reduction) / player -> sheep_exchange_rate;*/
+                    if(player -> sheep >= (player_sheep_reduction+1))
+                    {
+                        player_sheep_reduction ++;
+                        mvprintw(47, 47, "-%d",player_sheep_reduction);
+                        trade_pay++;
+                    }
+
+                }
+                else if(((x >= 60 && y >= 31) && (x <= 62 && y <= 33)))
+                {
+                    /*player_wheat_reduction ++;
+                    mvprintw(35, 63, "-%d", player_wheat_reduction);
+                    tmp_trade_point += (player_wheat_reduction - bank_special_card_reduction) / player -> wheat_exchange_rate;*/
+                    if(player -> wheat >=player_wheat_reduction+1)
+                    {
+                        player_wheat_reduction ++;
+                        mvprintw(35, 63, "-%d",player_wheat_reduction);
+                        trade_pay++;
+                    }
+
+
+                }
+                else if(((x >= 60 && y >= 37) && (x <= 62 && y <= 39)))
+                {
+                    /*player_stone_reduction ++;
+                    mvprintw(41, 63, "-%d", player_stone_reduction);
+                    tmp_trade_point += (player_stone_reduction - bank_special_card_reduction) / player -> stone_exchange_rate;*/
+                    if(player -> stone >=(player_stone_reduction+1) )
+                    {
+                        player_stone_reduction ++;
+                        mvprintw(41, 63, "-%d",player_stone_reduction);
+                        trade_pay++;
+                    }
+
+                }
+                else if(((x >= 87 && y >= 45) && (x <= 95 && y <= 49)))
+                {
+                    break;
+                }
+                else if(((x >= 44 && y >= 5) && (x <= 46 && y <= 7)) /*&& tmp_trade_point > 0*/)
+                {
+                    /*bank_wood_reduction ++;
+                    mvprintw(9, 47, "-%d", bank_wood_reduction);*/
+                    /*if(bank -> wood >= (bank_wood_reduction+1))
+                    {
+                        bank_wood_reduction ++;
+                        mvprintw(9, 47, "-%d",bank_wood_reduction);
+                        trade_get++;
+                    }*/
+                    bank_wood_reduction ++;
+                    mvprintw(9, 47, "-%d",bank_wood_reduction);
+                    trade_get++;
+                }
+                else if(((x >= 44 && y >= 11) && (x <= 46 && y <= 13)) /*&& tmp_trade_point > 0*/)
+                {
+                    /*bank_brick_reduction ++;
+                    mvprintw(15, 47, "-%d", bank_brick_reduction);*/
+                    /*if(bank -> brick >= (bank_brick_reduction+1))
+                    {
+                        bank_brick_reduction ++;
+                        mvprintw(15, 47, "-%d", bank_brick_reduction);
+                        trade_get++;
+                    }*/
+                    bank_brick_reduction ++;
+                    mvprintw(15, 47, "-%d", bank_brick_reduction);
+                    trade_get++;
+                }
+                else if(((x >= 44 && y >= 17) && (x <= 46 && y <= 19)) /*&& tmp_trade_point > 0*/)
+                {
+                    /*bank_sheep_reduction ++;
+                    mvprintw(21, 47, "-%d", bank_sheep_reduction);*/
+                    /*if(bank -> sheep >= (bank_sheep_reduction+1))
+                    {
+                        bank_sheep_reduction ++;
+                        mvprintw(21, 47, "-%d", bank_sheep_reduction);
+                        trade_get++;
+                    }*/
+                    bank_sheep_reduction ++;
+                    mvprintw(21, 47, "-%d", bank_sheep_reduction);
+                    trade_get++;
+                }
+                else if(((x >= 60 && y >= 5) && (x <= 62 && y <= 7)) /*&& tmp_trade_point > 0*/)
+                {
+                    /*bank_wheat_reduction ++;
+                    mvprintw(9, 63, "-%d", bank_wheat_reduction);*/
+                    /*if(bank -> wheat >= (bank_wheat_reduction+1))
+                    {
+                        bank_wheat_reduction ++;
+                        mvprintw(9, 63, "-%d", bank_wheat_reduction);
+                        trade_get++;
+                    }*/
+                    bank_wheat_reduction ++;
+                    mvprintw(9, 63, "-%d", bank_wheat_reduction);
+                    trade_get++;
+                }
+                else if(((x >= 60 && y >= 11) && (x <= 62 && y <= 13)) /*&& tmp_trade_point > 0*/)
+                {
+                    /*bank_stone_reduction ++;
+                    mvprintw(15, 63, "-%d", bank_stone_reduction);*/
+                    /*if(bank -> stone >= bank_stone_reduction+1)
+                    {
+                        bank_stone_reduction ++;
+                        mvprintw(15, 63, "-%d", bank_stone_reduction);
+                        trade_get++;
+                    }*/
+                    bank_stone_reduction ++;
+                    mvprintw(15, 63, "-%d", bank_stone_reduction);
+                    trade_get++;
+                }
+                /*else if(((x >= 60 && y >= 17) && (x <= 62 && y <= 19)))
+                {
+                    if((player -> stone >= player -> stone_exchange_rate * player_stone_reduction + player_stone_reduction+1) &&
+                    (player -> sheep >= player -> sheep_exchange_rate * player_sheep_reduction + player_sheep_reduction+1) &&
+                    (player -> wheat >= player -> wheat_exchange_rate * player_wheat_reduction + player_wheat_reduction+1) )
+                    {
+                        special_card_count++;
+                        bank_special_card_reduction ++;
+                        player_sheep_reduction ++;
+                        player_stone_reduction ++;
+                        player_wheat_reduction ++;
+                        mvprintw(41, 63, "-%d",player_stone_reduction*player -> stone_exchange_rate+player_stone_reduction);
+                        mvprintw(47, 47, "-%d",player_sheep_reduction*player -> sheep_exchange_rate+player_sheep_reduction);
+                        mvprintw(35, 63, "-%d",player_wheat_reduction*player -> wheat_exchange_rate+player_wheat_reduction);
+                        mvprintw(21, 63, "-%d", bank_special_card_reduction);
+                    }
+                }*/
+            }
+        }
+    }
+    /*if((player -> wood - player_wood_reduction < 0) || (player -> brick - player_brick_reduction < 0) || (player -> sheep - player_sheep_reduction < 0) || (player -> wheat - player_wheat_reduction < 0) || (player -> stone - player_stone_reduction < 0) ||(bank -> wood - bank_wood_reduction < 0 ) || (bank -> brick - bank_brick_reduction < 0) ||(bank -> sheep - bank_sheep_reduction < 0) ||(bank -> wheat - bank_wheat_reduction < 0) ||(bank -> stone - bank_stone_reduction < 0) ||(bank -> special_cards - bank_special_card_reduction < 0))*/
+    if( (player1 -> wood < bank_wood_reduction) ||
+        (player1  -> stone < bank_stone_reduction) ||
+        (player1  -> brick < bank_brick_reduction) ||
+        (player1  -> sheep < bank_sheep_reduction) ||
+        (player1  -> wheat < bank_wheat_reduction) ||
+        (trade_get != trade_pay) )
+    {
+        //mvprintw(45,138, "Transaction Failed!");
+        ADD_NEW_MESSAGE("Transaction Failed!");
+    }
+    else
+    {
+        if(agree_or_disagree(43, 140, "Trade like this?", event))
+        {
+            player -> wood -= player_wood_reduction;
+            player -> brick -= player_brick_reduction;
+            player -> sheep -= player_sheep_reduction;
+            player -> wheat -= player_wheat_reduction;
+            player -> stone -= player_stone_reduction;
+
+            player1 -> wood -= bank_wood_reduction;
+            player1 -> brick -= bank_brick_reduction;
+            player1 -> sheep -= bank_sheep_reduction;
+            player1 -> wheat -= bank_wheat_reduction;
+            player1 -> stone -= bank_stone_reduction;
+
+            player -> wood += bank_wood_reduction;
+            player -> brick += bank_brick_reduction;
+            player -> sheep += bank_sheep_reduction;
+            player -> wheat += bank_wheat_reduction;
+            player -> stone += bank_stone_reduction;
+            player1 -> wood += player_wood_reduction;
+
+            player1 -> brick += player_brick_reduction;
+            player1 -> sheep += player_sheep_reduction;
+            player1 -> wheat += player_wheat_reduction;
+            player1 -> stone += player_stone_reduction;
+
+
+            player -> total_resource_cards = player -> wood + player -> brick + player -> sheep + player -> wheat + player -> stone;
+        }
+    }
+    trade_init(trade_withbank);
+    _refresh_all_status();
+    attroff(COLOR_PAIR(31));
+    //feature : u can discard card like this way!
+    mvprintw(50, 168," ");
+}
 
 
 void refresh_all_status(player_property *player_1, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, card_temp *cardtemp)

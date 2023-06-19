@@ -214,3 +214,8 @@ resources least_valueable_resource(player_property* the_player);
 obj* human_weakness();
 
 void add_new_message(const char* format, ...);
+
+#define MAX(n, ...) _get_max(n, (int[]){__VA_ARGS__})
+#define MIN(n, ...) _get_min(n, (uint8_t[]){__VA_ARGS__})
+uint8_t _get_max(uint8_t n, uint8_t args[n]);
+uint8_t _get_min(uint8_t n, uint8_t args[n]) ;

@@ -58,12 +58,15 @@ void print_players_status(player_property *player_1, player_property *player_2, 
 void print_YOU(player_property *player_1, card_temp *cardtemp);
 void print_YOU_HIGHLIGHTED(player_property *player_1, card_temp *cardtemp);
 void print_trade_ui(player_property *player, player_property *player_2, player_property *player_3, player_property *player_4, bank_property *bank, MEVENT event, int trade_withbank[], card_temp *cardtemp);
+void print_trade_ui_friend(player_property *player,player_property *player1, MEVENT event);
 void fprintf_bank(bank_property bank1);
 void fprintf_player(player_property player1);
 void clear_log();
 void general_move_robber(player_property *the_player);
 void general_discard_half_deck(player_property *the_player,MEVENT event);
 void build_the_best_road(player_property *the_player);
+void use_knight(player_property *the_player);
+
 //player_1 is red at top left cornor, player_2 blue is at top right cornor
 //player_3 is green at down left cornor, player_4 yellow is at down right cornor
 

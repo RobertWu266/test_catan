@@ -34,6 +34,24 @@ i32 human_id=1;
 char* message_log[MESSAGE_LOG_SIZE] = {0};
 int32_t message_log_csr = 0;
 
+
+
+uint8_t _get_max(uint8_t n, uint8_t args[n]) {
+    int max = args[0];
+    for (int i = 1; i < n; i++) {
+        if (args[i] > max) max = args[i];
+    }
+    return max;
+}
+
+uint8_t _get_min(uint8_t n, uint8_t args[n]) {
+    int min = args[0];
+    for (int i = 1; i < n; i++) {
+        if (args[i] < min) min = args[i];
+    }
+    return min;
+}
+
 bool largest_army_start=false;
 bool longest_road_start=false;
 i32 max_road_player_id=0;
@@ -76,8 +94,8 @@ void add_new_message(const char* format, ...) {
     message_log_csr++;
     for(i32 i=0;i<message_log_csr;i++)
     {
-        mvprintw(i,172,"                                         ");
-        mvprintw(i,172,message_log[i]);
+        mvprintw(i,172,"                                                ");
+        mvprintw(i,172,"%s",message_log[i]);
     }
 }
 harbor locs_harbor(i32 *locs)
@@ -678,9 +696,9 @@ void bank_init(bank_property *bank)
 void player_init(player_property *player)
 {
     player -> total_resource_cards = 100;
-    player -> wood = 4;
+    player -> wood = 4+2;
     player -> stone = 0;
-    player -> brick = 4;
+    player -> brick = 4+2;
     player -> sheep = 2;
     player -> wheat = 2;
     player -> special_cards = 0;
@@ -797,7 +815,7 @@ void build_village(owner owner1, obj* tobuild)
             the_player->wood--;
             the_player->brick--;
             the_player->total_victory_points++;
-            //ADD_NEW_MESSAGE("%s build a village!",identity_list[the_player->iden]);
+            ADD_NEW_MESSAGE("%s build a village!",iden_string[the_player->iden]);
         }
         else
         {
@@ -1280,6 +1298,7 @@ void year_of_plenty_action(player_property *the_player,uint8_t brick_discard,uin
 }
 void resource_generate(i32 num)
 {
+    bool has_gotten[4]={0};
     for(i32 i=0;i<19;i++)
     {
         if(bprop(body_list[i])->num==num)
@@ -1293,10 +1312,11 @@ void resource_generate(i32 num)
                         obj* nei_v=bprop(body_list[i])->nei_vert[j];
                         if(nei_v==NULL || vprop(nei_v)->own==None)continue;
                         player_property *the_player=&players[vprop(nei_v)->own-player1];
-                        if(bank.wood)
+                        if(!has_gotten[the_player-players] && bank.wood)
                         {
                             bank.wood--;
                             the_player->wood++;
+                            has_gotten[the_player-players]=1;
                         }
 
                     }
@@ -1307,10 +1327,11 @@ void resource_generate(i32 num)
                         obj* nei_v=bprop(body_list[i])->nei_vert[j];
                         if(nei_v==NULL || vprop(nei_v)->own==None)continue;
                         player_property *the_player=&players[vprop(nei_v)->own-player1];
-                        if(bank.sheep)
+                        if(!has_gotten[the_player-players] &&bank.sheep)
                         {
                             bank.sheep--;
                             the_player->sheep++;
+                            has_gotten[the_player-players]=1;
                         }
                     }
                     break;
@@ -1320,10 +1341,11 @@ void resource_generate(i32 num)
                         obj* nei_v=bprop(body_list[i])->nei_vert[j];
                         if(nei_v==NULL || vprop(nei_v)->own==None)continue;
                         player_property *the_player=&players[vprop(nei_v)->own-player1];
-                        if(bank.brick)
+                        if(!has_gotten[the_player-players] &&bank.brick)
                         {
                             bank.brick--;
                             the_player->brick++;
+                            has_gotten[the_player-players]=1;
                         }
                     }
                     break;
@@ -1333,10 +1355,11 @@ void resource_generate(i32 num)
                         obj* nei_v=bprop(body_list[i])->nei_vert[j];
                         if(nei_v==NULL || vprop(nei_v)->own==None)continue;
                         player_property *the_player=&players[vprop(nei_v)->own-player1];
-                        if(bank.stone)
+                        if(!has_gotten[the_player-players] &&bank.stone)
                         {
                             bank.stone--;
                             the_player->stone++;
+                            has_gotten[the_player-players]=1;
                         }
                     }
                     break;
@@ -1346,10 +1369,11 @@ void resource_generate(i32 num)
                         obj* nei_v=bprop(body_list[i])->nei_vert[j];
                         if(nei_v==NULL || vprop(nei_v)->own==None)continue;
                         player_property *the_player=&players[vprop(nei_v)->own-player1];
-                        if(bank.wheat)
+                        if(!has_gotten[the_player-players] &&bank.wheat)
                         {
                             bank.wheat--;
                             the_player->wheat++;
+                            has_gotten[the_player-players]=1;
                         }
                     }
                     break;
