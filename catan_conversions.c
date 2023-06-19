@@ -696,9 +696,9 @@ void bank_init(bank_property *bank)
 void player_init(player_property *player)
 {
     player -> total_resource_cards = 100;
-    player -> wood = 4+2;
+    player -> wood = 4;
     player -> stone = 0;
-    player -> brick = 4+2;
+    player -> brick = 4;
     player -> sheep = 2;
     player -> wheat = 2;
     player -> special_cards = 0;
