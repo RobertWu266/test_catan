@@ -5,9 +5,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 #include <stdbool.h>
 #include <assert.h>
 #include <time.h>
+#include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 #define i32 int32_t
 #define TOL 100
 
@@ -16,6 +21,7 @@
 #define sprop(tgt) ((side_property*)tgt->prop)
 #define obj_custom_x(tgt) (tgt->locs[0]- tgt->locs[1])
 #define obj_custom_y(tgt) (-tgt->locs[0]- tgt->locs[1]+2*tgt->locs[2])
+#define ADD_NEW_MESSAGE(format, ...) add_new_message(format, ##__VA_ARGS__)
 typedef enum _resources
 {
     HILL, MOUNTAIN, FIELD, PASTURE, FOREST, DESERT
@@ -187,6 +193,7 @@ obj** highlight_available_upgrade(owner owner1,i32 *csr);
 obj** highlight_all_stealable(obj* land,owner owner1,i32 *csr);
 obj *get_random_from_highlighted(obj** pobjlist,i32 *csr);
 void clear_all_highlight();
+void box_dtor();
 void clear_all_has_robber();
 
 void trade_init( int trade_withbank[] );
@@ -206,4 +213,4 @@ void resource_generate(i32 num);
 resources least_valueable_resource(player_property* the_player);
 obj* human_weakness();
 
-
+void add_new_message(const char* format, ...);

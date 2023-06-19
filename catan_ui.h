@@ -6,6 +6,7 @@
 
 #include <ncurses.h>
 #include <string.h>
+
 #include <stdlib.h>
 #include <time.h>
 #include <stdint.h>
@@ -62,7 +63,7 @@ void fprintf_player(player_property player1);
 void clear_log();
 void general_move_robber(player_property *the_player);
 void general_discard_half_deck(player_property *the_player,MEVENT event);
-
+void build_the_best_road(player_property *the_player);
 //player_1 is red at top left cornor, player_2 blue is at top right cornor
 //player_3 is green at down left cornor, player_4 yellow is at down right cornor
 

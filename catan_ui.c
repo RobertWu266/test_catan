@@ -22,10 +22,19 @@ extern i32 max_army_record;
 bool wanna_win=0;
 bool last_refresh=false;
 i32 winner=0;
+#define MESSAGE_LOG_SIZE 30
+
+extern char* message_log[];
+extern int32_t message_log_csr;
+extern const char *iden_string[];
+
+
+
 void _refresh_all_status()
 {
     refresh_all_status(players,players+1,players+2,players+3,&bank,&cardtemp);
 }
+
 void in_game_ui()
 {
     MEVENT event;
@@ -128,8 +137,9 @@ void in_game_ui_2(MEVENT *event)
     for(i32 i=0;i<4;i=(i+1)%4)
     {
         i32 num=general_roll_dice(players+i,*event);
-        mvprintw(0,172,"player %d rolled %d!",i+1,num);
-        wait_space();
+        /*mvprintw(0,172,"player %d rolled %d!",i+1,num);
+        wait_space();*/
+        ADD_NEW_MESSAGE("%s rolled %d!",iden_string[(players+i)->iden],i+1,num);
         general_execute_dice(players+i, num,*event);
         general_after_action(players+i,*event);
 
@@ -148,6 +158,38 @@ void in_game_ui_2(MEVENT *event)
         last_refresh=false;*/
         _refresh_all_status();
     }
+}
+void build_the_best_road(player_property *the_player)
+{
+    if(!(the_player->wood && the_player->brick))return;
+    i32 csr=0;
+    obj** available_road= highlight_available_road(the_player-players+player1,&csr);
+    if(!csr)
+    {
+        free(available_road);
+        return;
+    }
+    i32 longest_road_record=0;
+    i32 longest_road_id=0;
+    for(i32 i=0;i<csr;i++)
+    {
+        the_player->my_road[the_player->my_road_csr]=available_road[i];
+        the_player->my_road_csr++;
+        sprop(available_road[i])->own=the_player-players+player1;
+
+        i32 longest_road= get_longest_road(the_player-players+player1);
+        if(longest_road>longest_road_record)
+        {
+            longest_road_id=i;
+            longest_road_record=longest_road;
+        }
+
+        the_player->my_road[the_player->my_road_csr]=NULL;
+        the_player->my_road_csr--;
+        sprop(available_road[i])->own=None;
+
+    }
+    build_road(the_player-players+player1,available_road[longest_road_id]);
 }
 void general_after_action(player_property *the_player,MEVENT event)
 {
@@ -323,8 +365,13 @@ void general_after_action(player_property *the_player,MEVENT event)
                 }
             }
             return;
-        default:
+        case road_AI:
+            build_the_best_road(the_player);
+            break;
+        case develop_AI:
+
             ;//to be finished
+        case village_AI:
     }
 }
 void get_random_card(player_property* from, player_property* to){

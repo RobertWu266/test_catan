@@ -35,7 +35,7 @@ int main()
     i32 trade_withbank[10]={0};
 
     draw_with_mouse_and_return_value(event,&cardtemp);//for debug*/
-
+    box_dtor();
 
 
 	endwin();

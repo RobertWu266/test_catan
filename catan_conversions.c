@@ -7,6 +7,7 @@
 
 obj *innerbox[13][13][3] = {0};
 char *attr_names[] = {"body", "v_side", "main_side", "minor_side", "pos_vert", "neg_vert", "invalid"};
+const char *iden_string[4]={"human","ROAD AI","DEVELOP CARD AI","YOUR AI FRIEND"};
 i32 resources_id[] = {HILL, HILL, HILL, MOUNTAIN, MOUNTAIN, MOUNTAIN, FIELD, FIELD, FIELD, FIELD, PASTURE, PASTURE,
                       PASTURE, PASTURE, FOREST, FOREST, FOREST, FOREST, DESERT};
 //const char* resource_name[]={"HILL", "HILL", "HILL", "MOUNTAIN", "MOUNTAIN", "MOUNTAIN", "FIELD", "FIELD", "FIELD", "FIELD", "PASTURE", "PASTURE","PASTURE", "PASTURE", "FOREST", "FOREST", "FOREST", "FOREST", "DESERT"};
@@ -29,6 +30,10 @@ player_property *develop_AI_player={0};
 player_property *village_AI_player={0};
 i32 human_id=1;
 
+#define MESSAGE_LOG_SIZE 30
+char* message_log[MESSAGE_LOG_SIZE] = {0};
+int32_t message_log_csr = 0;
+
 bool largest_army_start=false;
 bool longest_road_start=false;
 i32 max_road_player_id=0;
@@ -41,7 +46,40 @@ i32 abs(i32 x)
     if (x < 0)return -1 * x;
     return x;
 }
+void add_new_message(const char* format, ...) {
+    char buffer[256];  // Buffer for formatted message
+    va_list args;
 
+    // Format the message
+    va_start(args, format);
+    vsprintf(buffer, format, args);
+    va_end(args);
+
+    // If the log is already full
+    if(message_log_csr == MESSAGE_LOG_SIZE) {
+        // Free the memory of the oldest message
+        free(message_log[0]);
+
+        // Shift all messages one position to the left
+        for(int i = 0; i < MESSAGE_LOG_SIZE - 1; i++) {
+            message_log[i] = message_log[i + 1];
+        }
+
+        // Decrease cursor position
+        message_log_csr--;
+    }
+
+    // Duplicate the new message and add it to the log
+    message_log[message_log_csr] = strdup(buffer);
+
+    // Increase cursor position
+    message_log_csr++;
+    for(i32 i=0;i<message_log_csr;i++)
+    {
+        mvprintw(i,172,"                                         ");
+        mvprintw(i,172,message_log[i]);
+    }
+}
 harbor locs_harbor(i32 *locs)
 {
     i32 x, y, z = 0;
@@ -703,11 +741,12 @@ void specialcard_init( int specialcard[] )
 void build_road(owner owner1, obj* tobuild)
 {
     player_property *the_player=&(players[owner1-player1]);
-    if(the_player->road_remain)
+    if(the_player->wood && the_player->brick &&the_player->road_remain)
     {
         the_player->road_remain--;
         the_player->wood--;
         the_player->brick--;
+        ADD_NEW_MESSAGE("%s build a road!",iden_string[the_player->iden]);
     }
     else
     {
@@ -740,6 +779,7 @@ void build_village(owner owner1, obj* tobuild)
             the_player->wheat-=2;
             the_player->stone-=3;
             the_player->total_victory_points++;
+            ADD_NEW_MESSAGE("%s upgrade a village to a city!",iden_string[the_player->iden]);
         }
         else
         {
@@ -757,6 +797,7 @@ void build_village(owner owner1, obj* tobuild)
             the_player->wood--;
             the_player->brick--;
             the_player->total_victory_points++;
+            //ADD_NEW_MESSAGE("%s build a village!",identity_list[the_player->iden]);
         }
         else
         {
